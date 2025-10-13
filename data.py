@@ -20,22 +20,23 @@ class ALSFRSDataset(Dataset):
         return x, y
 
 class DataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, test_size=0.2, val_size=0.1, target_col='target'):
+    def __init__(self, csv_path, batch_size=32, test_size=0.2, val_size=0.1, target_col='target', feature_cols=None):
         super().__init__()
         self.csv_path = csv_path
         self.batch_size = batch_size
         self.test_size = test_size
         self.val_size = val_size
         self.target_col = target_col
+        self.feature_cols = feature_cols
 
     def setup(self, stage=None):
         df = pd.read_csv(self.csv_path)
         train_df, test_df = train_test_split(df, test_size=self.test_size, random_state=42)
         train_df, val_df = train_test_split(train_df, test_size=self.val_size, random_state=42)
 
-        self.train_ds = ALSFRSDataset(train_df, target_col=self.target_col)
-        self.val_ds = ALSFRSDataset(val_df, target_col=self.target_col)
-        self.test_ds = ALSFRSDataset(test_df, target_col=self.target_col)
+        self.train_ds = ALSFRSDataset(train_df, feature_cols=self.feature_cols, target_col=self.target_col)
+        self.val_ds = ALSFRSDataset(val_df, feature_cols=self.feature_cols, target_col=self.target_col)
+        self.test_ds = ALSFRSDataset(test_df, feature_cols=self.feature_cols, target_col=self.target_col)
 
     def train_dataloader(self):
         return DataLoader(self.train_ds, batch_size=self.batch_size, shuffle=True)
@@ -47,7 +48,7 @@ class DataModule(LightningDataModule):
         return DataLoader(self.test_ds, batch_size=self.batch_size)
 
 if __name__ == '__main__':
-    dm = DataModule('data.csv', batch_size=16)
+    dm = DataModule('', batch_size=16)
     dm.setup()
     for batch in dm.train_dataloader():
         x, y = batch
