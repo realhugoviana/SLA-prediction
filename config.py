@@ -1,0 +1,18 @@
+
+# training hyperparameters
+INPUT_SIZE = 10
+OUTPUT_SIZE = 1
+BATCH_SIZE = 32
+EPOCHS = 100
+LEARNING_RATE = 1e-3
+
+# dataset
+DATA_PATH = 'datasets/'
+
+# compute device configuration
+if torch.backends.mps.is_available():
+    DEVICE = torch.device("mps")
+elif torch.cuda.is_available():
+    DEVICE = torch.device("cuda")
+else:
+    DEVICE = torch.device("cpu")

@@ -4,13 +4,6 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import lightning as L
 
-if torch.backends.mps.is_available():
-    device = torch.device("mps")
-elif torch.cuda.is_available():
-    device = torch.device("cuda")
-else:
-    device = torch.device("cpu")
-
 class NN(L.LightningModule):
     def __init__(self, input_dim, output_dim):
         super().__init__()
