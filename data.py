@@ -5,52 +5,47 @@ import torch
 from lightning import LightningDataModule
 
 class ALSFRSDataset(Dataset):
-    def __init__(self, csv_path, feature_cols=None, target_col='target'):
-        self.data = pd.read_csv(csv_path)
+    def __init__(self, dataframe, feature_cols=None, target_col='Target'):
+        self.dataframe = dataframe
+        self.feature_cols = feature_cols if feature_cols else [col for col in dataframe.columns if col != target_col]
         self.target_col = target_col
-        self.feature_cols = feature_cols or [c for c in self.data.columns if c != target_col]
 
     def __len__(self):
-        return len(self.data)
+        return len(self.dataframe)
 
     def __getitem__(self, idx):
-        row = self.data.iloc[idx]
-        x = torch.tensor(row[self.feature_cols].values, dtype=torch.float32)
-        y = torch.tensor(row[self.target_col], dtype=torch.float32)
-        return x, y
+        row = self.dataframe.iloc[idx]
+        features = torch.tensor(row[self.feature_cols].values, dtype=torch.float32)
+        target = torch.tensor(row[self.target_col], dtype=torch.float32)
+        return features, target
 
 class DataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, test_size=0.2, val_size=0.1, target_col='target', feature_cols=None):
+    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_col='Target', test_size=0.2, val_size=0.1, random_state=42):
         super().__init__()
         self.csv_path = csv_path
         self.batch_size = batch_size
+        self.feature_cols = feature_cols
+        self.target_col = target_col
         self.test_size = test_size
         self.val_size = val_size
-        self.target_col = target_col
-        self.feature_cols = feature_cols
+        self.random_state = random_state
+
+    def prepare_data(self):
+        self.dataframe = pd.read_csv(self.csv_path)
 
     def setup(self, stage=None):
-        df = pd.read_csv(self.csv_path)
-        train_df, test_df = train_test_split(df, test_size=self.test_size, random_state=42)
-        train_df, val_df = train_test_split(train_df, test_size=self.val_size, random_state=42)
+        train_val_df, test_df = train_test_split(self.dataframe, test_size=self.test_size, random_state=self.random_state)
+        train_df, val_df = train_test_split(train_val_df, test_size=self.val_size, random_state=self.random_state)
 
-        self.train_ds = ALSFRSDataset(train_df, feature_cols=self.feature_cols, target_col=self.target_col)
-        self.val_ds = ALSFRSDataset(val_df, feature_cols=self.feature_cols, target_col=self.target_col)
-        self.test_ds = ALSFRSDataset(test_df, feature_cols=self.feature_cols, target_col=self.target_col)
+        self.train_dataset = ALSFRSDataset(train_df, feature_cols=self.feature_cols, target_col=self.target_col)
+        self.val_dataset = ALSFRSDataset(val_df, feature_cols=self.feature_cols, target_col=self.target_col)
+        self.test_dataset = ALSFRSDataset(test_df, feature_cols=self.feature_cols, target_col=self.target_col)
 
     def train_dataloader(self):
-        return DataLoader(self.train_ds, batch_size=self.batch_size, shuffle=True)
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
 
     def val_dataloader(self):
-        return DataLoader(self.val_ds, batch_size=self.batch_size)
+        return DataLoader(self.val_dataset, batch_size=self.batch_size)
 
     def test_dataloader(self):
-        return DataLoader(self.test_ds, batch_size=self.batch_size)
-
-if __name__ == '__main__':
-    dm = DataModule('', batch_size=16)
-    dm.setup()
-    for batch in dm.train_dataloader():
-        x, y = batch
-        print(x.shape, y.shape)
-        break
+        return DataLoader(self.test_dataset, batch_size=self.batch_size)

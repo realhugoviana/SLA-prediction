@@ -1,9 +1,10 @@
+import torch
 
 DATA_PATH = 'datasets/[0-99]-train.csv'
 INPUT_SIZE = 10
 OUTPUT_SIZE = 1
 BATCH_SIZE = 32
-EPOCHS = 100
+EPOCHS = 1000
 LEARNING_RATE = 1e-3
 
 if torch.backends.mps.is_available():

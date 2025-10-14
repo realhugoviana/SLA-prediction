@@ -1,18 +1,16 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import DataLoader
 import lightning as L
 
 class NN(L.LightningModule):
-    def __init__(self, input_dim, output_dim):
+    def __init__(self, input_dim, output_dim, learning_rate=1e-3):
         super().__init__()
-
+        self.lr = learning_rate
         self.layers = nn.Sequential(
             nn.Linear(input_dim, 64),
-            F.ReLU(),
+            nn.ReLU(),
             nn.Linear(64, 64),
-            F.ReLU()
+            nn.ReLU(),
         )
         self.out = nn.Linear(64, output_dim)
 
@@ -44,5 +42,5 @@ class NN(L.LightningModule):
         return loss, y, y_hat
     
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
         return optimizer
