@@ -1,7 +1,7 @@
 import torch
 
-DATA_PATH = 'datasets/[0-99]-train.csv'
-INPUT_SIZE = 10
+DATA_PATH = 'datasets/formated_1.csv'
+INPUT_SIZE = 11
 OUTPUT_SIZE = 1
 BATCH_SIZE = 32
 EPOCHS = 1000
