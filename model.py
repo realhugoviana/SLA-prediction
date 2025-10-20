@@ -6,14 +6,19 @@ import torchmetrics
 class NN(L.LightningModule):
     def __init__(self, input_dim, output_dim, learning_rate=1e-3):
         super().__init__()
+
+        self.save_hyperparameters()
+
         self.lr = learning_rate
         self.layers = nn.Sequential(
-            nn.Linear(input_dim, 64),
+            nn.Linear(input_dim, 16),
             nn.ReLU(),
-            nn.Linear(64, 64),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
             nn.ReLU(),
         )
-        self.out = nn.Linear(64, output_dim)
+        self.out = nn.Linear(16, output_dim)
 
         self.criterion = nn.MSELoss()
 
