@@ -5,7 +5,7 @@ INPUT_SIZE = 11
 OUTPUT_SIZE = 1
 BATCH_SIZE = 32
 EPOCHS = 100
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-5
 
 if torch.backends.mps.is_available():
     DEVICE = torch.device("mps")

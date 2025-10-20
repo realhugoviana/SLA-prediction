@@ -11,14 +11,12 @@ class NN(L.LightningModule):
 
         self.lr = learning_rate
         self.layers = nn.Sequential(
-            nn.Linear(input_dim, 16),
+            nn.Linear(input_dim, 256),
             nn.ReLU(),
-            nn.Linear(16, 16),
-            nn.ReLU(),
-            nn.Linear(16, 16),
+            nn.Linear(256, 256),
             nn.ReLU(),
         )
-        self.out = nn.Linear(16, output_dim)
+        self.out = nn.Linear(256, output_dim)
 
         self.criterion = nn.MSELoss()
 
