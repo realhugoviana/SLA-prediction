@@ -2,21 +2,32 @@ import torch
 import torch.nn as nn
 import lightning as L
 import torchmetrics
+import optuna
 
 class NN(L.LightningModule):
-    def __init__(self, input_dim, output_dim, learning_rate=1e-3):
+    def __init__(self, input_dim, output_dim, n_layer=2, n_units=16, learning_rate=1e-3):
         super().__init__()
 
         self.save_hyperparameters()
 
         self.lr = learning_rate
-        self.layers = nn.Sequential(
-            nn.Linear(input_dim, 256),
-            nn.ReLU(),
-            nn.Linear(256, 256),
-            nn.ReLU(),
-        )
-        self.out = nn.Linear(256, output_dim)
+        
+        # self.layers = nn.Sequential(
+        #     nn.Linear(input_dim, 256),
+        #     nn.ReLU(),
+        #     nn.Linear(256, 256),
+        #     nn.ReLU(),
+        # )
+
+        self.layers = nn.Sequential()
+        self.layers.add_module('input_layer', nn.Linear(input_dim, n_units))
+        self.layers.add_module('input_activation', nn.ReLU())
+        for i in range(n_layer - 1):
+            self.layers.add_module(f'hidden_layer_{i+1}', nn.Linear(n_units, n_units))
+            self.layers.add_module(f'hidden_activation_{i+1}', nn.ReLU())
+
+        
+        self.out = nn.Linear(n_units, output_dim)
 
         self.criterion = nn.MSELoss()
 
