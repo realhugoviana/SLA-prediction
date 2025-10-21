@@ -1,15 +1,14 @@
 import torch
+import pandas as pd
 
-DATA_PATH = 'datasets/formated_1.csv'
-INPUT_SIZE = 11
+DATA_PATH = 'datasets/formated_2.csv'
+INPUT_SIZE = len(pd.read_csv(DATA_PATH).columns) - 1
 OUTPUT_SIZE = 1
-BATCH_SIZE = 32
 MAX_EPOCHS = 100
-LEARNING_RATE = 1e-5
 
 if torch.backends.mps.is_available():
-    DEVICE = torch.device("mps")
+    ACCELERATOR = "mps"
 elif torch.cuda.is_available():
-    DEVICE = torch.device("cuda")
+    ACCELERATOR = "gpu"
 else:
-    DEVICE = torch.device("cpu")
+    ACCELERATOR = "cpu"

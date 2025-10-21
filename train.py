@@ -6,7 +6,7 @@ import optuna
 
 from model import NN
 from data import DataModule
-from config import INPUT_SIZE, OUTPUT_SIZE, BATCH_SIZE, MAX_EPOCHS, LEARNING_RATE, DATA_PATH, DEVICE
+from config import INPUT_SIZE, OUTPUT_SIZE, MAX_EPOCHS, DATA_PATH, ACCELERATOR
 
 def objective(trial):
     n_layer = trial.suggest_int('n_layer', 1, 5)
@@ -18,11 +18,11 @@ def objective(trial):
     model = NN(INPUT_SIZE, OUTPUT_SIZE, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate)
     dm = DataModule(csv_path=DATA_PATH, batch_size=batch_size)
 
-    logger = TensorBoardLogger("tb_logs", name=f"trial_{trial.number}")
+    logger = TensorBoardLogger("tb_logs/MLP_ALSFRS[100-199]", name=f"trial_{trial.number}")
 
     trainer = L.Trainer(
         max_epochs=MAX_EPOCHS,
-        accelerator=DEVICE.type,
+        accelerator=ACCELERATOR,
         callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
         logger=logger,
         enable_checkpointing=False
