@@ -36,6 +36,7 @@ def objective(trial):
     trainer.fit(model, dm)
     val_result = trainer.validate(model, datamodule=dm)
     val_loss = val_result[0]['val_loss']
+    trainer.test(model, datamodule=dm)
     
     return val_loss
 
