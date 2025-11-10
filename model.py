@@ -5,31 +5,49 @@ import torchmetrics
 import optuna
 
 class NN(L.LightningModule):
-    def __init__(self, input_dim, output_dim, n_layer=2, n_units=16, learning_rate=1e-3):
+    def __init__(self, input_dim, output_dim, n_layer=2, n_units=16, learning_rate=1e-3, decroissant=False, activation='ReLU', optimizer='Adam', criterion='MSE'):
         super().__init__()
 
         self.save_hyperparameters()
 
         self.lr = learning_rate
-        
-        # self.layers = nn.Sequential(
-        #     nn.Linear(input_dim, 256),
-        #     nn.ReLU(),
-        #     nn.Linear(256, 256),
-        #     nn.ReLU(),
-        # )
+
+        self.activation_fn = {
+            'ReLU': nn.ReLU(),
+            'sigmoid': nn.Sigmoid(),
+            'tanh': nn.Tanh()
+        }[activation]
 
         self.layers = nn.Sequential()
         self.layers.add_module('input_layer', nn.Linear(input_dim, n_units))
-        self.layers.add_module('input_activation', nn.ReLU())
-        for i in range(n_layer - 1):
-            self.layers.add_module(f'hidden_layer_{i+1}', nn.Linear(n_units, n_units))
-            self.layers.add_module(f'hidden_activation_{i+1}', nn.ReLU())
+        self.layers.add_module('input_activation', self.activation_fn)
 
-        
-        self.out = nn.Linear(n_units, output_dim)
+        if decroissant:
+            in_units = n_units
+            out_units = in_units // 2
+            for i in range(n_layer - 1):
+                self.layers.add_module(f'hidden_layer_{i+1}', nn.Linear(in_units, out_units))
+                self.layers.add_module(f'hidden_activation_{i+1}', self.activation_fn)
+                in_units = out_units
+                out_units = in_units // 2
+            self.out = nn.Linear(out_units*2, output_dim)
+        else:
+            for i in range(n_layer - 1):
+                self.layers.add_module(f'hidden_layer_{i+1}', nn.Linear(n_units, n_units))
+                self.layers.add_module(f'hidden_activation_{i+1}', self.activation_fn)
+            self.out = nn.Linear(n_units, output_dim)
 
-        self.criterion = nn.MSELoss()
+        self.criterion = {
+            'MSE': nn.MSELoss(),
+            'MAE': nn.L1Loss(),
+            'Huber': nn.SmoothL1Loss()
+        }[criterion]
+
+        self.optimizer = {
+            'Adam': torch.optim.Adam,
+            'RMSprop': torch.optim.RMSprop,
+            'Adagrad': torch.optim.Adagrad
+        }[optimizer]
 
         self.train_mae = torchmetrics.MeanAbsoluteError()
         self.val_mae = torchmetrics.MeanAbsoluteError()
@@ -83,5 +101,5 @@ class NN(L.LightningModule):
         return loss
     
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
+        optimizer =  self.optimizer(self.parameters(), lr=self.lr)
         return optimizer
