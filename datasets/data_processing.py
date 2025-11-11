@@ -8,6 +8,10 @@ df_all = pd.read_csv('datasets/Lucas/PROACT_ALSFRS_INTERVALLES.csv')
 
 df_alsfrs_r = df_all.dropna(subset=['ALS_ALSFRS_R_Total_0_90_Mean'])
 
+for col in df_alsfrs_r.columns:
+    if 'ALS_ALSFRS_Total' in col or 'ALS_Q10' in col:
+        df_alsfrs_r.drop(col, axis=1, inplace=True)
+
 # Retirer les sous-scores
 for col in df_alsfrs_r.columns:
     if 'Bulbar' in col or 'Upper_Limb' in col or 'Lower_Limb' in col or 'Respiratory_Score' in col:

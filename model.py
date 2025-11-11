@@ -83,10 +83,11 @@ class NN(L.LightningModule):
         y = y.view(-1, 1)
         y_hat = self.forward(x)
         loss = self.criterion(y_hat, y)
-        self.log_dict({'val_loss': loss,
-                       'val_mae': self.val_mae(y_hat, y),
-                       'val_rmse': self.val_rmse(y_hat, y),
-                       'val_r2': self.val_r2(y_hat, y)})
+        if len(y) > 1:
+            self.log_dict({'val_loss': loss,
+                        'val_mae': self.val_mae(y_hat, y),
+                        'val_rmse': self.val_rmse(y_hat, y),
+                        'val_r2': self.val_r2(y_hat, y)})
         return loss
     
     def test_step(self, batch, batch_idx):
@@ -94,10 +95,11 @@ class NN(L.LightningModule):
         y = y.view(-1, 1)
         y_hat = self.forward(x)
         loss = self.criterion(y_hat, y)
-        self.log_dict({'test_loss': loss,
-                       'test_mae': self.test_mae(y_hat, y),
-                       'test_rmse': self.test_rmse(y_hat, y),
-                       'test_r2': self.test_r2(y_hat, y)})
+        if len(y) > 1:
+            self.log_dict({'test_loss': loss,
+                        'test_mae': self.test_mae(y_hat, y),
+                        'test_rmse': self.test_rmse(y_hat, y),
+                        'test_r2': self.test_r2(y_hat, y)})
         return loss
     
     def configure_optimizers(self):
