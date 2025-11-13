@@ -1,0 +1,9 @@
+activation: sigmoid
+criterion: MAE
+decroissant: false
+input_dim: 884
+learning_rate: 3.72293534615943e-05
+n_layer: 2
+n_units: 64
+optimizer: Adam
+output_dim: 1

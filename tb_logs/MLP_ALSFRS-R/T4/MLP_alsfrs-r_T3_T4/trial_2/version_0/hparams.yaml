@@ -1,0 +1,9 @@
+activation: tanh
+criterion: MSE
+decroissant: true
+input_dim: 221
+learning_rate: 0.00017298760634929495
+n_layer: 2
+n_units: 1024
+optimizer: RMSprop
+output_dim: 1

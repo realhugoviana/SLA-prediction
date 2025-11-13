@@ -1,0 +1,9 @@
+activation: sigmoid
+criterion: Huber
+decroissant: false
+input_dim: 442
+learning_rate: 0.001415518142612446
+n_layer: 1
+n_units: 128
+optimizer: RMSprop
+output_dim: 1

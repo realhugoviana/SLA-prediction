@@ -1,0 +1,9 @@
+activation: ReLU
+criterion: MAE
+decroissant: false
+input_dim: 442
+learning_rate: 0.0021694577995746566
+n_layer: 4
+n_units: 64
+optimizer: RMSprop
+output_dim: 1

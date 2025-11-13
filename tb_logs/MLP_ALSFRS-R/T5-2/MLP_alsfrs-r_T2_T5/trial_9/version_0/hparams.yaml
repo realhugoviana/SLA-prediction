@@ -1,0 +1,9 @@
+activation: ReLU
+criterion: MSE
+decroissant: true
+input_dim: 221
+learning_rate: 0.00015945061334716868
+n_layer: 2
+n_units: 256
+optimizer: Adagrad
+output_dim: 1

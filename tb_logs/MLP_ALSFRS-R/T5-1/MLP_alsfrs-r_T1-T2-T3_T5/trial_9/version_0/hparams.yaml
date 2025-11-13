@@ -1,0 +1,9 @@
+activation: sigmoid
+criterion: MSE
+decroissant: true
+input_dim: 663
+learning_rate: 1.2672423300550026e-05
+n_layer: 4
+n_units: 512
+optimizer: RMSprop
+output_dim: 1

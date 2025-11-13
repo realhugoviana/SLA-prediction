@@ -1,0 +1,9 @@
+activation: sigmoid
+criterion: Huber
+decroissant: false
+input_dim: 442
+learning_rate: 0.009298125132668332
+n_layer: 2
+n_units: 256
+optimizer: Adagrad
+output_dim: 1

@@ -1,0 +1,9 @@
+activation: tanh
+criterion: Huber
+decroissant: true
+input_dim: 221
+learning_rate: 0.0002772530169422041
+n_layer: 2
+n_units: 256
+optimizer: Adam
+output_dim: 1

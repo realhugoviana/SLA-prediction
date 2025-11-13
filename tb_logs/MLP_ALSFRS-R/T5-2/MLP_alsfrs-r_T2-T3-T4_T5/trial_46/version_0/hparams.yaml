@@ -1,0 +1,9 @@
+activation: ReLU
+criterion: Huber
+decroissant: true
+input_dim: 663
+learning_rate: 4.4121279072892074e-05
+n_layer: 4
+n_units: 256
+optimizer: Adagrad
+output_dim: 1
