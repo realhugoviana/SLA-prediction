@@ -99,16 +99,29 @@ T1-T2_T3/trial_6;4;32;0,0006;sigmoid;MSE;0;RMSprop;0,7273;0,7273;3 696
 T1-T2_T3/trial_7;5;1 024;0;tanh;MAE;1;Adagrad;-15,6582;-15,6582;26 400
 T1-T2_T3/trial_8;1;256;0,0004;ReLU;MSE;0;RMSprop;0,7225;0,7225;2 244
 T1-T2_T3/trial_9;2;128;0,0001;tanh;MSE;1;RMSprop;0,7066;0,7066;9 702
+T1_T3/trial_0;1;256;0,0001;sigmoid;MSE;0;Adagrad;-8,6637;-8,6637;6 800
 T1_T3/trial_1;1;1 024;0;tanh;MSE;0;Adagrad;-5,2275;-5,2275;6 800
+T1_T3/trial_10;2;128;0,0014;ReLU;MAE;1;Adam;0,6663;0,6663;871
+T1_T3/trial_11;2;128;0,0012;ReLU;MAE;1;Adam;0,6496;0,6496;871
 T1_T3/trial_12;2;128;0,0017;ReLU;MAE;1;Adam;0,6577;0,6577;938
 T1_T3/trial_13;2;32;0,001;ReLU;MAE;1;Adam;0,6433;0,6433;1 273
 T1_T3/trial_14;2;512;0,0033;ReLU;Huber;1;Adam;0,6396;0,6396;670
 T1_T3/trial_15;2;512;0,0095;ReLU;Huber;1;Adam;0,6658;0,6658;170
+T1_T3/trial_16;2;512;0,0073;ReLU;Huber;1;Adam;0,6645;0,6645;255
+T1_T3/trial_17;4;512;0,008;sigmoid;Huber;1;Adam;-0,0119;-0,0119;204
+T1_T3/trial_18;2;512;0,0005;ReLU;Huber;0;Adam;0,6549;0,6549;272
+T1_T3/trial_19;3;512;0,0035;ReLU;Huber;1;Adam;0,6536;0,6536;153
 T1_T3/trial_2;1;128;0,0002;ReLU;MAE;1;Adagrad;0,632;0,632;13 400
+T1_T3/trial_20;5;512;0,0039;sigmoid;Huber;1;Adam;-0,0094;-0,0094;561
+T1_T3/trial_21;2;512;0,0006;ReLU;Huber;0;Adam;0,6265;0,6265;187
 T1_T3/trial_22;2;512;0,0099;ReLU;Huber;0;Adam;0,6534;0,6534;255
 T1_T3/trial_23;1;512;0;ReLU;Huber;0;Adam;0,6523;0,6523;2 788
 T1_T3/trial_24;2;32;0,0006;ReLU;Huber;0;Adam;0,6575;0,6575;748
 T1_T3/trial_25;3;32;0,0048;ReLU;Huber;0;Adam;0,6254;0,6254;255
+T1_T3/trial_26;2;32;0,0022;ReLU;Huber;0;Adam;0,6563;0,6563;340
+T1_T3/trial_27;1;32;0,0027;ReLU;Huber;1;Adam;0,6269;0,6269;1 206
+T1_T3/trial_28;1;32;0,0004;ReLU;Huber;0;RMSprop;0,6073;0,6073;1 608
+T1_T3/trial_29;1;32;0,0008;sigmoid;Huber;0;Adam;0,4983;0,4983;6 030
 T1_T3/trial_3;3;1 024;0;ReLU;MSE;1;RMSprop;0,666;0,666;408
 T1_T3/trial_30;1;32;0,0027;sigmoid;Huber;1;Adagrad;-3,2097;-3,2097;26 800
 T1_T3/trial_31;2;32;0,0072;ReLU;Huber;1;Adam;0,6507;0,6507;306
@@ -123,12 +136,19 @@ T1_T3/trial_39;1;64;0,0003;ReLU;Huber;1;Adam;0,6274;0,6274;2 278
 T1_T3/trial_4;4;64;0;tanh;MAE;1;RMSprop;-11,0004;-11,0004;6 800
 T1_T3/trial_40;1;64;0,0004;ReLU;Huber;0;RMSprop;0,5046;0,5046;1 474
 T1_T3/trial_41;1;64;0,0003;ReLU;Huber;1;Adam;0,6185;0,6185;2 412
+T1_T3/trial_42;1;64;0,0003;ReLU;Huber;1;Adam;0,6124;0,6124;2 948
+T1_T3/trial_43;1;64;0,0001;ReLU;Huber;1;Adam;0,6337;0,6337;3 216
+T1_T3/trial_44;1;64;0,0001;tanh;MSE;1;Adam;0,593;0,593;12 328
+T1_T3/trial_45;1;64;0;ReLU;Huber;1;Adagrad;-3,4161;-3,4161;26 800
 T1_T3/trial_46;1;64;0,0001;ReLU;MAE;1;Adam;0,6223;0,6223;3 350
 T1_T3/trial_47;1;256;0,0001;ReLU;Huber;1;Adam;0,6612;0,6612;986
 T1_T3/trial_48;3;256;0,0001;ReLU;Huber;1;Adam;0,6589;0,6589;1 020
 T1_T3/trial_49;1;256;0,0001;sigmoid;MAE;1;RMSprop;0,6153;0,6153;2 550
 T1_T3/trial_5;4;256;0,0001;tanh;MSE;0;Adagrad;-5,9746;-5,9746;26 800
 T1_T3/trial_6;3;64;0,0001;tanh;MAE;1;Adagrad;-13,3605;-13,3605;13 400
+T1_T3/trial_7;1;256;0,0061;ReLU;MSE;0;RMSprop;0,5901;0,5901;510
+T1_T3/trial_8;3;1 024;0,0002;sigmoid;MSE;1;Adam;-0,0826;-0,0826;2 144
+T1_T3/trial_9;5;256;0;tanh;Huber;1;RMSprop;-10,5207;-10,5207;6 800
 T2_T3/trial_0;2;256;0,0002;sigmoid;MSE;0;Adagrad;-5,5142;-5,5142;26 400
 T2_T3/trial_1;2;32;0;ReLU;MAE;0;Adam;0,8177;0,8177;3 630
 T2_T3/trial_10;5;512;0,005;sigmoid;Huber;1;RMSprop;-0,0129;-0,0129;323
@@ -179,56 +199,6 @@ T2_T3/trial_6;3;64;0,0001;tanh;MAE;1;Adagrad;-14,4402;-14,4402;6 600
 T2_T3/trial_7;3;64;0;tanh;Huber;0;Adam;-7,2421;-7,2421;6 600
 T2_T3/trial_8;1;512;0,002;ReLU;Huber;1;RMSprop;0,7288;0,7288;231
 T2_T3/trial_9;2;512;0,0002;sigmoid;Huber;0;Adam;0,8148;0,8148;3 400
-T1-T2-T3_T4/trial_0;3;1 024;0,006;sigmoid;MAE;1;Adagrad;0,8091;0,8091;1 863
-T1-T2-T3_T4/trial_1;1;32;0,0003;tanh;Huber;1;RMSprop;0,7597;0,7597;4 708
-T1-T2-T3_T4/trial_10;5;128;0;ReLU;MAE;0;Adam;0,8775;0,8775;5 778
-T1-T2-T3_T4/trial_11;5;256;0,0001;ReLU;MAE;0;RMSprop;0,8504;0,8504;1 819
-T1-T2-T3_T4/trial_12;4;512;0,0006;ReLU;MAE;0;RMSprop;0,8499;0,8499;3 103
-T1-T2-T3_T4/trial_13;5;256;0;ReLU;MAE;0;RMSprop;0,867;0,867;3 564
-T1-T2-T3_T4/trial_14;4;128;0,0001;ReLU;MAE;1;Adam;0,8587;0,8587;5 136
-T1-T2-T3_T4/trial_15;4;128;0;ReLU;MAE;0;Adam;0,8622;0,8622;3 210
-T1-T2-T3_T4/trial_16;4;128;0;ReLU;MAE;0;Adam;0,8623;0,8623;3 745
-T1-T2-T3_T4/trial_17;2;128;0,0002;ReLU;MAE;1;Adam;0,8598;0,8598;1 819
-T1-T2-T3_T4/trial_18;4;64;0,0015;tanh;MAE;0;Adam;-0,0803;-0,0803;1 177
-T1-T2-T3_T4/trial_19;2;512;0;sigmoid;Huber;1;Adam;0,8045;0,8045;10 272
-T1-T2-T3_T4/trial_2;3;64;0,0001;ReLU;MSE;1;Adam;0,8806;0,8806;2 800
-T1-T2-T3_T4/trial_20;2;512;0,0093;sigmoid;Huber;0;Adam;-0,0583;-0,0583;243
-T1-T2-T3_T4/trial_21;1;512;0,0001;sigmoid;Huber;1;Adam;0,8198;0,8198;7 383
-T1-T2-T3_T4/trial_22;1;512;0;sigmoid;Huber;1;Adam;0,8158;0,8158;8 025
-T1-T2-T3_T4/trial_23;1;512;0;sigmoid;Huber;1;Adam;0,8193;0,8193;15 408
-T1-T2-T3_T4/trial_24;1;512;0;sigmoid;Huber;1;Adam;0,8178;0,8178;18 511
-T1-T2-T3_T4/trial_25;1;512;0;sigmoid;Huber;1;Adagrad;-7,5103;-7,5103;21 400
-T1-T2-T3_T4/trial_26;1;512;0;sigmoid;Huber;1;Adam;0,8135;0,8135;17 227
-T1-T2-T3_T4/trial_27;1;512;0;sigmoid;Huber;1;Adam;0,8142;0,8142;21 400
-T1-T2-T3_T4/trial_28;1;512;0;sigmoid;Huber;1;Adam;-0,5622;-0,5622;2 800
-T1-T2-T3_T4/trial_29;2;512;0;sigmoid;Huber;1;Adagrad;-8,0637;-8,0637;5 400
-T1-T2-T3_T4/trial_3;3;128;0;ReLU;MSE;0;Adam;0,8823;0,8823;2 322
-T1-T2-T3_T4/trial_30;1;512;0,0002;sigmoid;Huber;1;Adam;0,8478;0,8478;2 160
-T1-T2-T3_T4/trial_31;1;512;0,0002;sigmoid;Huber;1;Adam;0,8396;0,8396;2 160
-T1-T2-T3_T4/trial_32;1;512;0;sigmoid;Huber;1;Adam;0,7807;0,7807;5 400
-T1-T2-T3_T4/trial_33;2;32;0,0003;sigmoid;Huber;1;Adam;-0,2324;-0,2324;5 400
-T1-T2-T3_T4/trial_34;1;64;0;sigmoid;Huber;1;Adam;-7,5482;-7,5482;5 400
-T1-T2-T3_T4/trial_35;1;512;0,0037;sigmoid;Huber;1;Adam;-0,096;-0,096;642
-T1-T2-T3_T4/trial_36;2;1 024;0,0001;sigmoid;Huber;1;Adagrad;-5,8563;-5,8563;2 800
-T1-T2-T3_T4/trial_37;1;32;0,0005;tanh;MSE;1;Adam;0,7711;0,7711;4 320
-T1-T2-T3_T4/trial_38;2;512;0,0001;sigmoid;Huber;1;Adam;0,8068;0,8068;4 280
-T1-T2-T3_T4/trial_39;1;512;0,0013;sigmoid;Huber;1;RMSprop;0,7693;0,7693;1 712
-T1-T2-T3_T4/trial_4;3;1 024;0,0005;sigmoid;Huber;1;RMSprop;0,7804;0,7804;1 036
-T1-T2-T3_T4/trial_40;1;64;0;tanh;MSE;1;Adam;-5,0392;-5,0392;2 800
-T1-T2-T3_T4/trial_41;1;512;0;sigmoid;Huber;1;Adam;0,8146;0,8146;21 400
-T1-T2-T3_T4/trial_42;1;512;0;sigmoid;Huber;1;Adam;0,8145;0,8145;18 832
-T1-T2-T3_T4/trial_43;1;512;0;sigmoid;Huber;1;Adam;0,8195;0,8195;16 264
-T1-T2-T3_T4/trial_44;2;1 024;0;sigmoid;Huber;1;Adam;0,8394;0,8394;9 774
-T1-T2-T3_T4/trial_45;1;512;0,0001;sigmoid;Huber;1;Adagrad;-4,5439;-4,5439;21 400
-T1-T2-T3_T4/trial_46;2;512;0;sigmoid;MSE;1;Adam;0,809;0,809;21 400
-T1-T2-T3_T4/trial_47;1;256;0,0001;sigmoid;Huber;1;RMSprop;0,8387;0,8387;5 400
-T1-T2-T3_T4/trial_48;3;32;0,0008;tanh;Huber;1;Adam;0,7488;0,7488;8 100
-T1-T2-T3_T4/trial_49;1;512;0;sigmoid;Huber;1;Adam;0,8189;0,8189;9 523
-T1-T2-T3_T4/trial_5;4;32;0,0012;tanh;Huber;1;Adagrad;-9,1767;-9,1767;10 800
-T1-T2-T3_T4/trial_6;2;256;0,0002;tanh;MSE;1;Adam;0,8105;0,8105;4 644
-T1-T2-T3_T4/trial_7;5;256;0,0001;ReLU;MAE;1;RMSprop;0,863;0,863;2 568
-T1-T2-T3_T4/trial_8;4;128;0,0001;ReLU;MAE;0;Adam;0,8719;0,8719;2 160
-T1-T2-T3_T4/trial_9;3;1 024;0;sigmoid;MSE;0;Adagrad;-6,2205;-6,2205;2 800
 T1-T2_T4/trial_0;2;128;0,0001;tanh;MAE;1;Adagrad;-9,8579;-9,8579;21 800
 T1-T2_T4/trial_1;5;32;0,0044;ReLU;MAE;0;RMSprop;0,6909;0,6909;350
 T1-T2_T4/trial_10;4;512;0,0007;sigmoid;Huber;0;Adagrad;-0,2735;-0,2735;2 800
@@ -279,56 +249,6 @@ T1-T2_T4/trial_6;3;32;0;tanh;MAE;1;Adam;-10,0274;-10,0274;5 600
 T1-T2_T4/trial_7;5;32;0,0001;sigmoid;MAE;0;Adam;-2,0703;-2,0703;5 600
 T1-T2_T4/trial_8;1;1 024;0;tanh;MSE;0;RMSprop;0,6852;0,6852;2 145
 T1-T2_T4/trial_9;4;256;0,0049;ReLU;MAE;1;Adagrad;0,6947;0,6947;1 045
-T1-T3_T4/trial_0;1;1 024;0,0057;ReLU;MAE;0;Adagrad;0,87;0,87;350
-T1-T3_T4/trial_1;5;32;0,0001;sigmoid;MSE;0;Adagrad;-10,2665;-10,2665;2 800
-T1-T3_T4/trial_10;3;512;0,0006;tanh;Huber;1;Adam;-0,0441;-0,0441;784
-T1-T3_T4/trial_11;4;128;0,0011;ReLU;Huber;1;RMSprop;0,861;0,861;1 853
-T1-T3_T4/trial_12;5;128;0,001;ReLU;Huber;1;RMSprop;0,8457;0,8457;2 071
-T1-T3_T4/trial_13;4;64;0,0001;ReLU;Huber;1;RMSprop;0,8693;0,8693;5 886
-T1-T3_T4/trial_14;3;64;0;ReLU;Huber;1;RMSprop;0,8719;0,8719;9 047
-T1-T3_T4/trial_15;2;64;0;tanh;Huber;1;Adam;-7,6059;-7,6059;5 600
-T1-T3_T4/trial_16;3;64;0;ReLU;MSE;1;RMSprop;0,8601;0,8601;3 052
-T1-T3_T4/trial_17;1;512;0,0001;ReLU;Huber;1;Adam;0,8708;0,8708;1 526
-T1-T3_T4/trial_18;2;1 024;0;sigmoid;Huber;1;RMSprop;0,8562;0,8562;6 545
-T1-T3_T4/trial_19;3;64;0,0002;tanh;MSE;1;Adam;0,7547;0,7547;19 620
-T1-T3_T4/trial_2;2;256;0,0057;ReLU;MAE;1;Adagrad;0,8568;0,8568;392
-T1-T3_T4/trial_20;2;64;0,0001;ReLU;Huber;1;RMSprop;0,8523;0,8523;1 232
-T1-T3_T4/trial_21;1;512;0,0002;ReLU;Huber;1;Adam;0,8649;0,8649;1 308
-T1-T3_T4/trial_22;1;512;0,0001;ReLU;Huber;1;Adam;0,8426;0,8426;1 635
-T1-T3_T4/trial_23;1;512;0;ReLU;Huber;1;Adam;0,8715;0,8715;2 725
-T1-T3_T4/trial_24;3;1 024;0;ReLU;Huber;1;Adam;0,8669;0,8669;1 526
-T1-T3_T4/trial_25;2;512;0;ReLU;Huber;1;Adam;0,8624;0,8624;5 123
-T1-T3_T4/trial_26;1;32;0;ReLU;Huber;1;Adam;0,8689;0,8689;5 600
-T1-T3_T4/trial_27;3;1 024;0,0001;ReLU;Huber;1;RMSprop;0,8296;0,8296;770
-T1-T3_T4/trial_28;2;64;0,0003;sigmoid;MAE;1;Adam;0,7826;0,7826;8 829
-T1-T3_T4/trial_29;1;512;0;tanh;MSE;0;RMSprop;0,7377;0,7377;2 800
-T1-T3_T4/trial_3;4;128;0,0021;ReLU;Huber;1;Adagrad;0,8809;0,8809;896
-T1-T3_T4/trial_30;1;1 024;0,0001;ReLU;MAE;1;Adam;0,8698;0,8698;924
-T1-T3_T4/trial_31;3;1 024;0;ReLU;Huber;1;Adam;0,8731;0,8731;1 635
-T1-T3_T4/trial_32;3;1 024;0,0001;ReLU;Huber;1;Adam;0,8655;0,8655;1 635
-T1-T3_T4/trial_33;4;1 024;0;ReLU;Huber;1;Adam;0,8673;0,8673;2 398
-T1-T3_T4/trial_34;5;1 024;0;ReLU;Huber;1;Adagrad;0,7829;0,7829;21 800
-T1-T3_T4/trial_35;4;32;0;ReLU;Huber;0;Adam;0,8684;0,8684;15 042
-T1-T3_T4/trial_36;4;32;0;sigmoid;MSE;0;Adam;-9,5472;-9,5472;2 800
-T1-T3_T4/trial_37;5;32;0;ReLU;Huber;0;Adam;0,8686;0,8686;21 800
-T1-T3_T4/trial_38;4;256;0;ReLU;MAE;0;Adam;0,8727;0,8727;4 578
-T1-T3_T4/trial_39;4;32;0;ReLU;Huber;0;Adam;0,8757;0,8757;2 800
-T1-T3_T4/trial_4;4;256;0,0001;sigmoid;Huber;0;RMSprop;0,7032;0,7032;2 604
-T1-T3_T4/trial_40;5;32;0,0001;sigmoid;Huber;0;Adagrad;-11,6502;-11,6502;21 800
-T1-T3_T4/trial_41;5;32;0;ReLU;Huber;0;Adam;0,869;0,869;19 293
-T1-T3_T4/trial_42;5;32;0;ReLU;Huber;0;Adam;0,8681;0,8681;12 317
-T1-T3_T4/trial_43;4;32;0;ReLU;Huber;0;Adam;0,8594;0,8594;21 800
-T1-T3_T4/trial_44;5;128;0;ReLU;Huber;0;Adam;0,8721;0,8721;7 194
-T1-T3_T4/trial_45;5;128;0;ReLU;Huber;0;Adam;0,8785;0,8785;5 170
-T1-T3_T4/trial_46;5;128;0;tanh;Huber;0;Adam;-0,3068;-0,3068;11 000
-T1-T3_T4/trial_47;5;128;0;ReLU;MAE;0;Adagrad;0,669;0,669;11 000
-T1-T3_T4/trial_48;5;128;0;ReLU;Huber;0;Adam;0,8752;0,8752;5 445
-T1-T3_T4/trial_49;5;128;0,0031;ReLU;MSE;0;Adam;0,8302;0,8302;660
-T1-T3_T4/trial_5;2;1 024;0;ReLU;MSE;0;Adam;0,8842;0,8842;840
-T1-T3_T4/trial_6;1;1 024;0,0003;tanh;MAE;0;Adam;0,8268;0,8268;660
-T1-T3_T4/trial_7;3;256;0,0038;sigmoid;Huber;0;Adagrad;-0,0547;-0,0547;1 540
-T1-T3_T4/trial_8;2;1 024;0,0001;ReLU;Huber;1;Adam;0,8773;0,8773;392
-T1-T3_T4/trial_9;2;32;0,0065;ReLU;MAE;1;Adagrad;0,8693;0,8693;3 052
 T1_T4/trial_0;1;32;0,0004;ReLU;Huber;1;Adam;0,5656;0,5656;378
 T1_T4/trial_1;5;128;0,0047;tanh;MSE;0;Adam;-0,0004;-0,0004;140
 T1_T4/trial_10;3;32;0,0002;ReLU;MAE;0;Adam;0,5664;0,5664;476
@@ -379,6 +299,56 @@ T1_T4/trial_6;2;128;0,0015;sigmoid;Huber;1;Adagrad;-1,5665;-1,5665;22 200
 T1_T4/trial_7;5;256;0;sigmoid;Huber;1;Adam;-4,0139;-4,0139;22 200
 T1_T4/trial_8;5;256;0,0015;ReLU;Huber;1;RMSprop;0,3001;0,3001;280
 T1_T4/trial_9;2;512;0,0016;sigmoid;Huber;1;Adam;-0,023;-0,023;504
+T1-T2-T3_T4/trial_0;3;1 024;0,006;sigmoid;MAE;1;Adagrad;0,8091;0,8091;1 863
+T1-T2-T3_T4/trial_1;1;32;0,0003;tanh;Huber;1;RMSprop;0,7597;0,7597;4 708
+T1-T2-T3_T4/trial_10;5;128;0;ReLU;MAE;0;Adam;0,8775;0,8775;5 778
+T1-T2-T3_T4/trial_11;5;256;0,0001;ReLU;MAE;0;RMSprop;0,8504;0,8504;1 819
+T1-T2-T3_T4/trial_12;4;512;0,0006;ReLU;MAE;0;RMSprop;0,8499;0,8499;3 103
+T1-T2-T3_T4/trial_13;5;256;0;ReLU;MAE;0;RMSprop;0,867;0,867;3 564
+T1-T2-T3_T4/trial_14;4;128;0,0001;ReLU;MAE;1;Adam;0,8587;0,8587;5 136
+T1-T2-T3_T4/trial_15;4;128;0;ReLU;MAE;0;Adam;0,8622;0,8622;3 210
+T1-T2-T3_T4/trial_16;4;128;0;ReLU;MAE;0;Adam;0,8623;0,8623;3 745
+T1-T2-T3_T4/trial_17;2;128;0,0002;ReLU;MAE;1;Adam;0,8598;0,8598;1 819
+T1-T2-T3_T4/trial_18;4;64;0,0015;tanh;MAE;0;Adam;-0,0803;-0,0803;1 177
+T1-T2-T3_T4/trial_19;2;512;0;sigmoid;Huber;1;Adam;0,8045;0,8045;10 272
+T1-T2-T3_T4/trial_2;3;64;0,0001;ReLU;MSE;1;Adam;0,8806;0,8806;2 800
+T1-T2-T3_T4/trial_20;2;512;0,0093;sigmoid;Huber;0;Adam;-0,0583;-0,0583;243
+T1-T2-T3_T4/trial_21;1;512;0,0001;sigmoid;Huber;1;Adam;0,8198;0,8198;7 383
+T1-T2-T3_T4/trial_22;1;512;0;sigmoid;Huber;1;Adam;0,8158;0,8158;8 025
+T1-T2-T3_T4/trial_23;1;512;0;sigmoid;Huber;1;Adam;0,8193;0,8193;15 408
+T1-T2-T3_T4/trial_24;1;512;0;sigmoid;Huber;1;Adam;0,8178;0,8178;18 511
+T1-T2-T3_T4/trial_25;1;512;0;sigmoid;Huber;1;Adagrad;-7,5103;-7,5103;21 400
+T1-T2-T3_T4/trial_26;1;512;0;sigmoid;Huber;1;Adam;0,8135;0,8135;17 227
+T1-T2-T3_T4/trial_27;1;512;0;sigmoid;Huber;1;Adam;0,8142;0,8142;21 400
+T1-T2-T3_T4/trial_28;1;512;0;sigmoid;Huber;1;Adam;-0,5622;-0,5622;2 800
+T1-T2-T3_T4/trial_29;2;512;0;sigmoid;Huber;1;Adagrad;-8,0637;-8,0637;5 400
+T1-T2-T3_T4/trial_3;3;128;0;ReLU;MSE;0;Adam;0,8823;0,8823;2 322
+T1-T2-T3_T4/trial_30;1;512;0,0002;sigmoid;Huber;1;Adam;0,8478;0,8478;2 160
+T1-T2-T3_T4/trial_31;1;512;0,0002;sigmoid;Huber;1;Adam;0,8396;0,8396;2 160
+T1-T2-T3_T4/trial_32;1;512;0;sigmoid;Huber;1;Adam;0,7807;0,7807;5 400
+T1-T2-T3_T4/trial_33;2;32;0,0003;sigmoid;Huber;1;Adam;-0,2324;-0,2324;5 400
+T1-T2-T3_T4/trial_34;1;64;0;sigmoid;Huber;1;Adam;-7,5482;-7,5482;5 400
+T1-T2-T3_T4/trial_35;1;512;0,0037;sigmoid;Huber;1;Adam;-0,096;-0,096;642
+T1-T2-T3_T4/trial_36;2;1 024;0,0001;sigmoid;Huber;1;Adagrad;-5,8563;-5,8563;2 800
+T1-T2-T3_T4/trial_37;1;32;0,0005;tanh;MSE;1;Adam;0,7711;0,7711;4 320
+T1-T2-T3_T4/trial_38;2;512;0,0001;sigmoid;Huber;1;Adam;0,8068;0,8068;4 280
+T1-T2-T3_T4/trial_39;1;512;0,0013;sigmoid;Huber;1;RMSprop;0,7693;0,7693;1 712
+T1-T2-T3_T4/trial_4;3;1 024;0,0005;sigmoid;Huber;1;RMSprop;0,7804;0,7804;1 036
+T1-T2-T3_T4/trial_40;1;64;0;tanh;MSE;1;Adam;-5,0392;-5,0392;2 800
+T1-T2-T3_T4/trial_41;1;512;0;sigmoid;Huber;1;Adam;0,8146;0,8146;21 400
+T1-T2-T3_T4/trial_42;1;512;0;sigmoid;Huber;1;Adam;0,8145;0,8145;18 832
+T1-T2-T3_T4/trial_43;1;512;0;sigmoid;Huber;1;Adam;0,8195;0,8195;16 264
+T1-T2-T3_T4/trial_44;2;1 024;0;sigmoid;Huber;1;Adam;0,8394;0,8394;9 774
+T1-T2-T3_T4/trial_45;1;512;0,0001;sigmoid;Huber;1;Adagrad;-4,5439;-4,5439;21 400
+T1-T2-T3_T4/trial_46;2;512;0;sigmoid;MSE;1;Adam;0,809;0,809;21 400
+T1-T2-T3_T4/trial_47;1;256;0,0001;sigmoid;Huber;1;RMSprop;0,8387;0,8387;5 400
+T1-T2-T3_T4/trial_48;3;32;0,0008;tanh;Huber;1;Adam;0,7488;0,7488;8 100
+T1-T2-T3_T4/trial_49;1;512;0;sigmoid;Huber;1;Adam;0,8189;0,8189;9 523
+T1-T2-T3_T4/trial_5;4;32;0,0012;tanh;Huber;1;Adagrad;-9,1767;-9,1767;10 800
+T1-T2-T3_T4/trial_6;2;256;0,0002;tanh;MSE;1;Adam;0,8105;0,8105;4 644
+T1-T2-T3_T4/trial_7;5;256;0,0001;ReLU;MAE;1;RMSprop;0,863;0,863;2 568
+T1-T2-T3_T4/trial_8;4;128;0,0001;ReLU;MAE;0;Adam;0,8719;0,8719;2 160
+T1-T2-T3_T4/trial_9;3;1 024;0;sigmoid;MSE;0;Adagrad;-6,2205;-6,2205;2 800
 T2-T3_T4/trial_0;2;64;0,0004;sigmoid;Huber;1;Adam;0,7702;0,7702;4 455
 T2-T3_T4/trial_1;5;64;0,0002;sigmoid;Huber;0;Adam;-0,0096;-0,0096;4 914
 T2-T3_T4/trial_10;1;32;0;tanh;MAE;0;RMSprop;-6,6582;-6,6582;10 800
@@ -429,56 +399,56 @@ T2-T3_T4/trial_6;4;512;0,0034;ReLU;MSE;1;Adam;0,8688;0,8688;1 080
 T2-T3_T4/trial_7;4;128;0,0002;ReLU;MSE;1;Adagrad;0,8498;0,8498;21 400
 T2-T3_T4/trial_8;3;256;0,0024;tanh;Huber;0;Adagrad;0,7511;0,7511;1 232
 T2-T3_T4/trial_9;5;128;0,0081;sigmoid;MAE;0;Adagrad;-0,015;-0,015;1 728
-T2_T4/trial_0;4;512;0;tanh;MAE;1;RMSprop;-1,6159;-1,6159;5 600
-T2_T4/trial_1;1;128;0,0005;tanh;MSE;1;RMSprop;0,6367;0,6367;1 106
-T2_T4/trial_10;2;256;0,0001;ReLU;MAE;0;RMSprop;0,6727;0,6727;1 595
-T2_T4/trial_11;3;64;0,0001;ReLU;MAE;0;Adam;0,641;0,641;3 052
-T2_T4/trial_12;3;256;0;ReLU;MAE;0;Adam;0,6451;0,6451;4 687
-T2_T4/trial_13;2;512;0,0002;ReLU;MAE;0;Adam;0,6745;0,6745;2 180
-T2_T4/trial_14;2;64;0,0009;ReLU;MAE;0;RMSprop;0,529;0,529;420
-T2_T4/trial_15;2;32;0,0002;sigmoid;MAE;0;Adam;0,4502;0,4502;11 227
-T2_T4/trial_16;1;128;0,0012;ReLU;MAE;0;RMSprop;0,6207;0,6207;1 308
-T2_T4/trial_17;2;256;0,0003;ReLU;MAE;0;Adam;0,642;0,642;1 090
-T2_T4/trial_18;3;512;0,0001;tanh;Huber;0;RMSprop;0,4411;0,4411;1 064
-T2_T4/trial_19;3;256;0,0002;sigmoid;MSE;0;Adam;-0,0557;-0,0557;1 595
-T2_T4/trial_2;5;1 024;0,0004;ReLU;MSE;1;Adagrad;0,7015;0,7015;4 290
-T2_T4/trial_20;4;512;0,0008;ReLU;MAE;0;RMSprop;0,6681;0,6681;2 289
-T2_T4/trial_21;3;512;0;ReLU;MAE;1;Adam;0,6667;0,6667;3 379
-T2_T4/trial_22;3;512;0,0001;ReLU;MAE;1;Adam;0,6767;0,6767;2 725
-T2_T4/trial_23;3;512;0,0001;ReLU;MAE;1;Adam;0,6689;0,6689;2 071
-T2_T4/trial_24;4;512;0,0001;ReLU;MAE;1;Adam;0,6243;0,6243;2 725
-T2_T4/trial_25;3;128;0;ReLU;MAE;1;Adam;0,6727;0,6727;5 123
-T2_T4/trial_26;3;64;0;ReLU;MAE;1;RMSprop;0,639;0,639;8 175
-T2_T4/trial_27;4;32;0;ReLU;MAE;1;Adam;-12,7645;-12,7645;11 000
-T2_T4/trial_28;3;256;0,0001;tanh;Huber;1;Adam;0,5916;0,5916;5 600
-T2_T4/trial_29;5;512;0;sigmoid;MSE;1;RMSprop;-7,4657;-7,4657;5 600
-T2_T4/trial_3;3;256;0,0001;ReLU;MAE;0;RMSprop;0,6722;0,6722;3 270
-T2_T4/trial_30;4;512;0;tanh;MAE;1;RMSprop;-0,1124;-0,1124;12 753
-T2_T4/trial_31;2;512;0,0001;ReLU;MAE;0;Adam;0,6769;0,6769;1 308
-T2_T4/trial_32;2;512;0,0091;ReLU;MAE;0;Adam;0,6181;0,6181;1 090
-T2_T4/trial_33;1;512;0,0001;ReLU;MAE;1;Adam;0,6405;0,6405;2 071
-T2_T4/trial_34;3;128;0,0004;ReLU;MSE;0;Adam;0,718;0,718;518
-T2_T4/trial_35;2;1 024;0,0003;tanh;MAE;1;Adagrad;0,571;0,571;21 800
-T2_T4/trial_36;3;512;0,0006;ReLU;Huber;1;Adam;0,6326;0,6326;1 417
-T2_T4/trial_37;3;256;0,0007;ReLU;Huber;1;Adagrad;0,6819;0,6819;2 420
-T2_T4/trial_38;4;256;0,0007;sigmoid;Huber;1;Adagrad;-9,9922;-9,9922;11 000
-T2_T4/trial_39;3;256;0,0023;ReLU;Huber;1;Adagrad;0,686;0,686;1 430
-T2_T4/trial_4;4;256;0;tanh;Huber;0;Adagrad;-9,9103;-9,9103;2 800
-T2_T4/trial_40;4;256;0,0019;ReLU;Huber;1;Adagrad;0,6867;0,6867;1 870
-T2_T4/trial_41;5;256;0,0014;ReLU;Huber;1;Adagrad;0,6746;0,6746;1 925
-T2_T4/trial_42;5;256;0,0022;ReLU;Huber;1;Adagrad;0,6905;0,6905;1 430
-T2_T4/trial_43;5;256;0,0022;ReLU;Huber;1;Adagrad;0,678;0,678;1 375
-T2_T4/trial_44;5;256;0,0025;ReLU;Huber;1;Adagrad;0,6735;0,6735;990
-T2_T4/trial_45;5;256;0,0039;ReLU;Huber;1;Adagrad;0,6692;0,6692;1 485
-T2_T4/trial_46;5;256;0,0017;ReLU;Huber;1;Adagrad;0,7004;0,7004;1 650
-T2_T4/trial_47;5;256;0,0048;ReLU;Huber;1;Adagrad;0,7019;0,7019;1 320
-T2_T4/trial_48;4;256;0,003;tanh;Huber;1;Adagrad;-0,8358;-0,8358;11 000
-T2_T4/trial_49;5;256;0,0016;ReLU;Huber;1;Adagrad;0,6812;0,6812;1 870
-T2_T4/trial_5;4;1 024;0,0043;sigmoid;Huber;1;Adagrad;-0,1124;-0,1124;3 488
-T2_T4/trial_6;1;1 024;0;sigmoid;Huber;0;Adagrad;-10,0768;-10,0768;2 800
-T2_T4/trial_7;3;512;0;ReLU;MAE;1;Adam;0,6773;0,6773;4 905
-T2_T4/trial_8;5;512;0,0022;ReLU;MSE;1;Adam;0,6483;0,6483;1 090
-T2_T4/trial_9;2;32;0,0001;ReLU;MAE;1;Adagrad;-4,6119;-4,6119;2 800
+T1_T5/trial_0;2;32;0;sigmoid;MSE;0;Adagrad;-7,3;-7,3;2 200
+T1_T5/trial_1;1;256;0,0001;tanh;MAE;1;Adagrad;-4,0214;-4,0214;4 200
+T1_T5/trial_10;1;512;0;sigmoid;Huber;1;RMSprop;0,2825;0,2825;11 152
+T1_T5/trial_11;1;512;0;sigmoid;Huber;1;RMSprop;0,2838;0,2838;10 660
+T1_T5/trial_12;2;512;0;sigmoid;Huber;1;RMSprop;0,2534;0,2534;16 400
+T1_T5/trial_13;1;64;0,0003;sigmoid;Huber;1;RMSprop;0,1599;0,1599;4 264
+T1_T5/trial_14;2;512;0,001;sigmoid;Huber;0;RMSprop;0,2825;0,2825;209
+T1_T5/trial_15;1;128;0,0001;sigmoid;Huber;1;RMSprop;0,3049;0,3049;9 102
+T1_T5/trial_16;2;128;0,0001;sigmoid;Huber;0;RMSprop;0,0702;0,0702;2 200
+T1_T5/trial_17;1;128;0,0004;ReLU;Huber;1;Adam;0,412;0,412;1 025
+T1_T5/trial_18;2;128;0,0004;ReLU;Huber;1;Adam;0,373;0,373;451
+T1_T5/trial_19;2;128;0,003;ReLU;Huber;1;Adam;0,3825;0,3825;410
+T1_T5/trial_2;1;512;0,0001;sigmoid;Huber;0;RMSprop;0,4034;0,4034;1 331
+T1_T5/trial_20;3;128;0,0025;ReLU;Huber;1;Adam;0,4429;0,4429;533
+T1_T5/trial_21;3;128;0,0031;ReLU;Huber;1;Adam;0,4067;0,4067;697
+T1_T5/trial_22;4;128;0,0027;ReLU;Huber;1;Adam;0,3911;0,3911;820
+T1_T5/trial_23;3;128;0,0026;ReLU;Huber;1;Adam;0,3545;0,3545;328
+T1_T5/trial_24;4;128;0,0017;ReLU;Huber;1;Adam;0,4451;0,4451;1 230
+T1_T5/trial_25;4;64;0,0005;ReLU;Huber;1;Adam;0,3694;0,3694;656
+T1_T5/trial_26;4;128;0,0016;ReLU;Huber;1;Adam;0,332;0,332;574
+T1_T5/trial_27;4;128;0,0016;ReLU;Huber;1;Adam;0,3332;0,3332;984
+T1_T5/trial_28;5;128;0,0049;ReLU;MSE;1;Adam;0,4293;0,4293;533
+T1_T5/trial_29;3;128;0,0006;ReLU;MAE;1;Adam;0,4179;0,4179;779
+T1_T5/trial_3;3;256;0,0009;ReLU;MSE;0;RMSprop;0,4383;0,4383;143
+T1_T5/trial_30;4;1 024;0,0015;ReLU;MSE;1;Adam;0,4388;0,4388;287
+T1_T5/trial_31;3;128;0,005;ReLU;Huber;1;Adam;0,3019;0,3019;410
+T1_T5/trial_32;3;128;0,004;ReLU;Huber;1;Adam;0,4201;0,4201;287
+T1_T5/trial_33;3;128;0,002;ReLU;Huber;1;Adam;0,4212;0,4212;525
+T1_T5/trial_34;2;64;0,0002;ReLU;Huber;1;Adam;0,4089;0,4089;656
+T1_T5/trial_35;3;32;0,0097;ReLU;Huber;1;Adam;0,2036;0,2036;246
+T1_T5/trial_36;4;128;0,0006;ReLU;MAE;1;Adagrad;0,3976;0,3976;2 911
+T1_T5/trial_37;3;256;0,0012;ReLU;Huber;1;Adam;0,441;0,441;328
+T1_T5/trial_38;5;128;0,0002;tanh;MSE;1;Adam;-3,8004;-3,8004;4 200
+T1_T5/trial_39;4;1 024;0,0066;ReLU;MAE;0;Adam;0,4129;0,4129;738
+T1_T5/trial_4;3;256;0,0002;tanh;MAE;0;RMSprop;0,2726;0,2726;1 476
+T1_T5/trial_40;3;256;0,0034;tanh;Huber;1;Adagrad;-0,3185;-0,3185;2 200
+T1_T5/trial_41;2;64;0,0002;ReLU;Huber;1;Adam;0,4062;0,4062;615
+T1_T5/trial_42;1;64;0,0001;ReLU;Huber;1;Adam;0,4013;0,4013;1 476
+T1_T5/trial_43;1;64;0;ReLU;Huber;1;Adam;0,3991;0,3991;2 214
+T1_T5/trial_44;1;64;0;ReLU;Huber;1;Adam;0,3974;0,3974;2 747
+T1_T5/trial_45;1;64;0;ReLU;Huber;1;Adam;0,4257;0,4257;2 436
+T1_T5/trial_46;1;64;0;tanh;MSE;0;Adagrad;-6,8767;-6,8767;4 200
+T1_T5/trial_47;1;64;0;ReLU;Huber;1;Adam;0,4203;0,4203;3 864
+T1_T5/trial_48;1;32;0;ReLU;MAE;1;Adam;0,4169;0,4169;3 612
+T1_T5/trial_49;1;64;0;ReLU;Huber;0;Adam;0,4163;0,4163;4 179
+T1_T5/trial_5;4;1 024;0,0001;ReLU;MSE;1;Adam;0,4354;0,4354;1 312
+T1_T5/trial_6;4;256;0,0065;tanh;MAE;0;Adagrad;-0,0458;-0,0458;273
+T1_T5/trial_7;5;32;0,0088;tanh;MSE;0;Adam;-0,0266;-0,0266;273
+T1_T5/trial_8;5;32;0,0009;tanh;MAE;1;Adagrad;-7,141;-7,141;2 200
+T1_T5/trial_9;5;1 024;0;sigmoid;Huber;0;Adagrad;-3,1632;-3,1632;16 400
 T3_T4/trial_0;1;1 024;0,0006;ReLU;MSE;1;Adam;0,8831;0,8831;224
 T3_T4/trial_1;5;64;0,0049;sigmoid;MAE;0;RMSprop;-0,0245;-0,0245;140
 T3_T4/trial_10;2;256;0,0006;ReLU;Huber;0;Adagrad;0,8659;0,8659;1 853
@@ -529,250 +499,56 @@ T3_T4/trial_6;1;256;0,0015;ReLU;Huber;1;RMSprop;0,8458;0,8458;364
 T3_T4/trial_7;5;512;0,0001;sigmoid;Huber;0;Adam;-0,0878;-0,0878;1 853
 T3_T4/trial_8;1;1 024;0,003;tanh;Huber;1;Adam;0,6589;0,6589;420
 T3_T4/trial_9;3;32;0,0029;ReLU;MAE;0;Adam;0,8247;0,8247;330
-T1-T2-T3_T5/trial_0;4;256;0,0005;ReLU;MAE;1;RMSprop;0,6311;0,6311;320
-T1-T2-T3_T5/trial_1;3;256;0;sigmoid;MSE;0;RMSprop;-1,9974;-1,9974;4 000
-T1-T2-T3_T5/trial_10;5;1 024;0,0002;ReLU;Huber;1;Adagrad;0,6785;0,6785;880
-T1-T2-T3_T5/trial_11;5;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7598;0,7598;4 000
-T1-T2-T3_T5/trial_12;5;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7306;0,7306;4 960
-T1-T2-T3_T5/trial_13;4;1 024;0,0006;ReLU;Huber;1;Adagrad;0,7429;0,7429;480
-T1-T2-T3_T5/trial_14;5;512;0,0001;ReLU;Huber;1;Adam;0,7147;0,7147;1 480
-T1-T2-T3_T5/trial_15;4;32;0,0075;ReLU;Huber;1;Adagrad;0,743;0,743;4 266
-T1-T2-T3_T5/trial_16;4;32;0,0089;ReLU;Huber;1;Adam;0,6558;0,6558;553
-T1-T2-T3_T5/trial_17;4;32;0,0094;ReLU;MAE;1;Adagrad;0,7465;0,7465;11 376
-T1-T2-T3_T5/trial_18;2;32;0,0009;ReLU;Huber;1;Adam;0,643;0,643;1 501
-T1-T2-T3_T5/trial_19;4;512;0,0031;tanh;Huber;1;Adam;-0,1506;-0,1506;1 185
-T1-T2-T3_T5/trial_2;3;128;0;ReLU;MSE;1;Adam;0,7875;0,7875;2 000
-T1-T2-T3_T5/trial_20;2;512;0,0012;ReLU;MAE;1;Adagrad;0,7882;0,7882;280
-T1-T2-T3_T5/trial_21;5;1 024;0,0001;ReLU;Huber;1;Adagrad;0,732;0,732;6 840
-T1-T2-T3_T5/trial_22;5;1 024;0,0002;ReLU;Huber;1;Adagrad;0,7279;0,7279;1 520
-T1-T2-T3_T5/trial_23;5;32;0,0001;ReLU;Huber;1;Adagrad;-2,1637;-2,1637;15 800
-T1-T2-T3_T5/trial_24;4;256;0,0003;ReLU;Huber;1;Adagrad;0,7043;0,7043;2 844
-T1-T2-T3_T5/trial_25;5;128;0;ReLU;Huber;1;Adagrad;-8,5366;-8,5366;8 000
-T1-T2-T3_T5/trial_26;4;64;0,0045;ReLU;Huber;0;Adam;0,735;0,735;320
-T1-T2-T3_T5/trial_27;3;64;0,0045;ReLU;Huber;0;Adam;0,7033;0,7033;360
-T1-T2-T3_T5/trial_28;4;64;0,0044;tanh;Huber;0;Adam;-0,0221;-0,0221;240
-T1-T2-T3_T5/trial_29;4;64;0,0013;sigmoid;MAE;0;Adam;0,6487;0,6487;1 160
-T1-T2-T3_T5/trial_3;5;512;0,0001;ReLU;Huber;1;Adam;0,7567;0,7567;2 370
-T1-T2-T3_T5/trial_30;4;256;0,0059;ReLU;MAE;0;Adam;0,5403;0,5403;260
-T1-T2-T3_T5/trial_31;5;32;0,0003;ReLU;Huber;1;Adagrad;-1,447;-1,447;4 000
-T1-T2-T3_T5/trial_32;5;512;0,0005;ReLU;Huber;0;RMSprop;0,5753;0,5753;160
-T1-T2-T3_T5/trial_33;3;64;0,0065;ReLU;Huber;1;Adam;0,7052;0,7052;300
-T1-T2-T3_T5/trial_34;3;1 024;0;ReLU;MSE;0;Adam;0,7472;0,7472;1 343
-T1-T2-T3_T5/trial_35;5;128;0;ReLU;Huber;1;RMSprop;0,7726;0,7726;1 810
-T1-T2-T3_T5/trial_36;3;128;0,0001;sigmoid;MSE;0;RMSprop;-2,9637;-2,9637;2 000
-T1-T2-T3_T5/trial_37;4;128;0;ReLU;Huber;0;RMSprop;0,7253;0,7253;930
-T1-T2-T3_T5/trial_38;4;128;0,0018;tanh;Huber;1;RMSprop;-0,0043;-0,0043;1 190
-T1-T2-T3_T5/trial_39;3;128;0;sigmoid;MSE;0;RMSprop;-3,7414;-3,7414;2 000
-T1-T2-T3_T5/trial_4;2;128;0;tanh;MSE;0;RMSprop;0,3259;0,3259;15 800
-T1-T2-T3_T5/trial_40;2;256;0;ReLU;Huber;1;RMSprop;0,7593;0,7593;4 108
-T1-T2-T3_T5/trial_41;2;256;0;ReLU;Huber;1;RMSprop;0,7504;0,7504;5 056
-T1-T2-T3_T5/trial_42;1;256;0;ReLU;Huber;1;RMSprop;0,7381;0,7381;6 715
-T1-T2-T3_T5/trial_43;1;256;0;ReLU;Huber;1;RMSprop;0,7336;0,7336;5 846
-T1-T2-T3_T5/trial_44;1;256;0;ReLU;Huber;1;RMSprop;0,7557;0,7557;5 530
-T1-T2-T3_T5/trial_45;1;256;0;ReLU;Huber;1;RMSprop;0,753;0,753;6 162
-T1-T2-T3_T5/trial_46;1;256;0;tanh;Huber;1;RMSprop;0,699;0,699;6 478
-T1-T2-T3_T5/trial_47;1;256;0;sigmoid;MSE;1;RMSprop;0,5672;0,5672;15 800
-T1-T2-T3_T5/trial_48;1;256;0;ReLU;MAE;1;RMSprop;0,7612;0,7612;3 950
-T1-T2-T3_T5/trial_49;1;256;0,0001;ReLU;Huber;1;RMSprop;0,7469;0,7469;1 817
-T1-T2-T3_T5/trial_5;1;512;0,0021;sigmoid;MSE;0;RMSprop;0,6851;0,6851;1 000
-T1-T2-T3_T5/trial_6;3;64;0,0002;sigmoid;MAE;0;Adam;0,6578;0,6578;8 690
-T1-T2-T3_T5/trial_7;1;64;0;tanh;Huber;1;Adagrad;-8,6116;-8,6116;15 800
-T1-T2-T3_T5/trial_8;5;32;0,0025;tanh;Huber;0;Adam;-0,0212;-0,0212;900
-T1-T2-T3_T5/trial_9;4;512;0;sigmoid;MSE;1;RMSprop;-3,8534;-3,8534;15 800
-T1-T2-T4_T5/trial_30;1;128;0;sigmoid;Huber;0;Adam;-5,2479;-5,2479;4 000
-T1-T2-T4_T5/trial_31;1;1 024;0,0008;ReLU;Huber;0;Adam;0,8707;0,8707;380
-T1-T2-T4_T5/trial_36;3;64;0,0011;sigmoid;Huber;0;Adagrad;-3,9741;-3,9741;4 000
-T1-T2-T4_T5/trial_37;1;128;0,0002;ReLU;Huber;1;Adam;0,8703;0,8703;1 989
-T1-T2-T4_T5/trial_38;4;128;0,0002;sigmoid;MSE;1;Adagrad;-7,4011;-7,4011;7 800
-T1-T2-T4_T5/trial_39;2;128;0,0001;tanh;MAE;1;RMSprop;0,6773;0,6773;4 719
-T1-T2_T5/trial_0;4;1 024;0,0001;tanh;MAE;0;Adagrad;-0,3848;-0,3848;2 000
-T1-T2_T5/trial_1;5;128;0,0003;ReLU;MSE;0;RMSprop;0,574;0,574;360
-T1-T2_T5/trial_10;2;64;0,0084;sigmoid;Huber;1;RMSprop;-0,034;-0,034;280
-T1-T2_T5/trial_11;2;128;0,0068;sigmoid;MAE;0;Adagrad;0,5081;0,5081;2 480
-T1-T2_T5/trial_12;2;128;0,0083;sigmoid;Huber;0;Adagrad;0,5327;0,5327;1 920
-T1-T2_T5/trial_13;2;128;0,0037;sigmoid;Huber;0;Adagrad;0,5367;0,5367;6 640
-T1-T2_T5/trial_14;2;128;0,0045;sigmoid;Huber;0;Adagrad;0,5433;0,5433;4 720
-T1-T2_T5/trial_15;2;256;0,0093;sigmoid;Huber;0;Adagrad;0,4633;0,4633;1 440
-T1-T2_T5/trial_16;3;64;0,0034;ReLU;Huber;0;Adagrad;0,6369;0,6369;3 680
-T1-T2_T5/trial_17;4;64;0,0032;ReLU;Huber;0;Adagrad;0,6414;0,6414;2 240
-T1-T2_T5/trial_18;4;64;0,0007;ReLU;Huber;1;Adagrad;0,6287;0,6287;16 000
-T1-T2_T5/trial_19;3;64;0,0029;ReLU;Huber;0;Adagrad;0,637;0,637;2 800
-T1-T2_T5/trial_2;1;512;0,0015;tanh;MSE;0;RMSprop;0,4181;0,4181;1 440
-T1-T2_T5/trial_20;4;64;0,0002;ReLU;Huber;0;Adagrad;0,51;0,51;4 000
-T1-T2_T5/trial_21;3;64;0,0034;ReLU;Huber;0;Adagrad;0,6428;0,6428;2 000
-T1-T2_T5/trial_22;3;64;0,0027;ReLU;Huber;0;Adagrad;0,64;0,64;1 600
-T1-T2_T5/trial_23;3;64;0,0011;ReLU;Huber;0;Adagrad;0,6394;0,6394;6 320
-T1-T2_T5/trial_24;4;64;0,0006;ReLU;Huber;0;Adagrad;0,6354;0,6354;9 680
-T1-T2_T5/trial_25;3;32;0,0023;ReLU;Huber;0;Adagrad;0,6408;0,6408;2 480
-T1-T2_T5/trial_26;4;64;0,0049;ReLU;Huber;1;Adagrad;0,6314;0,6314;4 800
-T1-T2_T5/trial_27;4;64;0,006;ReLU;Huber;1;Adagrad;0,6363;0,6363;3 520
-T1-T2_T5/trial_28;5;64;0,0055;ReLU;MSE;1;Adam;0,6639;0,6639;580
-T1-T2_T5/trial_29;4;64;0,0001;ReLU;MAE;1;Adagrad;-6,092;-6,092;2 000
-T1-T2_T5/trial_3;5;512;0,0003;tanh;MAE;0;Adagrad;0,543;0,543;8 000
-T1-T2_T5/trial_30;4;1 024;0;ReLU;MAE;1;Adagrad;0,6234;0,6234;16 000
-T1-T2_T5/trial_31;4;64;0,005;ReLU;Huber;1;Adagrad;0,6395;0,6395;3 520
-T1-T2_T5/trial_32;5;64;0,0024;ReLU;Huber;1;Adagrad;0,6344;0,6344;7 280
-T1-T2_T5/trial_33;4;64;0,0012;ReLU;Huber;1;Adagrad;0,6322;0,6322;7 040
-T1-T2_T5/trial_34;5;32;0,0058;ReLU;MSE;1;Adagrad;-8,1768;-8,1768;8 000
-T1-T2_T5/trial_35;4;256;0,01;tanh;Huber;1;RMSprop;-0,1181;-0,1181;480
-T1-T2_T5/trial_36;4;1 024;0,0018;ReLU;Huber;1;Adagrad;0,6353;0,6353;1 760
-T1-T2_T5/trial_37;3;512;0,0032;ReLU;Huber;1;Adagrad;0,6068;0,6068;1 840
-T1-T2_T5/trial_38;3;512;0,0011;ReLU;MSE;1;Adam;0,6016;0,6016;640
-T1-T2_T5/trial_39;3;512;0,0046;tanh;MAE;1;RMSprop;-0,0207;-0,0207;170
-T1-T2_T5/trial_4;5;1 024;0;sigmoid;Huber;1;Adam;-5,5895;-5,5895;8 000
-T1-T2_T5/trial_40;3;512;0,0005;ReLU;Huber;1;Adam;0,6764;0,6764;380
-T1-T2_T5/trial_41;4;512;0,003;ReLU;Huber;1;Adagrad;0,5941;0,5941;1 440
-T1-T2_T5/trial_42;5;64;0,0019;ReLU;Huber;1;Adagrad;0,6316;0,6316;6 080
-T1-T2_T5/trial_43;3;512;0,0066;ReLU;Huber;1;Adagrad;0,6346;0,6346;1 360
-T1-T2_T5/trial_44;4;64;0,0042;ReLU;Huber;1;Adagrad;0,662;0,662;1 240
-T1-T2_T5/trial_45;5;1 024;0,0015;tanh;Huber;0;RMSprop;-0,0809;-0,0809;560
-T1-T2_T5/trial_46;3;32;0,0004;ReLU;MSE;0;Adagrad;0,616;0,616;16 000
-T1-T2_T5/trial_47;4;256;0,007;ReLU;Huber;1;Adagrad;0,639;0,639;310
-T1-T2_T5/trial_48;3;64;0;ReLU;MAE;0;Adagrad;-8,1847;-8,1847;16 000
-T1-T2_T5/trial_49;2;512;0,0002;ReLU;Huber;1;Adam;0,6328;0,6328;1 680
-T1-T2_T5/trial_5;1;128;0,0003;ReLU;MSE;1;Adam;0,6526;0,6526;960
-T1-T2_T5/trial_6;4;512;0,0019;sigmoid;Huber;0;RMSprop;-0,0267;-0,0267;90
-T1-T2_T5/trial_7;3;32;0,0008;tanh;MAE;0;Adam;0,5314;0,5314;1 710
-T1-T2_T5/trial_8;3;256;0;tanh;MSE;1;Adam;-1,4673;-1,4673;8 000
-T1-T2_T5/trial_9;1;128;0,0014;sigmoid;Huber;0;RMSprop;0,5492;0,5492;750
-T1-T3_T5/trial_0;4;256;0,003;ReLU;MSE;0;Adam;0,7636;0,7636;310
-T1-T3_T5/trial_1;2;64;0,0001;ReLU;Huber;0;Adagrad;-0,3736;-0,3736;8 000
-T1-T3_T5/trial_10;3;512;0,0006;tanh;Huber;1;Adagrad;-0,1941;-0,1941;16 000
-T1-T3_T5/trial_11;4;128;0,0012;sigmoid;MAE;1;RMSprop;-0,1474;-0,1474;1 920
-T1-T3_T5/trial_12;5;1 024;0,0017;tanh;Huber;0;RMSprop;-0,1475;-0,1475;640
-T1-T3_T5/trial_13;4;64;0,0085;tanh;MAE;1;RMSprop;-0,0073;-0,0073;430
-T1-T3_T5/trial_14;3;512;0,0001;sigmoid;Huber;0;Adagrad;-3,424;-3,424;4 000
-T1-T3_T5/trial_15;2;128;0,0015;ReLU;MAE;1;Adagrad;0,6588;0,6588;4 160
-T1-T3_T5/trial_16;2;128;0,0007;tanh;MAE;1;Adagrad;-2,2406;-2,2406;16 000
-T1-T3_T5/trial_17;1;128;0,0098;tanh;Huber;1;Adagrad;0,6157;0,6157;1 840
-T1-T3_T5/trial_18;2;32;0,0002;ReLU;Huber;1;Adagrad;0,3929;0,3929;16 000
-T1-T3_T5/trial_19;3;1 024;0,001;sigmoid;MAE;1;Adagrad;-0,1455;-0,1455;16 000
-T1-T3_T5/trial_2;3;64;0,0043;sigmoid;MSE;1;RMSprop;-0,0122;-0,0122;660
-T1-T3_T5/trial_20;1;128;0,0004;tanh;Huber;1;Adagrad;-1,7102;-1,7102;16 000
-T1-T3_T5/trial_21;1;128;0,0031;tanh;Huber;1;Adagrad;0,6577;0,6577;6 400
-T1-T3_T5/trial_22;1;128;0,0032;tanh;Huber;1;Adagrad;0,6421;0,6421;5 120
-T1-T3_T5/trial_23;1;128;0,0037;tanh;Huber;1;Adagrad;0,626;0,626;4 640
-T1-T3_T5/trial_24;1;128;0,0026;tanh;Huber;1;Adagrad;0,4979;0,4979;2 000
-T1-T3_T5/trial_25;1;1 024;0,0056;tanh;Huber;1;Adam;-0,1471;-0,1471;1 520
-T1-T3_T5/trial_26;2;128;0,0094;tanh;Huber;1;Adagrad;0,6235;0,6235;2 240
-T1-T3_T5/trial_27;1;32;0,0028;tanh;Huber;1;Adagrad;-0,2467;-0,2467;16 000
-T1-T3_T5/trial_28;2;512;0,0006;tanh;Huber;1;Adagrad;0,6216;0,6216;16 000
-T1-T3_T5/trial_29;1;256;0,0036;tanh;MSE;1;Adam;-0,004;-0,004;120
-T1-T3_T5/trial_3;1;1 024;0,0068;ReLU;MSE;0;Adam;0,7148;0,7148;240
-T1-T3_T5/trial_30;1;1 024;0,0024;tanh;Huber;1;Adagrad;0,7471;0,7471;270
-T1-T3_T5/trial_31;1;1 024;0,002;tanh;Huber;1;Adagrad;0,6746;0,6746;280
-T1-T3_T5/trial_32;2;1 024;0,0057;tanh;Huber;1;Adagrad;0,6832;0,6832;300
-T1-T3_T5/trial_33;1;1 024;0,0035;tanh;Huber;1;Adagrad;0,7415;0,7415;450
-T1-T3_T5/trial_34;2;1 024;0,0064;sigmoid;Huber;1;Adagrad;0,6445;0,6445;370
-T1-T3_T5/trial_35;1;1 024;0,0043;tanh;MSE;1;Adam;0,6396;0,6396;690
-T1-T3_T5/trial_36;1;1 024;0,0011;tanh;Huber;1;Adagrad;0,7075;0,7075;630
-T1-T3_T5/trial_37;2;1 024;0,0011;tanh;MSE;0;Adagrad;0,7143;0,7143;800
-T1-T3_T5/trial_38;1;1 024;0,0009;tanh;Huber;1;Adam;0,7171;0,7171;360
-T1-T3_T5/trial_39;1;1 024;0,0005;sigmoid;Huber;1;Adam;0,7033;0,7033;490
-T1-T3_T5/trial_4;1;256;0,0049;ReLU;MSE;0;RMSprop;0,7303;0,7303;560
-T1-T3_T5/trial_40;1;1 024;0,0002;sigmoid;MSE;0;Adam;0,7308;0,7308;940
-T1-T3_T5/trial_41;1;1 024;0,0004;sigmoid;Huber;1;Adam;0,7151;0,7151;420
-T1-T3_T5/trial_42;1;1 024;0,0004;sigmoid;Huber;1;Adam;0,7332;0,7332;510
-T1-T3_T5/trial_43;1;1 024;0,0002;sigmoid;Huber;1;Adam;0,7263;0,7263;890
-T1-T3_T5/trial_44;1;1 024;0,0001;sigmoid;Huber;1;Adam;0,7119;0,7119;1 720
-T1-T3_T5/trial_45;1;256;0,0002;sigmoid;Huber;1;Adam;0,701;0,701;1 550
-T1-T3_T5/trial_46;5;64;0,0001;sigmoid;Huber;1;Adam;-7,3914;-7,3914;2 000
-T1-T3_T5/trial_47;2;1 024;0,0004;sigmoid;Huber;0;Adam;-0,0153;-0,0153;160
-T1-T3_T5/trial_48;1;1 024;0;sigmoid;Huber;1;Adam;0,7372;0,7372;4 040
-T1-T3_T5/trial_49;1;1 024;0;sigmoid;Huber;1;Adam;0,7347;0,7347;5 320
-T1-T3_T5/trial_5;5;256;0;tanh;MAE;1;Adam;-6,7446;-6,7446;8 000
-T1-T3_T5/trial_6;2;1 024;0,0091;tanh;Huber;1;Adagrad;0,6548;0,6548;1 840
-T1-T3_T5/trial_7;2;1 024;0,0003;tanh;MAE;1;Adagrad;0,6633;0,6633;8 000
-T1-T3_T5/trial_8;4;64;0,0022;ReLU;MAE;0;RMSprop;0,7035;0,7035;420
-T1-T3_T5/trial_9;2;32;0;ReLU;Huber;0;Adagrad;-5,8218;-5,8218;4 000
-T2-T3-T4_T5/trial_1;5;1 024;0;sigmoid;MSE;0;Adam;-0,02;-0,02;3 040
-T2-T3-T4_T5/trial_11;2;64;0,0084;ReLU;MAE;1;Adagrad;0,8685;0,8685;270
-T2-T3-T4_T5/trial_12;2;64;0;ReLU;Huber;1;Adagrad;-5,3737;-5,3737;2 000
-T2-T3-T4_T5/trial_13;4;64;0,0025;ReLU;Huber;1;Adagrad;0,8814;0,8814;620
-T2-T3-T4_T5/trial_14;4;64;0,0028;ReLU;MAE;1;Adagrad;0,8789;0,8789;480
-T2-T3-T4_T5/trial_15;4;64;0,0021;ReLU;MAE;1;Adagrad;0,8703;0,8703;320
-T2-T3-T4_T5/trial_16;4;64;0,0035;ReLU;Huber;1;RMSprop;0,8319;0,8319;200
-T2-T3-T4_T5/trial_18;5;1 024;0,0038;ReLU;Huber;1;Adagrad;0,7637;0,7637;585
-T2-T3-T4_T5/trial_2;1;128;0,0003;sigmoid;MAE;0;Adagrad;-5,2793;-5,2793;4 000
-T2-T3-T4_T5/trial_20;5;64;0,0043;ReLU;Huber;1;Adagrad;-8,6099;-8,6099;2 000
-T2-T3-T4_T5/trial_22;4;64;0,0013;ReLU;Huber;1;RMSprop;0,8305;0,8305;220
-T2-T3-T4_T5/trial_23;4;64;0,0011;ReLU;Huber;1;RMSprop;0,8365;0,8365;170
-T2-T3-T4_T5/trial_24;3;64;0,0029;ReLU;Huber;1;RMSprop;0,6007;0,6007;120
-T2-T3-T4_T5/trial_25;5;64;0,0005;ReLU;MAE;1;RMSprop;0,8752;0,8752;550
-T2-T3-T4_T5/trial_29;5;512;0,0001;tanh;Huber;1;Adagrad;-7,2806;-7,2806;7 800
-T2-T3-T4_T5/trial_3;2;256;0,0067;sigmoid;MSE;0;Adagrad;0,7291;0,7291;975
-T2-T3-T4_T5/trial_30;3;512;0,0001;tanh;Huber;1;Adagrad;-5,0587;-5,0587;7 800
-T2-T3-T4_T5/trial_31;4;512;0,0014;ReLU;Huber;1;Adagrad;0,8076;0,8076;507
-T2-T3-T4_T5/trial_32;4;512;0,0005;ReLU;Huber;1;Adam;0,8731;0,8731;320
-T2-T3-T4_T5/trial_33;5;512;0,0005;ReLU;Huber;1;Adam;0,8808;0,8808;380
-T2-T3-T4_T5/trial_34;5;512;0,0003;sigmoid;MSE;1;Adam;-0,1431;-0,1431;4 000
-T2-T3-T4_T5/trial_35;5;1 024;0,0003;ReLU;Huber;1;Adam;0,8483;0,8483;260
-T2-T3-T4_T5/trial_36;5;128;0,0009;sigmoid;Huber;1;Adam;-0,03;-0,03;4 000
-T2-T3-T4_T5/trial_37;5;512;0;ReLU;MSE;0;Adam;0,8855;0,8855;1 365
-T2-T3-T4_T5/trial_38;4;256;0,0048;sigmoid;Huber;1;Adagrad;-1,7319;-1,7319;4 000
-T2-T3-T4_T5/trial_39;1;512;0,0019;tanh;Huber;0;Adam;0,7033;0,7033;585
-T2-T3-T4_T5/trial_4;3;256;0,0017;sigmoid;MSE;0;RMSprop;-0,0011;-0,0011;110
-T2-T3-T4_T5/trial_40;3;128;0,0005;ReLU;MSE;1;Adagrad;0,8763;0,8763;2 730
-T2-T3-T4_T5/trial_41;4;512;0,0006;ReLU;Huber;1;Adam;0,8839;0,8839;340
-T2-T3-T4_T5/trial_42;4;512;0,0003;ReLU;Huber;1;Adam;0,8642;0,8642;500
-T2-T3-T4_T5/trial_45;5;512;0,001;ReLU;Huber;1;Adam;0,8603;0,8603;770
-T2-T3-T4_T5/trial_46;4;256;0;ReLU;Huber;1;Adagrad;-0,2352;-0,2352;4 000
-T2-T3-T4_T5/trial_47;3;512;0,0004;tanh;Huber;0;Adagrad;0,7489;0,7489;6 162
-T2-T3-T4_T5/trial_48;4;1 024;0,0054;ReLU;Huber;1;Adam;0,799;0,799;1 232
-T2-T3-T4_T5/trial_49;5;512;0,0023;ReLU;Huber;1;Adagrad;0,6275;0,6275;200
-T2-T3-T4_T5/trial_5;1;256;0,0008;tanh;Huber;0;Adam;0,7394;0,7394;1 925
-T2-T3-T4_T5/trial_6;4;128;0,0007;tanh;MAE;0;Adam;-0,0008;-0,0008;450
-T2-T3-T4_T5/trial_8;2;512;0,0071;ReLU;MAE;1;Adagrad;0,8342;0,8342;150
-T2-T3_T5/trial_0;4;512;0,0096;tanh;MSE;1;Adam;-0,1491;-0,1491;553
-T2-T3_T5/trial_1;1;512;0,0035;tanh;Huber;1;Adam;0,5947;0,5947;680
-T2-T3_T5/trial_10;1;32;0,0001;sigmoid;Huber;1;Adam;-1,5917;-1,5917;8 000
-T2-T3_T5/trial_11;2;1 024;0,0001;ReLU;Huber;0;Adagrad;0,7329;0,7329;1 501
-T2-T3_T5/trial_12;2;64;0,0001;ReLU;Huber;0;Adagrad;-2,2948;-2,2948;2 000
-T2-T3_T5/trial_13;1;1 024;0,0002;ReLU;Huber;1;Adagrad;0,7537;0,7537;2 960
-T2-T3_T5/trial_14;2;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7272;0,7272;1 738
-T2-T3_T5/trial_15;1;1 024;0;ReLU;Huber;0;Adagrad;0,6738;0,6738;8 000
-T2-T3_T5/trial_16;2;64;0,0002;sigmoid;MAE;1;Adagrad;-10,0361;-10,0361;15 800
-T2-T3_T5/trial_17;1;128;0;ReLU;Huber;0;Adagrad;-3,6557;-3,6557;2 000
-T2-T3_T5/trial_18;2;256;0,0003;ReLU;Huber;0;Adagrad;0,7473;0,7473;1 280
-T2-T3_T5/trial_19;4;32;0;sigmoid;MAE;1;Adagrad;-12,2122;-12,2122;15 800
-T2-T3_T5/trial_2;3;1 024;0,0098;ReLU;Huber;0;Adagrad;0,701;0,701;1 185
-T2-T3_T5/trial_20;1;1 024;0,0003;ReLU;Huber;1;Adagrad;0,7097;0,7097;1 106
-T2-T3_T5/trial_21;2;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7295;0,7295;2 370
-T2-T3_T5/trial_22;2;1 024;0,0002;ReLU;Huber;1;Adagrad;0,717;0,717;1 343
-T2-T3_T5/trial_23;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7312;0,7312;5 530
-T2-T3_T5/trial_24;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7374;0,7374;5 372
-T2-T3_T5/trial_25;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7346;0,7346;8 769
-T2-T3_T5/trial_26;4;1 024;0;ReLU;Huber;0;Adagrad;0,6575;0,6575;15 800
-T2-T3_T5/trial_27;3;128;0,0001;ReLU;Huber;1;Adagrad;0,577;0,577;15 800
-T2-T3_T5/trial_28;3;64;0;sigmoid;MAE;0;Adagrad;-11,891;-11,891;15 800
-T2-T3_T5/trial_29;5;256;0,0003;tanh;MSE;1;RMSprop;-0,1724;-0,1724;7 110
-T2-T3_T5/trial_3;5;128;0,0021;sigmoid;MSE;0;RMSprop;0,6345;0,6345;650
-T2-T3_T5/trial_30;4;1 024;0;tanh;MSE;1;Adam;0,578;0,578;9 875
-T2-T3_T5/trial_31;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7331;0,7331;5 214
-T2-T3_T5/trial_32;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7272;0,7272;7 584
-T2-T3_T5/trial_33;3;32;0,0001;ReLU;Huber;1;Adagrad;-7,9091;-7,9091;15 800
-T2-T3_T5/trial_34;3;1 024;0;ReLU;Huber;1;Adagrad;0,015;0,015;2 000
-T2-T3_T5/trial_35;4;1 024;0,0052;ReLU;Huber;1;Adagrad;0,7548;0,7548;869
-T2-T3_T5/trial_36;3;1 024;0;ReLU;Huber;1;Adam;0,7565;0,7565;1 185
-T2-T3_T5/trial_37;3;128;0;tanh;Huber;1;Adagrad;-8,2958;-8,2958;4 000
-T2-T3_T5/trial_38;4;512;0,0001;ReLU;MSE;1;RMSprop;0,6315;0,6315;632
-T2-T3_T5/trial_39;5;1 024;0;ReLU;Huber;1;Adam;0,7636;0,7636;520
-T2-T3_T5/trial_4;1;1 024;0,001;ReLU;Huber;1;Adam;0,676;0,676;520
-T2-T3_T5/trial_40;3;1 024;0,0018;sigmoid;MAE;1;Adagrad;-0,1308;-0,1308;2 000
-T2-T3_T5/trial_41;3;1 024;0,0001;ReLU;Huber;0;Adagrad;0,7329;0,7329;1 659
-T2-T3_T5/trial_42;3;1 024;0,0002;ReLU;Huber;1;Adagrad;0,7543;0,7543;1 027
-T2-T3_T5/trial_43;2;1 024;0,0001;ReLU;Huber;0;Adagrad;0,7398;0,7398;3 634
-T2-T3_T5/trial_44;4;512;0,0001;ReLU;Huber;1;Adagrad;0,6785;0,6785;15 800
-T2-T3_T5/trial_45;3;1 024;0,0001;ReLU;Huber;0;RMSprop;0,4522;0,4522;474
-T2-T3_T5/trial_46;2;256;0;tanh;Huber;1;Adagrad;-7,9249;-7,9249;15 800
-T2-T3_T5/trial_47;3;32;0;ReLU;MSE;1;Adagrad;-8,2906;-8,2906;4 000
-T2-T3_T5/trial_48;2;1 024;0,0001;ReLU;Huber;0;Adam;0,6867;0,6867;869
-T2-T3_T5/trial_49;3;64;0,0002;ReLU;Huber;1;Adagrad;0,7039;0,7039;15 800
-T2-T3_T5/trial_5;3;512;0,0012;ReLU;MSE;0;Adam;0,7092;0,7092;948
-T2-T3_T5/trial_6;4;512;0,0007;tanh;MAE;1;RMSprop;-0,0239;-0,0239;760
-T2-T3_T5/trial_7;3;512;0;tanh;MAE;1;Adagrad;-6,6045;-6,6045;4 000
-T2-T3_T5/trial_8;2;256;0,0005;ReLU;Huber;0;RMSprop;0,5859;0,5859;280
-T2-T3_T5/trial_9;2;1 024;0,0008;ReLU;MSE;0;RMSprop;0,6743;0,6743;480
+T1-T4_T5/trial_0;1;128;0,0089;tanh;MSE;0;RMSprop;-0,1903;-0,1903;474
+T1-T4_T5/trial_1;5;1 024;0;sigmoid;Huber;0;Adagrad;-4,7734;-4,7734;4 000
+T1-T4_T5/trial_10;3;512;0,0001;ReLU;MAE;1;Adam;0,8424;0,8424;1 027
+T1-T4_T5/trial_11;3;512;0,0001;ReLU;MAE;1;Adam;0,8651;0,8651;1 580
+T1-T4_T5/trial_12;3;512;0,0001;ReLU;MAE;1;Adam;0,8521;0,8521;1 501
+T1-T4_T5/trial_13;2;64;0,001;ReLU;MAE;1;Adam;0,862;0,862;640
+T1-T4_T5/trial_14;2;64;0,0012;ReLU;Huber;1;Adam;0,8699;0,8699;520
+T1-T4_T5/trial_15;2;64;0,0016;ReLU;Huber;1;Adam;0,8689;0,8689;480
+T1-T4_T5/trial_16;2;64;0,0022;ReLU;Huber;1;Adam;0,8673;0,8673;480
+T1-T4_T5/trial_17;2;256;0,006;ReLU;Huber;1;Adam;0,8596;0,8596;280
+T1-T4_T5/trial_18;2;64;0,0009;ReLU;Huber;0;Adam;0,8669;0,8669;390
+T1-T4_T5/trial_19;4;512;0,0007;tanh;Huber;0;Adam;-0,0138;-0,0138;130
+T1-T4_T5/trial_2;1;1 024;0;sigmoid;MSE;0;Adagrad;-6,7043;-6,7043;8 000
+T1-T4_T5/trial_20;2;512;0,0003;ReLU;Huber;0;Adam;0,856;0,856;270
+T1-T4_T5/trial_21;2;64;0,002;ReLU;Huber;0;Adam;0,871;0,871;280
+T1-T4_T5/trial_22;2;64;0,0029;ReLU;Huber;0;Adam;0,8714;0,8714;200
+T1-T4_T5/trial_23;3;64;0,0007;ReLU;Huber;0;Adam;0,8763;0,8763;380
+T1-T4_T5/trial_24;2;64;0,0003;ReLU;Huber;0;Adam;0,8601;0,8601;340
+T1-T4_T5/trial_25;1;64;0,0051;ReLU;Huber;0;Adam;0,842;0,842;180
+T1-T4_T5/trial_26;4;32;0,0001;ReLU;Huber;0;Adam;0,8711;0,8711;2 640
+T1-T4_T5/trial_27;2;256;0;ReLU;Huber;0;Adam;0,8692;0,8692;2 000
+T1-T4_T5/trial_28;1;512;0,0018;tanh;Huber;0;RMSprop;-0,0081;-0,0081;60
+T1-T4_T5/trial_29;1;128;0,0079;sigmoid;Huber;0;Adagrad;0,8398;0,8398;2 600
+T1-T4_T5/trial_3;1;512;0;ReLU;Huber;1;Adam;0,869;0,869;2 920
+T1-T4_T5/trial_30;3;64;0,0003;tanh;MAE;0;RMSprop;0,8039;0,8039;3 318
+T1-T4_T5/trial_31;4;32;0;ReLU;Huber;0;Adam;0,8693;0,8693;2 540
+T1-T4_T5/trial_32;5;32;0;ReLU;Huber;0;Adam;0,7743;0,7743;4 000
+T1-T4_T5/trial_33;4;32;0,0001;ReLU;Huber;0;Adam;0,8622;0,8622;2 380
+T1-T4_T5/trial_34;4;1 024;0;sigmoid;Huber;0;Adagrad;-5,1014;-5,1014;4 000
+T1-T4_T5/trial_35;3;32;0;ReLU;Huber;0;Adam;0,8633;0,8633;4 000
+T1-T4_T5/trial_36;1;1 024;0,0001;ReLU;Huber;0;Adam;0,8621;0,8621;650
+T1-T4_T5/trial_37;5;32;0,0002;tanh;Huber;0;Adagrad;-7,0812;-7,0812;4 000
+T1-T4_T5/trial_38;3;128;0;sigmoid;MSE;0;RMSprop;-5,3106;-5,3106;2 000
+T1-T4_T5/trial_39;1;64;0,0006;ReLU;MSE;0;Adam;0,8757;0,8757;700
+T1-T4_T5/trial_4;1;32;0;tanh;MSE;1;RMSprop;-4,6044;-4,6044;4 000
+T1-T4_T5/trial_40;1;512;0;ReLU;Huber;0;Adam;0,8683;0,8683;1 500
+T1-T4_T5/trial_41;1;512;0;ReLU;Huber;0;Adam;0,871;0,871;1 360
+T1-T4_T5/trial_42;1;512;0;ReLU;Huber;0;Adam;0,8673;0,8673;3 280
+T1-T4_T5/trial_43;1;512;0;ReLU;Huber;0;Adam;0,8653;0,8653;3 160
+T1-T4_T5/trial_44;1;512;0;ReLU;Huber;0;Adam;0,8706;0,8706;2 140
+T1-T4_T5/trial_45;1;512;0;ReLU;Huber;0;Adam;0,8669;0,8669;4 000
+T1-T4_T5/trial_46;1;512;0;sigmoid;MAE;0;Adagrad;-6,6443;-6,6443;4 000
+T1-T4_T5/trial_47;1;512;0;ReLU;MSE;0;RMSprop;0,8719;0,8719;1 220
+T1-T4_T5/trial_48;1;512;0,0001;ReLU;Huber;0;Adam;0,8717;0,8717;780
+T1-T4_T5/trial_49;1;512;0;ReLU;Huber;0;Adam;0,8628;0,8628;3 920
+T1-T4_T5/trial_5;1;128;0,0004;tanh;MSE;1;Adagrad;-4,0099;-4,0099;2 000
+T1-T4_T5/trial_6;1;1 024;0,0035;sigmoid;MSE;1;RMSprop;-0,0558;-0,0558;70
+T1-T4_T5/trial_7;5;128;0,0005;ReLU;MSE;1;Adam;0,8758;0,8758;1 060
+T1-T4_T5/trial_8;1;256;0;sigmoid;MSE;0;RMSprop;-0,5643;-0,5643;4 000
+T1-T4_T5/trial_9;4;32;0,0001;ReLU;Huber;1;Adagrad;-9,062;-9,062;4 000
 T2_T5/trial_0;4;128;0,0071;ReLU;Huber;0;Adagrad;0,6029;0,6029;1 560
 T2_T5/trial_1;4;1 024;0;tanh;Huber;1;Adagrad;-5,7364;-5,7364;16 000
 T2_T5/trial_10;4;128;0,0096;ReLU;Huber;0;RMSprop;0,5646;0,5646;170
@@ -823,6 +599,256 @@ T2_T5/trial_6;1;256;0,0002;ReLU;MSE;1;Adam;0,6112;0,6112;2 720
 T2_T5/trial_7;3;128;0;ReLU;MAE;0;Adagrad;-6,0256;-6,0256;16 000
 T2_T5/trial_8;5;1 024;0,0001;sigmoid;MSE;0;Adagrad;-2,3441;-2,3441;4 000
 T2_T5/trial_9;2;256;0,0002;ReLU;MSE;1;Adagrad;0,6422;0,6422;8 000
+T1-T2-T3_T5/trial_0;4;256;0,0005;ReLU;MAE;1;RMSprop;0,6311;0,6311;320
+T1-T2-T3_T5/trial_1;3;256;0;sigmoid;MSE;0;RMSprop;-1,9974;-1,9974;4 000
+T1-T2-T3_T5/trial_10;5;1 024;0,0002;ReLU;Huber;1;Adagrad;0,6785;0,6785;880
+T1-T2-T3_T5/trial_11;5;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7598;0,7598;4 000
+T1-T2-T3_T5/trial_12;5;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7306;0,7306;4 960
+T1-T2-T3_T5/trial_13;4;1 024;0,0006;ReLU;Huber;1;Adagrad;0,7429;0,7429;480
+T1-T2-T3_T5/trial_14;5;512;0,0001;ReLU;Huber;1;Adam;0,7147;0,7147;1 480
+T1-T2-T3_T5/trial_15;4;32;0,0075;ReLU;Huber;1;Adagrad;0,743;0,743;4 266
+T1-T2-T3_T5/trial_16;4;32;0,0089;ReLU;Huber;1;Adam;0,6558;0,6558;553
+T1-T2-T3_T5/trial_17;4;32;0,0094;ReLU;MAE;1;Adagrad;0,7465;0,7465;11 376
+T1-T2-T3_T5/trial_18;2;32;0,0009;ReLU;Huber;1;Adam;0,643;0,643;1 501
+T1-T2-T3_T5/trial_19;4;512;0,0031;tanh;Huber;1;Adam;-0,1506;-0,1506;1 185
+T1-T2-T3_T5/trial_2;3;128;0;ReLU;MSE;1;Adam;0,7875;0,7875;2 000
+T1-T2-T3_T5/trial_20;2;512;0,0012;ReLU;MAE;1;Adagrad;0,7882;0,7882;280
+T1-T2-T3_T5/trial_21;5;1 024;0,0001;ReLU;Huber;1;Adagrad;0,732;0,732;6 840
+T1-T2-T3_T5/trial_22;5;1 024;0,0002;ReLU;Huber;1;Adagrad;0,7279;0,7279;1 520
+T1-T2-T3_T5/trial_23;5;32;0,0001;ReLU;Huber;1;Adagrad;-2,1637;-2,1637;15 800
+T1-T2-T3_T5/trial_24;4;256;0,0003;ReLU;Huber;1;Adagrad;0,7043;0,7043;2 844
+T1-T2-T3_T5/trial_25;5;128;0;ReLU;Huber;1;Adagrad;-8,5366;-8,5366;8 000
+T1-T2-T3_T5/trial_26;4;64;0,0045;ReLU;Huber;0;Adam;0,735;0,735;320
+T1-T2-T3_T5/trial_27;3;64;0,0045;ReLU;Huber;0;Adam;0,7033;0,7033;360
+T1-T2-T3_T5/trial_28;4;64;0,0044;tanh;Huber;0;Adam;-0,0221;-0,0221;240
+T1-T2-T3_T5/trial_29;4;64;0,0013;sigmoid;MAE;0;Adam;0,6487;0,6487;1 160
+T1-T2-T3_T5/trial_3;5;512;0,0001;ReLU;Huber;1;Adam;0,7567;0,7567;2 370
+T1-T2-T3_T5/trial_30;4;256;0,0059;ReLU;MAE;0;Adam;0,5403;0,5403;260
+T1-T2-T3_T5/trial_31;5;32;0,0003;ReLU;Huber;1;Adagrad;-1,447;-1,447;4 000
+T1-T2-T3_T5/trial_32;5;512;0,0005;ReLU;Huber;0;RMSprop;0,5753;0,5753;160
+T1-T2-T3_T5/trial_33;3;64;0,0065;ReLU;Huber;1;Adam;0,7052;0,7052;300
+T1-T2-T3_T5/trial_34;3;1 024;0;ReLU;MSE;0;Adam;0,7472;0,7472;1 343
+T1-T2-T3_T5/trial_35;5;128;0;ReLU;Huber;1;RMSprop;0,7726;0,7726;1 810
+T1-T2-T3_T5/trial_36;3;128;0,0001;sigmoid;MSE;0;RMSprop;-2,9637;-2,9637;2 000
+T1-T2-T3_T5/trial_37;4;128;0;ReLU;Huber;0;RMSprop;0,7253;0,7253;930
+T1-T2-T3_T5/trial_38;4;128;0,0018;tanh;Huber;1;RMSprop;-0,0043;-0,0043;1 190
+T1-T2-T3_T5/trial_39;3;128;0;sigmoid;MSE;0;RMSprop;-3,7414;-3,7414;2 000
+T1-T2-T3_T5/trial_4;2;128;0;tanh;MSE;0;RMSprop;0,3259;0,3259;15 800
+T1-T2-T3_T5/trial_40;2;256;0;ReLU;Huber;1;RMSprop;0,7593;0,7593;4 108
+T1-T2-T3_T5/trial_41;2;256;0;ReLU;Huber;1;RMSprop;0,7504;0,7504;5 056
+T1-T2-T3_T5/trial_42;1;256;0;ReLU;Huber;1;RMSprop;0,7381;0,7381;6 715
+T1-T2-T3_T5/trial_43;1;256;0;ReLU;Huber;1;RMSprop;0,7336;0,7336;5 846
+T1-T2-T3_T5/trial_44;1;256;0;ReLU;Huber;1;RMSprop;0,7557;0,7557;5 530
+T1-T2-T3_T5/trial_45;1;256;0;ReLU;Huber;1;RMSprop;0,753;0,753;6 162
+T1-T2-T3_T5/trial_46;1;256;0;tanh;Huber;1;RMSprop;0,699;0,699;6 478
+T1-T2-T3_T5/trial_47;1;256;0;sigmoid;MSE;1;RMSprop;0,5672;0,5672;15 800
+T1-T2-T3_T5/trial_48;1;256;0;ReLU;MAE;1;RMSprop;0,7612;0,7612;3 950
+T1-T2-T3_T5/trial_49;1;256;0,0001;ReLU;Huber;1;RMSprop;0,7469;0,7469;1 817
+T1-T2-T3_T5/trial_5;1;512;0,0021;sigmoid;MSE;0;RMSprop;0,6851;0,6851;1 000
+T1-T2-T3_T5/trial_6;3;64;0,0002;sigmoid;MAE;0;Adam;0,6578;0,6578;8 690
+T1-T2-T3_T5/trial_7;1;64;0;tanh;Huber;1;Adagrad;-8,6116;-8,6116;15 800
+T1-T2-T3_T5/trial_8;5;32;0,0025;tanh;Huber;0;Adam;-0,0212;-0,0212;900
+T1-T2-T3_T5/trial_9;4;512;0;sigmoid;MSE;1;RMSprop;-3,8534;-3,8534;15 800
+T1-T2_T5/trial_0;4;1 024;0,0001;tanh;MAE;0;Adagrad;-0,3848;-0,3848;2 000
+T1-T2_T5/trial_1;5;128;0,0003;ReLU;MSE;0;RMSprop;0,574;0,574;360
+T1-T2_T5/trial_10;2;64;0,0084;sigmoid;Huber;1;RMSprop;-0,034;-0,034;280
+T1-T2_T5/trial_11;2;128;0,0068;sigmoid;MAE;0;Adagrad;0,5081;0,5081;2 480
+T1-T2_T5/trial_12;2;128;0,0083;sigmoid;Huber;0;Adagrad;0,5327;0,5327;1 920
+T1-T2_T5/trial_13;2;128;0,0037;sigmoid;Huber;0;Adagrad;0,5367;0,5367;6 640
+T1-T2_T5/trial_14;2;128;0,0045;sigmoid;Huber;0;Adagrad;0,5433;0,5433;4 720
+T1-T2_T5/trial_15;2;256;0,0093;sigmoid;Huber;0;Adagrad;0,4633;0,4633;1 440
+T1-T2_T5/trial_16;3;64;0,0034;ReLU;Huber;0;Adagrad;0,6369;0,6369;3 680
+T1-T2_T5/trial_17;4;64;0,0032;ReLU;Huber;0;Adagrad;0,6414;0,6414;2 240
+T1-T2_T5/trial_18;4;64;0,0007;ReLU;Huber;1;Adagrad;0,6287;0,6287;16 000
+T1-T2_T5/trial_19;3;64;0,0029;ReLU;Huber;0;Adagrad;0,637;0,637;2 800
+T1-T2_T5/trial_2;1;512;0,0015;tanh;MSE;0;RMSprop;0,4181;0,4181;1 440
+T1-T2_T5/trial_20;4;64;0,0002;ReLU;Huber;0;Adagrad;0,51;0,51;4 000
+T1-T2_T5/trial_21;3;64;0,0034;ReLU;Huber;0;Adagrad;0,6428;0,6428;2 000
+T1-T2_T5/trial_22;3;64;0,0027;ReLU;Huber;0;Adagrad;0,64;0,64;1 600
+T1-T2_T5/trial_23;3;64;0,0011;ReLU;Huber;0;Adagrad;0,6394;0,6394;6 320
+T1-T2_T5/trial_24;4;64;0,0006;ReLU;Huber;0;Adagrad;0,6354;0,6354;9 680
+T1-T2_T5/trial_25;3;32;0,0023;ReLU;Huber;0;Adagrad;0,6408;0,6408;2 480
+T1-T2_T5/trial_26;4;64;0,0049;ReLU;Huber;1;Adagrad;0,6314;0,6314;4 800
+T1-T2_T5/trial_27;4;64;0,006;ReLU;Huber;1;Adagrad;0,6363;0,6363;3 520
+T1-T2_T5/trial_28;5;64;0,0055;ReLU;MSE;1;Adam;0,6639;0,6639;580
+T1-T2_T5/trial_29;4;64;0,0001;ReLU;MAE;1;Adagrad;-6,092;-6,092;2 000
+T1-T2_T5/trial_3;5;512;0,0003;tanh;MAE;0;Adagrad;0,543;0,543;8 000
+T1-T2_T5/trial_30;4;1 024;0;ReLU;MAE;1;Adagrad;0,6234;0,6234;16 000
+T1-T2_T5/trial_31;4;64;0,005;ReLU;Huber;1;Adagrad;0,6395;0,6395;3 520
+T1-T2_T5/trial_32;5;64;0,0024;ReLU;Huber;1;Adagrad;0,6344;0,6344;7 280
+T1-T2_T5/trial_33;4;64;0,0012;ReLU;Huber;1;Adagrad;0,6322;0,6322;7 040
+T1-T2_T5/trial_34;5;32;0,0058;ReLU;MSE;1;Adagrad;-8,1768;-8,1768;8 000
+T1-T2_T5/trial_35;4;256;0,01;tanh;Huber;1;RMSprop;-0,1181;-0,1181;480
+T1-T2_T5/trial_36;4;1 024;0,0018;ReLU;Huber;1;Adagrad;0,6353;0,6353;1 760
+T1-T2_T5/trial_37;3;512;0,0032;ReLU;Huber;1;Adagrad;0,6068;0,6068;1 840
+T1-T2_T5/trial_38;3;512;0,0011;ReLU;MSE;1;Adam;0,6016;0,6016;640
+T1-T2_T5/trial_39;3;512;0,0046;tanh;MAE;1;RMSprop;-0,0207;-0,0207;170
+T1-T2_T5/trial_4;5;1 024;0;sigmoid;Huber;1;Adam;-5,5895;-5,5895;8 000
+T1-T2_T5/trial_40;3;512;0,0005;ReLU;Huber;1;Adam;0,6764;0,6764;380
+T1-T2_T5/trial_41;4;512;0,003;ReLU;Huber;1;Adagrad;0,5941;0,5941;1 440
+T1-T2_T5/trial_42;5;64;0,0019;ReLU;Huber;1;Adagrad;0,6316;0,6316;6 080
+T1-T2_T5/trial_43;3;512;0,0066;ReLU;Huber;1;Adagrad;0,6346;0,6346;1 360
+T1-T2_T5/trial_44;4;64;0,0042;ReLU;Huber;1;Adagrad;0,662;0,662;1 240
+T1-T2_T5/trial_45;5;1 024;0,0015;tanh;Huber;0;RMSprop;-0,0809;-0,0809;560
+T1-T2_T5/trial_46;3;32;0,0004;ReLU;MSE;0;Adagrad;0,616;0,616;16 000
+T1-T2_T5/trial_47;4;256;0,007;ReLU;Huber;1;Adagrad;0,639;0,639;310
+T1-T2_T5/trial_48;3;64;0;ReLU;MAE;0;Adagrad;-8,1847;-8,1847;16 000
+T1-T2_T5/trial_49;2;512;0,0002;ReLU;Huber;1;Adam;0,6328;0,6328;1 680
+T1-T2_T5/trial_5;1;128;0,0003;ReLU;MSE;1;Adam;0,6526;0,6526;960
+T1-T2_T5/trial_6;4;512;0,0019;sigmoid;Huber;0;RMSprop;-0,0267;-0,0267;90
+T1-T2_T5/trial_7;3;32;0,0008;tanh;MAE;0;Adam;0,5314;0,5314;1 710
+T1-T2_T5/trial_8;3;256;0;tanh;MSE;1;Adam;-1,4673;-1,4673;8 000
+T1-T2_T5/trial_9;1;128;0,0014;sigmoid;Huber;0;RMSprop;0,5492;0,5492;750
+T2-T3-T4_T5/trial_0;3;32;0,0023;tanh;Huber;1;Adagrad;-6,4567;-6,4567;4 000
+T2-T3-T4_T5/trial_1;5;1 024;0;sigmoid;MSE;0;Adam;-0,02;-0,02;3 040
+T2-T3-T4_T5/trial_10;5;32;0,0001;ReLU;Huber;1;RMSprop;-9,6523;-9,6523;15 400
+T2-T3-T4_T5/trial_11;2;64;0,0084;ReLU;MAE;1;Adagrad;0,8685;0,8685;270
+T2-T3-T4_T5/trial_12;2;64;0;ReLU;Huber;1;Adagrad;-5,3737;-5,3737;2 000
+T2-T3-T4_T5/trial_13;4;64;0,0025;ReLU;Huber;1;Adagrad;0,8814;0,8814;620
+T2-T3-T4_T5/trial_14;4;64;0,0028;ReLU;MAE;1;Adagrad;0,8789;0,8789;480
+T2-T3-T4_T5/trial_15;4;64;0,0021;ReLU;MAE;1;Adagrad;0,8703;0,8703;320
+T2-T3-T4_T5/trial_16;4;64;0,0035;ReLU;Huber;1;RMSprop;0,8319;0,8319;200
+T2-T3-T4_T5/trial_17;4;64;0,0009;ReLU;MAE;1;Adagrad;0,853;0,853;6 314
+T2-T3-T4_T5/trial_18;5;1 024;0,0038;ReLU;Huber;1;Adagrad;0,7637;0,7637;585
+T2-T3-T4_T5/trial_19;4;64;0,0002;ReLU;MSE;1;RMSprop;0,888;0,888;680
+T2-T3-T4_T5/trial_2;1;128;0,0003;sigmoid;MAE;0;Adagrad;-5,2793;-5,2793;4 000
+T2-T3-T4_T5/trial_20;5;64;0,0043;ReLU;Huber;1;Adagrad;-8,6099;-8,6099;2 000
+T2-T3-T4_T5/trial_21;4;64;0,0014;ReLU;Huber;1;RMSprop;0,8557;0,8557;170
+T2-T3-T4_T5/trial_22;4;64;0,0013;ReLU;Huber;1;RMSprop;0,8305;0,8305;220
+T2-T3-T4_T5/trial_23;4;64;0,0011;ReLU;Huber;1;RMSprop;0,8365;0,8365;170
+T2-T3-T4_T5/trial_24;3;64;0,0029;ReLU;Huber;1;RMSprop;0,6007;0,6007;120
+T2-T3-T4_T5/trial_25;5;64;0,0005;ReLU;MAE;1;RMSprop;0,8752;0,8752;550
+T2-T3-T4_T5/trial_26;4;512;0,0016;ReLU;Huber;1;Adagrad;0,8785;0,8785;819
+T2-T3-T4_T5/trial_27;4;512;0,0002;ReLU;Huber;1;Adagrad;0,8725;0,8725;1 950
+T2-T3-T4_T5/trial_28;3;512;0,0002;sigmoid;Huber;1;Adagrad;-5,3909;-5,3909;7 800
+T2-T3-T4_T5/trial_29;5;512;0,0001;tanh;Huber;1;Adagrad;-7,2806;-7,2806;7 800
+T2-T3-T4_T5/trial_3;2;256;0,0067;sigmoid;MSE;0;Adagrad;0,7291;0,7291;975
+T2-T3-T4_T5/trial_30;3;512;0,0001;tanh;Huber;1;Adagrad;-5,0587;-5,0587;7 800
+T2-T3-T4_T5/trial_31;4;512;0,0014;ReLU;Huber;1;Adagrad;0,8076;0,8076;507
+T2-T3-T4_T5/trial_32;4;512;0,0005;ReLU;Huber;1;Adam;0,8731;0,8731;320
+T2-T3-T4_T5/trial_33;5;512;0,0005;ReLU;Huber;1;Adam;0,8808;0,8808;380
+T2-T3-T4_T5/trial_34;5;512;0,0003;sigmoid;MSE;1;Adam;-0,1431;-0,1431;4 000
+T2-T3-T4_T5/trial_35;5;1 024;0,0003;ReLU;Huber;1;Adam;0,8483;0,8483;260
+T2-T3-T4_T5/trial_36;5;128;0,0009;sigmoid;Huber;1;Adam;-0,03;-0,03;4 000
+T2-T3-T4_T5/trial_37;5;512;0;ReLU;MSE;0;Adam;0,8855;0,8855;1 365
+T2-T3-T4_T5/trial_38;4;256;0,0048;sigmoid;Huber;1;Adagrad;-1,7319;-1,7319;4 000
+T2-T3-T4_T5/trial_39;1;512;0,0019;tanh;Huber;0;Adam;0,7033;0,7033;585
+T2-T3-T4_T5/trial_4;3;256;0,0017;sigmoid;MSE;0;RMSprop;-0,0011;-0,0011;110
+T2-T3-T4_T5/trial_40;3;128;0,0005;ReLU;MSE;1;Adagrad;0,8763;0,8763;2 730
+T2-T3-T4_T5/trial_41;4;512;0,0006;ReLU;Huber;1;Adam;0,8839;0,8839;340
+T2-T3-T4_T5/trial_42;4;512;0,0003;ReLU;Huber;1;Adam;0,8642;0,8642;500
+T2-T3-T4_T5/trial_43;4;512;0,0007;ReLU;Huber;1;Adam;0,8805;0,8805;320
+T2-T3-T4_T5/trial_44;3;32;0,0001;ReLU;Huber;0;Adam;0,8736;0,8736;1 280
+T2-T3-T4_T5/trial_45;5;512;0,001;ReLU;Huber;1;Adam;0,8603;0,8603;770
+T2-T3-T4_T5/trial_46;4;256;0;ReLU;Huber;1;Adagrad;-0,2352;-0,2352;4 000
+T2-T3-T4_T5/trial_47;3;512;0,0004;tanh;Huber;0;Adagrad;0,7489;0,7489;6 162
+T2-T3-T4_T5/trial_48;4;1 024;0,0054;ReLU;Huber;1;Adam;0,799;0,799;1 232
+T2-T3-T4_T5/trial_49;5;512;0,0023;ReLU;Huber;1;Adagrad;0,6275;0,6275;200
+T2-T3-T4_T5/trial_5;1;256;0,0008;tanh;Huber;0;Adam;0,7394;0,7394;1 925
+T2-T3-T4_T5/trial_6;4;128;0,0007;tanh;MAE;0;Adam;-0,0008;-0,0008;450
+T2-T3-T4_T5/trial_7;3;512;0,0002;tanh;MAE;0;Adam;0,8233;0,8233;1 092
+T2-T3-T4_T5/trial_8;2;512;0,0071;ReLU;MAE;1;Adagrad;0,8342;0,8342;150
+T2-T3-T4_T5/trial_9;3;32;0,0004;ReLU;Huber;0;Adagrad;0,8202;0,8202;2 000
+T2-T3_T5/trial_0;4;512;0,0096;tanh;MSE;1;Adam;-0,1491;-0,1491;553
+T2-T3_T5/trial_1;1;512;0,0035;tanh;Huber;1;Adam;0,5947;0,5947;680
+T2-T3_T5/trial_10;1;32;0,0001;sigmoid;Huber;1;Adam;-1,5917;-1,5917;8 000
+T2-T3_T5/trial_11;2;1 024;0,0001;ReLU;Huber;0;Adagrad;0,7329;0,7329;1 501
+T2-T3_T5/trial_12;2;64;0,0001;ReLU;Huber;0;Adagrad;-2,2948;-2,2948;2 000
+T2-T3_T5/trial_13;1;1 024;0,0002;ReLU;Huber;1;Adagrad;0,7537;0,7537;2 960
+T2-T3_T5/trial_14;2;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7272;0,7272;1 738
+T2-T3_T5/trial_15;1;1 024;0;ReLU;Huber;0;Adagrad;0,6738;0,6738;8 000
+T2-T3_T5/trial_16;2;64;0,0002;sigmoid;MAE;1;Adagrad;-10,0361;-10,0361;15 800
+T2-T3_T5/trial_17;1;128;0;ReLU;Huber;0;Adagrad;-3,6557;-3,6557;2 000
+T2-T3_T5/trial_18;2;256;0,0003;ReLU;Huber;0;Adagrad;0,7473;0,7473;1 280
+T2-T3_T5/trial_19;4;32;0;sigmoid;MAE;1;Adagrad;-12,2122;-12,2122;15 800
+T2-T3_T5/trial_2;3;1 024;0,0098;ReLU;Huber;0;Adagrad;0,701;0,701;1 185
+T2-T3_T5/trial_20;1;1 024;0,0003;ReLU;Huber;1;Adagrad;0,7097;0,7097;1 106
+T2-T3_T5/trial_21;2;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7295;0,7295;2 370
+T2-T3_T5/trial_22;2;1 024;0,0002;ReLU;Huber;1;Adagrad;0,717;0,717;1 343
+T2-T3_T5/trial_23;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7312;0,7312;5 530
+T2-T3_T5/trial_24;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7374;0,7374;5 372
+T2-T3_T5/trial_25;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7346;0,7346;8 769
+T2-T3_T5/trial_26;4;1 024;0;ReLU;Huber;0;Adagrad;0,6575;0,6575;15 800
+T2-T3_T5/trial_27;3;128;0,0001;ReLU;Huber;1;Adagrad;0,577;0,577;15 800
+T2-T3_T5/trial_28;3;64;0;sigmoid;MAE;0;Adagrad;-11,891;-11,891;15 800
+T2-T3_T5/trial_29;5;256;0,0003;tanh;MSE;1;RMSprop;-0,1724;-0,1724;7 110
+T2-T3_T5/trial_3;5;128;0,0021;sigmoid;MSE;0;RMSprop;0,6345;0,6345;650
+T2-T3_T5/trial_30;4;1 024;0;tanh;MSE;1;Adam;0,578;0,578;9 875
+T2-T3_T5/trial_31;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7331;0,7331;5 214
+T2-T3_T5/trial_32;3;1 024;0,0001;ReLU;Huber;1;Adagrad;0,7272;0,7272;7 584
+T2-T3_T5/trial_33;3;32;0,0001;ReLU;Huber;1;Adagrad;-7,9091;-7,9091;15 800
+T2-T3_T5/trial_34;3;1 024;0;ReLU;Huber;1;Adagrad;0,015;0,015;2 000
+T2-T3_T5/trial_35;4;1 024;0,0052;ReLU;Huber;1;Adagrad;0,7548;0,7548;869
+T2-T3_T5/trial_36;3;1 024;0;ReLU;Huber;1;Adam;0,7565;0,7565;1 185
+T2-T3_T5/trial_37;3;128;0;tanh;Huber;1;Adagrad;-8,2958;-8,2958;4 000
+T2-T3_T5/trial_38;4;512;0,0001;ReLU;MSE;1;RMSprop;0,6315;0,6315;632
+T2-T3_T5/trial_39;5;1 024;0;ReLU;Huber;1;Adam;0,7636;0,7636;520
+T2-T3_T5/trial_4;1;1 024;0,001;ReLU;Huber;1;Adam;0,676;0,676;520
+T2-T3_T5/trial_40;3;1 024;0,0018;sigmoid;MAE;1;Adagrad;-0,1308;-0,1308;2 000
+T2-T3_T5/trial_41;3;1 024;0,0001;ReLU;Huber;0;Adagrad;0,7329;0,7329;1 659
+T2-T3_T5/trial_42;3;1 024;0,0002;ReLU;Huber;1;Adagrad;0,7543;0,7543;1 027
+T2-T3_T5/trial_43;2;1 024;0,0001;ReLU;Huber;0;Adagrad;0,7398;0,7398;3 634
+T2-T3_T5/trial_44;4;512;0,0001;ReLU;Huber;1;Adagrad;0,6785;0,6785;15 800
+T2-T3_T5/trial_45;3;1 024;0,0001;ReLU;Huber;0;RMSprop;0,4522;0,4522;474
+T2-T3_T5/trial_46;2;256;0;tanh;Huber;1;Adagrad;-7,9249;-7,9249;15 800
+T2-T3_T5/trial_47;3;32;0;ReLU;MSE;1;Adagrad;-8,2906;-8,2906;4 000
+T2-T3_T5/trial_48;2;1 024;0,0001;ReLU;Huber;0;Adam;0,6867;0,6867;869
+T2-T3_T5/trial_49;3;64;0,0002;ReLU;Huber;1;Adagrad;0,7039;0,7039;15 800
+T2-T3_T5/trial_5;3;512;0,0012;ReLU;MSE;0;Adam;0,7092;0,7092;948
+T2-T3_T5/trial_6;4;512;0,0007;tanh;MAE;1;RMSprop;-0,0239;-0,0239;760
+T2-T3_T5/trial_7;3;512;0;tanh;MAE;1;Adagrad;-6,6045;-6,6045;4 000
+T2-T3_T5/trial_8;2;256;0,0005;ReLU;Huber;0;RMSprop;0,5859;0,5859;280
+T2-T3_T5/trial_9;2;1 024;0,0008;ReLU;MSE;0;RMSprop;0,6743;0,6743;480
+T2-T4_T5/trial_0;3;512;0;tanh;MAE;0;Adam;0,8222;0,8222;5 382
+T2-T4_T5/trial_1;1;256;0;tanh;MAE;0;Adam;-0,0774;-0,0774;2 000
+T2-T4_T5/trial_10;5;512;0;tanh;MAE;0;Adam;-0,0677;-0,0677;4 134
+T2-T4_T5/trial_11;5;128;0,0012;sigmoid;MAE;1;Adagrad;-7,096;-7,096;4 000
+T2-T4_T5/trial_12;4;1 024;0,0008;sigmoid;MAE;0;Adagrad;-0,0697;-0,0697;1 404
+T2-T4_T5/trial_13;2;512;0,001;sigmoid;MAE;1;Adagrad;-0,6927;-0,6927;4 000
+T2-T4_T5/trial_14;2;512;0,0001;sigmoid;MAE;1;Adagrad;-4,4882;-4,4882;15 600
+T2-T4_T5/trial_15;4;1 024;0,0028;tanh;MAE;0;Adam;-0,1373;-0,1373;507
+T2-T4_T5/trial_16;4;128;0,01;sigmoid;MSE;1;Adagrad;-0,1482;-0,1482;15 600
+T2-T4_T5/trial_17;2;1 024;0,0005;sigmoid;MAE;0;Adam;-0,0353;-0,0353;200
+T2-T4_T5/trial_18;4;512;0,0001;tanh;MAE;0;Adagrad;-0,6954;-0,6954;4 000
+T2-T4_T5/trial_19;2;1 024;0,0021;ReLU;MSE;1;RMSprop;0,8455;0,8455;624
+T2-T4_T5/trial_2;1;1 024;0,0012;sigmoid;MAE;1;Adagrad;0,8003;0,8003;1 320
+T2-T4_T5/trial_20;3;512;0,0004;tanh;MAE;1;Adagrad;-1,5555;-1,5555;7 800
+T2-T4_T5/trial_21;2;256;0,0001;tanh;Huber;0;RMSprop;0,822;0,822;1 640
+T2-T4_T5/trial_22;2;256;0,0001;tanh;Huber;0;RMSprop;0,795;0,795;1 760
+T2-T4_T5/trial_23;2;256;0,0001;tanh;Huber;0;RMSprop;0,8019;0,8019;2 400
+T2-T4_T5/trial_24;2;256;0,0001;tanh;Huber;0;RMSprop;0,7469;0,7469;1 780
+T2-T4_T5/trial_25;2;256;0,0001;tanh;Huber;0;RMSprop;0,8068;0,8068;1 940
+T2-T4_T5/trial_26;2;256;0,0002;tanh;Huber;0;RMSprop;0,792;0,792;1 000
+T2-T4_T5/trial_27;3;256;0,0001;tanh;Huber;0;RMSprop;0,7818;0,7818;1 940
+T2-T4_T5/trial_28;2;256;0,0003;tanh;Huber;0;RMSprop;0,8061;0,8061;700
+T2-T4_T5/trial_29;1;256;0;tanh;Huber;0;RMSprop;0,6157;0,6157;4 000
+T2-T4_T5/trial_3;3;32;0,0059;ReLU;MSE;1;Adam;0,8613;0,8613;270
+T2-T4_T5/trial_30;3;256;0;tanh;Huber;0;RMSprop;-0,2619;-0,2619;4 000
+T2-T4_T5/trial_31;2;256;0,0003;tanh;Huber;0;RMSprop;0,7647;0,7647;920
+T2-T4_T5/trial_32;2;256;0,0006;tanh;Huber;0;RMSprop;0,6897;0,6897;380
+T2-T4_T5/trial_33;1;256;0,0002;tanh;Huber;0;RMSprop;0,8152;0,8152;1 000
+T2-T4_T5/trial_34;1;256;0;tanh;Huber;0;RMSprop;0,7266;0,7266;2 460
+T2-T4_T5/trial_35;1;32;0,0002;tanh;Huber;0;RMSprop;0,3608;0,3608;4 000
+T2-T4_T5/trial_36;1;256;0;ReLU;Huber;0;RMSprop;0,8576;0,8576;1 060
+T2-T4_T5/trial_37;1;64;0;ReLU;Huber;0;RMSprop;0,8676;0,8676;4 446
+T2-T4_T5/trial_38;1;64;0;ReLU;MSE;0;RMSprop;0,8678;0,8678;2 925
+T2-T4_T5/trial_39;1;64;0;ReLU;Huber;0;RMSprop;0,8684;0,8684;2 847
+T2-T4_T5/trial_4;2;256;0,0002;tanh;Huber;0;RMSprop;0,6887;0,6887;1 120
+T2-T4_T5/trial_40;1;64;0;ReLU;Huber;0;RMSprop;0,8674;0,8674;3 666
+T2-T4_T5/trial_41;1;64;0;ReLU;Huber;0;RMSprop;0,865;0,865;3 666
+T2-T4_T5/trial_42;1;64;0;ReLU;Huber;0;RMSprop;0,8657;0,8657;3 081
+T2-T4_T5/trial_43;1;64;0;ReLU;Huber;0;RMSprop;0,8701;0,8701;6 864
+T2-T4_T5/trial_44;1;64;0;ReLU;Huber;0;RMSprop;0,8672;0,8672;5 733
+T2-T4_T5/trial_45;1;64;0;ReLU;Huber;0;RMSprop;0,851;0,851;4 017
+T2-T4_T5/trial_46;1;64;0;ReLU;Huber;0;RMSprop;0,866;0,866;7 800
+T2-T4_T5/trial_47;1;64;0;ReLU;MSE;0;RMSprop;0,8703;0,8703;4 641
+T2-T4_T5/trial_48;1;64;0;ReLU;Huber;0;Adam;0,8673;0,8673;5 304
+T2-T4_T5/trial_49;1;64;0;ReLU;Huber;0;RMSprop;0,8624;0,8624;3 510
+T2-T4_T5/trial_5;1;1 024;0;ReLU;MSE;1;RMSprop;0,8762;0,8762;490
+T2-T4_T5/trial_6;3;64;0,0002;sigmoid;Huber;1;RMSprop;-3,5622;-3,5622;2 000
+T2-T4_T5/trial_7;1;256;0;ReLU;Huber;1;Adagrad;0,0682;0,0682;2 000
+T2-T4_T5/trial_8;3;32;0,0037;tanh;MAE;0;Adam;-0,0391;-0,0391;507
+T2-T4_T5/trial_9;1;64;0;tanh;Huber;0;Adam;-4,2159;-4,2159;2 000
 T3_T5/trial_0;1;128;0,0002;tanh;Huber;0;Adam;0,6766;0,6766;3 600
 T3_T5/trial_1;2;32;0,0001;ReLU;Huber;1;RMSprop;0,6514;0,6514;4 320
 T3_T5/trial_10;5;256;0,0005;ReLU;MAE;1;Adam;0,7085;0,7085;390
@@ -873,3 +899,403 @@ T3_T5/trial_6;3;32;0,0022;tanh;Huber;1;Adagrad;-6,1815;-6,1815;16 000
 T3_T5/trial_7;2;128;0;sigmoid;MSE;0;Adam;0,2741;0,2741;8 000
 T3_T5/trial_8;4;512;0,0001;tanh;MAE;0;Adam;0,6809;0,6809;1 750
 T3_T5/trial_9;3;1 024;0;ReLU;Huber;1;Adagrad;0,6354;0,6354;8 000
+T3-T4_T5/trial_0;5;1 024;0,0009;tanh;MSE;1;RMSprop;-0,0422;-0,0422;620
+T3-T4_T5/trial_1;5;1 024;0,0002;tanh;MSE;1;RMSprop;-0,2152;-0,2152;2 000
+T3-T4_T5/trial_10;4;128;0,006;ReLU;Huber;0;Adam;0,8455;0,8455;702
+T3-T4_T5/trial_11;4;128;0,0094;ReLU;Huber;0;Adam;0,716;0,716;468
+T3-T4_T5/trial_12;4;128;0,0089;ReLU;Huber;0;Adam;0,8426;0,8426;858
+T3-T4_T5/trial_13;4;128;0,0069;ReLU;Huber;0;Adam;0,8382;0,8382;936
+T3-T4_T5/trial_14;3;128;0,003;ReLU;Huber;0;Adam;0,7523;0,7523;624
+T3-T4_T5/trial_15;3;128;0,0028;ReLU;Huber;0;Adam;0,8251;0,8251;624
+T3-T4_T5/trial_16;4;32;0,0097;ReLU;Huber;0;Adam;0,7914;0,7914;468
+T3-T4_T5/trial_17;3;256;0,0036;ReLU;Huber;0;Adam;0,8269;0,8269;390
+T3-T4_T5/trial_18;4;512;0,0016;ReLU;Huber;0;Adagrad;0,8139;0,8139;858
+T3-T4_T5/trial_19;5;128;0,0012;sigmoid;Huber;0;Adam;-0,1209;-0,1209;780
+T3-T4_T5/trial_2;2;1 024;0,0016;ReLU;MAE;0;Adagrad;0,8189;0,8189;100
+T3-T4_T5/trial_20;4;128;0,0045;ReLU;Huber;0;Adam;0,8466;0,8466;858
+T3-T4_T5/trial_21;3;128;0,0026;ReLU;Huber;0;Adam;0,6719;0,6719;702
+T3-T4_T5/trial_22;3;128;0,0064;ReLU;Huber;0;Adam;0,6259;0,6259;624
+T3-T4_T5/trial_23;3;128;0,0025;ReLU;Huber;0;Adam;0,85;0,85;858
+T3-T4_T5/trial_24;4;128;0,0096;ReLU;Huber;0;Adam;0,6793;0,6793;351
+T3-T4_T5/trial_25;2;128;0,0007;ReLU;Huber;0;Adagrad;0,8152;0,8152;1 482
+T3-T4_T5/trial_26;2;32;0,0006;ReLU;Huber;1;Adagrad;0,8164;0,8164;11 154
+T3-T4_T5/trial_27;2;32;0,0006;ReLU;Huber;1;Adagrad;0,8176;0,8176;5 226
+T3-T4_T5/trial_28;2;32;0,0002;sigmoid;MAE;1;Adagrad;-11,2627;-11,2627;15 600
+T3-T4_T5/trial_29;2;32;0,0006;tanh;Huber;1;Adagrad;-6,2625;-6,2625;4 000
+T3-T4_T5/trial_3;2;64;0;tanh;Huber;1;Adam;-4,913;-4,913;4 000
+T3-T4_T5/trial_30;2;32;0,0001;tanh;MSE;1;Adagrad;-7,7672;-7,7672;7 800
+T3-T4_T5/trial_31;2;32;0,0008;ReLU;Huber;1;Adagrad;0,8211;0,8211;3 042
+T3-T4_T5/trial_32;1;32;0,0004;ReLU;Huber;1;Adagrad;0,8248;0,8248;8 424
+T3-T4_T5/trial_33;1;32;0,0003;ReLU;Huber;1;Adagrad;0,8261;0,8261;14 196
+T3-T4_T5/trial_34;1;32;0,0004;ReLU;Huber;1;Adagrad;0,8424;0,8424;3 640
+T3-T4_T5/trial_35;1;32;0,0002;tanh;Huber;1;Adagrad;-8,2511;-8,2511;15 600
+T3-T4_T5/trial_36;1;32;0,0001;ReLU;MSE;1;Adagrad;-1,885;-1,885;15 600
+T3-T4_T5/trial_37;1;1 024;0;ReLU;Huber;1;Adagrad;-1,197;-1,197;4 000
+T3-T4_T5/trial_38;1;32;0,0004;sigmoid;MSE;1;Adagrad;-9,1623;-9,1623;15 600
+T3-T4_T5/trial_39;1;64;0,0012;ReLU;MAE;1;Adagrad;0,8497;0,8497;430
+T3-T4_T5/trial_4;1;1 024;0;sigmoid;MSE;0;Adam;0,3394;0,3394;2 000
+T3-T4_T5/trial_40;2;32;0,0002;tanh;Huber;1;Adagrad;-7,3594;-7,3594;7 800
+T3-T4_T5/trial_41;2;256;0,0009;ReLU;Huber;1;Adagrad;0,8296;0,8296;1 170
+T3-T4_T5/trial_42;2;256;0,001;ReLU;Huber;1;Adagrad;0,8047;0,8047;702
+T3-T4_T5/trial_43;1;256;0,0017;ReLU;Huber;1;Adagrad;0,8452;0,8452;1 482
+T3-T4_T5/trial_44;1;256;0,0016;ReLU;MAE;1;Adagrad;0,8097;0,8097;780
+T3-T4_T5/trial_45;1;256;0,0017;ReLU;Huber;1;RMSprop;0,7255;0,7255;70
+T3-T4_T5/trial_46;1;256;0,0005;sigmoid;Huber;1;Adagrad;-1,026;-1,026;15 600
+T3-T4_T5/trial_47;1;256;0,0001;ReLU;MSE;1;Adagrad;0,8282;0,8282;15 600
+T3-T4_T5/trial_48;1;512;0,0003;ReLU;Huber;1;RMSprop;0,8549;0,8549;180
+T3-T4_T5/trial_49;2;1 024;0,0008;ReLU;Huber;1;Adagrad;0,8442;0,8442;1 092
+T3-T4_T5/trial_5;1;256;0,0004;sigmoid;MSE;0;RMSprop;0,7796;0,7796;1 677
+T3-T4_T5/trial_6;1;512;0,0005;ReLU;MSE;0;Adagrad;0,8572;0,8572;540
+T3-T4_T5/trial_7;2;64;0;sigmoid;MAE;1;RMSprop;-6,7517;-6,7517;2 000
+T3-T4_T5/trial_8;4;128;0;ReLU;MAE;0;RMSprop;0,8537;0,8537;430
+T3-T4_T5/trial_9;5;32;0,0002;tanh;MAE;1;RMSprop;-6,7681;-6,7681;2 000
+T4_T5/trial_0;3;64;0;sigmoid;MAE;1;Adagrad;-9,8274;-9,8274;15 800
+T4_T5/trial_1;1;64;0,0019;sigmoid;MSE;1;Adagrad;-1,1414;-1,1414;15 800
+T4_T5/trial_10;3;128;0,0007;ReLU;Huber;1;Adam;0,8624;0,8624;320
+T4_T5/trial_11;3;128;0,0009;ReLU;Huber;1;Adam;0,867;0,867;170
+T4_T5/trial_12;2;128;0,0008;ReLU;Huber;1;Adam;0,8643;0,8643;300
+T4_T5/trial_13;2;128;0;ReLU;Huber;1;Adam;0,8351;0,8351;2 000
+T4_T5/trial_14;4;128;0,0001;ReLU;Huber;1;Adam;0,8554;0,8554;1 760
+T4_T5/trial_15;4;128;0,0005;ReLU;Huber;1;Adam;0,8603;0,8603;540
+T4_T5/trial_16;4;32;0,0004;ReLU;MSE;1;Adam;-8,1584;-8,1584;4 000
+T4_T5/trial_17;4;1 024;0;tanh;Huber;1;Adam;-1,6875;-1,6875;2 000
+T4_T5/trial_18;1;256;0,0004;ReLU;Huber;1;Adam;0,8492;0,8492;620
+T4_T5/trial_19;3;128;0,0001;ReLU;MSE;1;RMSprop;0,8719;0,8719;800
+T4_T5/trial_2;3;128;0,0001;ReLU;Huber;1;Adam;0,8619;0,8619;1 060
+T4_T5/trial_20;4;128;0,0021;tanh;Huber;1;Adam;-0,0289;-0,0289;1 760
+T4_T5/trial_21;3;128;0,0009;ReLU;Huber;1;Adam;0,8612;0,8612;270
+T4_T5/trial_22;2;128;0,0006;ReLU;Huber;1;Adam;0,8608;0,8608;360
+T4_T5/trial_23;3;128;0,0002;ReLU;Huber;1;Adam;0,8675;0,8675;450
+T4_T5/trial_24;4;128;0,0002;ReLU;Huber;1;Adam;0,8678;0,8678;730
+T4_T5/trial_25;3;128;0,0002;ReLU;Huber;1;Adam;0,8657;0,8657;610
+T4_T5/trial_26;2;32;0,0001;ReLU;Huber;1;Adam;0,8604;0,8604;1 340
+T4_T5/trial_27;4;512;0;ReLU;Huber;1;Adam;0,8555;0,8555;2 280
+T4_T5/trial_28;3;512;0;tanh;MAE;1;RMSprop;0,7431;0,7431;8 000
+T4_T5/trial_29;3;512;0;ReLU;MSE;1;Adagrad;-1,4289;-1,4289;8 000
+T4_T5/trial_3;5;64;0,0001;tanh;MAE;0;Adagrad;-7,3922;-7,3922;8 000
+T4_T5/trial_30;4;512;0;sigmoid;MAE;1;Adagrad;-9,1988;-9,1988;8 000
+T4_T5/trial_31;4;1 024;0,0001;ReLU;Huber;1;Adam;0,8589;0,8589;1 520
+T4_T5/trial_32;3;1 024;0;ReLU;Huber;1;Adam;0,8521;0,8521;1 080
+T4_T5/trial_33;4;1 024;0;ReLU;Huber;1;Adam;0,8642;0,8642;1 960
+T4_T5/trial_34;4;1 024;0;ReLU;Huber;1;Adam;0,8615;0,8615;1 600
+T4_T5/trial_35;5;1 024;0;ReLU;Huber;1;Adagrad;0,8269;0,8269;8 000
+T4_T5/trial_36;4;1 024;0,0001;sigmoid;MSE;1;Adam;-0,0433;-0,0433;8 000
+T4_T5/trial_37;5;1 024;0;tanh;Huber;1;Adam;-2,7584;-2,7584;8 000
+T4_T5/trial_38;4;1 024;0;ReLU;MAE;0;Adagrad;0,8547;0,8547;5 160
+T4_T5/trial_39;5;1 024;0,0001;ReLU;Huber;1;Adam;0,8574;0,8574;1 400
+T4_T5/trial_4;5;512;0,0002;tanh;MSE;0;Adagrad;-0,3118;-0,3118;4 000
+T4_T5/trial_40;5;1 024;0,0002;sigmoid;Huber;0;RMSprop;0,8374;0,8374;3 239
+T4_T5/trial_41;5;1 024;0,0001;ReLU;Huber;1;Adam;0,8623;0,8623;1 840
+T4_T5/trial_42;5;1 024;0,0001;ReLU;Huber;1;Adam;0,8439;0,8439;1 040
+T4_T5/trial_43;5;1 024;0,0001;ReLU;Huber;1;Adam;0,865;0,865;1 080
+T4_T5/trial_44;5;64;0;ReLU;Huber;1;Adam;-8,8201;-8,8201;8 000
+T4_T5/trial_45;5;1 024;0,0001;ReLU;Huber;0;Adam;0,7927;0,7927;880
+T4_T5/trial_46;5;1 024;0,0001;ReLU;Huber;1;Adam;0,8577;0,8577;1 320
+T4_T5/trial_47;5;256;0,0001;ReLU;MAE;1;Adam;0,8554;0,8554;1 501
+T4_T5/trial_48;5;1 024;0;sigmoid;MSE;0;RMSprop;0,8145;0,8145;6 480
+T4_T5/trial_49;5;1 024;0,0001;tanh;Huber;1;Adam;-0,0461;-0,0461;8 000
+T4_T5/trial_5;5;256;0,0002;sigmoid;Huber;0;Adam;-0,0449;-0,0449;2 080
+T4_T5/trial_6;4;1 024;0,0097;sigmoid;MAE;0;RMSprop;-0,2445;-0,2445;869
+T4_T5/trial_7;5;64;0,0077;ReLU;Huber;0;RMSprop;0,7584;0,7584;160
+T4_T5/trial_8;2;512;0,0001;ReLU;Huber;0;Adam;0,8655;0,8655;920
+T4_T5/trial_9;5;32;0,0038;sigmoid;MAE;0;RMSprop;0,664;0,664;3 397
+T1-T2-T3-T4_T5/trial_0;3;32;0,0004;ReLU;MSE;0;RMSprop;0,8877;0,8877;1 092
+T1-T2-T3-T4_T5/trial_1;1;32;0;sigmoid;MSE;1;Adagrad;-8,2757;-8,2757;7 800
+T1-T2-T3-T4_T5/trial_10;5;256;0,0005;ReLU;Huber;1;RMSprop;0,4655;0,4655;693
+T1-T2-T3-T4_T5/trial_11;5;256;0,0004;ReLU;Huber;1;RMSprop;0,6079;0,6079;693
+T1-T2-T3-T4_T5/trial_12;4;256;0,0001;ReLU;Huber;1;RMSprop;0,8442;0,8442;1 925
+T1-T2-T3-T4_T5/trial_13;4;256;0,0001;ReLU;Huber;1;RMSprop;0,8326;0,8326;1 078
+T1-T2-T3-T4_T5/trial_14;4;256;0,0001;ReLU;Huber;1;RMSprop;0,8652;0,8652;1 232
+T1-T2-T3-T4_T5/trial_15;3;256;0,0001;ReLU;Huber;1;RMSprop;0,8283;0,8283;1 001
+T1-T2-T3-T4_T5/trial_16;2;256;0;ReLU;Huber;1;RMSprop;0,8414;0,8414;924
+T1-T2-T3-T4_T5/trial_17;2;64;0;ReLU;Huber;1;Adam;0,861;0,861;2 926
+T1-T2-T3-T4_T5/trial_18;2;64;0;sigmoid;MAE;0;Adam;0,7107;0,7107;15 400
+T1-T2-T3-T4_T5/trial_19;3;64;0,001;ReLU;Huber;1;Adam;0,8539;0,8539;1 001
+T1-T2-T3-T4_T5/trial_2;2;128;0;tanh;Huber;0;RMSprop;-3,2467;-3,2467;2 000
+T1-T2-T3-T4_T5/trial_20;2;1 024;0,0002;ReLU;Huber;1;Adam;0,8705;0,8705;616
+T1-T2-T3-T4_T5/trial_21;2;1 024;0,0002;ReLU;Huber;1;Adam;0,8735;0,8735;924
+T1-T2-T3-T4_T5/trial_22;2;1 024;0,0002;ReLU;Huber;1;Adam;0,8267;0,8267;1 001
+T1-T2-T3-T4_T5/trial_23;3;64;0;ReLU;Huber;1;Adam;0,8681;0,8681;3 696
+T1-T2-T3-T4_T5/trial_24;3;1 024;0;ReLU;Huber;1;Adam;0,8708;0,8708;2 464
+T1-T2-T3-T4_T5/trial_25;3;1 024;0;sigmoid;MAE;1;Adam;0,4925;0,4925;15 400
+T1-T2-T3-T4_T5/trial_26;3;1 024;0;ReLU;Huber;0;Adam;0,8722;0,8722;1 078
+T1-T2-T3-T4_T5/trial_27;3;1 024;0;ReLU;Huber;0;Adam;0,8822;0,8822;310
+T1-T2-T3-T4_T5/trial_28;3;1 024;0;ReLU;Huber;0;Adam;0,8772;0,8772;440
+T1-T2-T3-T4_T5/trial_29;3;64;0;ReLU;MAE;0;Adam;0,8648;0,8648;4 056
+T1-T2-T3-T4_T5/trial_3;3;64;0,0068;tanh;MAE;1;Adagrad;-1,7176;-1,7176;4 000
+T1-T2-T3-T4_T5/trial_30;3;1 024;0;sigmoid;Huber;0;Adam;0,8493;0,8493;15 400
+T1-T2-T3-T4_T5/trial_31;2;1 024;0;ReLU;Huber;0;Adam;0,8753;0,8753;924
+T1-T2-T3-T4_T5/trial_32;1;1 024;0,0001;ReLU;Huber;0;Adam;0,876;0,876;1 617
+T1-T2-T3-T4_T5/trial_33;3;32;0;ReLU;Huber;0;Adam;0,8582;0,8582;5 467
+T1-T2-T3-T4_T5/trial_34;2;128;0;ReLU;Huber;0;Adam;0,8656;0,8656;2 772
+T1-T2-T3-T4_T5/trial_35;2;1 024;0,0001;ReLU;Huber;0;Adam;0,8852;0,8852;702
+T1-T2-T3-T4_T5/trial_36;3;64;0;ReLU;MSE;0;Adam;0,8831;0,8831;2 000
+T1-T2-T3-T4_T5/trial_37;1;128;0;tanh;MAE;0;Adam;-2,3732;-2,3732;4 000
+T1-T2-T3-T4_T5/trial_38;3;1 024;0,0001;sigmoid;Huber;0;Adam;-0,108;-0,108;1 309
+T1-T2-T3-T4_T5/trial_39;4;32;0;tanh;MSE;0;Adagrad;-8,5924;-8,5924;7 800
+T1-T2-T3-T4_T5/trial_4;5;128;0,0059;tanh;MAE;0;Adam;-0,0345;-0,0345;273
+T1-T2-T3-T4_T5/trial_40;2;512;0,0002;ReLU;Huber;0;Adam;0,8825;0,8825;250
+T1-T2-T3-T4_T5/trial_41;1;1 024;0,0001;ReLU;Huber;0;Adam;0,8714;0,8714;924
+T1-T2-T3-T4_T5/trial_42;1;1 024;0;ReLU;Huber;0;Adam;0,8724;0,8724;2 002
+T1-T2-T3-T4_T5/trial_43;1;1 024;0;ReLU;Huber;0;Adam;0,8694;0,8694;1 232
+T1-T2-T3-T4_T5/trial_44;1;1 024;0,0006;ReLU;Huber;0;Adagrad;0,8728;0,8728;1 694
+T1-T2-T3-T4_T5/trial_45;3;1 024;0,0008;tanh;MSE;0;Adagrad;0,8415;0,8415;1 160
+T1-T2-T3-T4_T5/trial_46;2;64;0,0006;ReLU;Huber;1;Adagrad;0,8608;0,8608;4 697
+T1-T2-T3-T4_T5/trial_47;4;128;0,0011;ReLU;Huber;0;Adagrad;0,8667;0,8667;1 694
+T1-T2-T3-T4_T5/trial_48;4;128;0,0049;ReLU;Huber;1;Adagrad;0,8702;0,8702;1 848
+T1-T2-T3-T4_T5/trial_49;4;128;0,0016;ReLU;MAE;1;Adagrad;0,8731;0,8731;1 053
+T1-T2-T3-T4_T5/trial_5;1;512;0,0021;tanh;MSE;1;Adagrad;0,8451;0,8451;920
+T1-T2-T3-T4_T5/trial_6;1;512;0,0001;tanh;MSE;0;Adagrad;-1,5846;-1,5846;4 000
+T1-T2-T3-T4_T5/trial_7;4;32;0;sigmoid;MSE;1;Adam;-8,4005;-8,4005;7 800
+T1-T2-T3-T4_T5/trial_8;4;1 024;0,0023;tanh;MSE;1;Adagrad;-0,1182;-0,1182;2 000
+T1-T2-T3-T4_T5/trial_9;4;512;0,0031;ReLU;Huber;1;Adagrad;0,7023;0,7023;480
+T1-T2-T4_T5/trial_0;4;128;0;sigmoid;Huber;0;Adagrad;-8,4954;-8,4954;15 600
+T1-T2-T4_T5/trial_1;4;512;0;sigmoid;Huber;1;Adagrad;-8,3865;-8,3865;15 600
+T1-T2-T4_T5/trial_10;1;1 024;0,0011;ReLU;Huber;0;Adam;0,8385;0,8385;260
+T1-T2-T4_T5/trial_11;1;1 024;0,0012;ReLU;Huber;0;Adam;0,8082;0,8082;440
+T1-T2-T4_T5/trial_12;1;1 024;0,0009;ReLU;Huber;0;Adam;0,8664;0,8664;400
+T1-T2-T4_T5/trial_13;2;32;0,0092;ReLU;Huber;0;Adam;0,8696;0,8696;240
+T1-T2-T4_T5/trial_14;2;32;0,0088;ReLU;Huber;0;Adam;0,821;0,821;300
+T1-T2-T4_T5/trial_15;1;32;0,0007;ReLU;MSE;0;Adam;0,8773;0,8773;1 220
+T1-T2-T4_T5/trial_16;2;32;0,0005;ReLU;Huber;0;Adam;0,8695;0,8695;1 240
+T1-T2-T4_T5/trial_17;1;1 024;0,0004;ReLU;Huber;0;Adam;0,8693;0,8693;540
+T1-T2-T4_T5/trial_18;2;32;0,0004;ReLU;MSE;1;RMSprop;0,8537;0,8537;500
+T1-T2-T4_T5/trial_19;1;1 024;0,0001;ReLU;MAE;0;Adam;0,8708;0,8708;690
+T1-T2-T4_T5/trial_2;4;64;0;tanh;MSE;1;RMSprop;-6,3672;-6,3672;7 800
+T1-T2-T4_T5/trial_20;3;32;0,0003;ReLU;Huber;0;Adam;0,8619;0,8619;2 574
+T1-T2-T4_T5/trial_21;3;32;0,0004;ReLU;Huber;0;Adam;0,8474;0,8474;2 964
+T1-T2-T4_T5/trial_22;2;32;0,002;ReLU;Huber;0;Adam;0,7703;0,7703;1 404
+T1-T2-T4_T5/trial_23;3;32;0,0005;ReLU;Huber;0;Adam;0,8606;0,8606;1 716
+T1-T2-T4_T5/trial_24;3;32;0,0003;ReLU;Huber;0;Adam;0,8433;0,8433;3 198
+T1-T2-T4_T5/trial_25;2;128;0,0016;ReLU;Huber;0;RMSprop;0,7829;0,7829;380
+T1-T2-T4_T5/trial_26;1;256;0,0001;ReLU;Huber;1;Adam;0,8641;0,8641;1 400
+T1-T2-T4_T5/trial_27;3;512;0,0006;ReLU;Huber;0;Adam;0,7842;0,7842;780
+T1-T2-T4_T5/trial_28;4;1 024;0,0002;ReLU;MAE;0;Adam;0,8702;0,8702;170
+T1-T2-T4_T5/trial_29;2;32;0,0001;ReLU;MSE;0;RMSprop;0,8633;0,8633;3 432
+T1-T2-T4_T5/trial_3;3;128;0,0051;tanh;Huber;0;Adam;-0,0355;-0,0355;234
+T1-T2-T4_T5/trial_30;1;128;0;sigmoid;Huber;0;Adam;-5,2479;-5,2479;4 000
+T1-T2-T4_T5/trial_31;1;1 024;0,0008;ReLU;Huber;0;Adam;0,8707;0,8707;380
+T1-T2-T4_T5/trial_32;1;1 024;0,0004;ReLU;Huber;0;Adam;0,8605;0,8605;640
+T1-T2-T4_T5/trial_33;1;1 024;0,0007;ReLU;Huber;0;Adam;0,8712;0,8712;320
+T1-T2-T4_T5/trial_34;4;1 024;0,0017;ReLU;Huber;1;Adam;0,8033;0,8033;1 248
+T1-T2-T4_T5/trial_35;2;512;0,0002;tanh;Huber;0;Adam;0,849;0,849;740
+T1-T2-T4_T5/trial_36;3;64;0,0011;sigmoid;Huber;0;Adagrad;-3,9741;-3,9741;4 000
+T1-T2-T4_T5/trial_37;1;128;0,0002;ReLU;Huber;1;Adam;0,8703;0,8703;1 989
+T1-T2-T4_T5/trial_38;4;128;0,0002;sigmoid;MSE;1;Adagrad;-7,4011;-7,4011;7 800
+T1-T2-T4_T5/trial_39;2;128;0,0001;tanh;MAE;1;RMSprop;0,6773;0,6773;4 719
+T1-T2-T4_T5/trial_4;3;1 024;0,0039;sigmoid;Huber;0;Adagrad;0,8453;0,8453;1 482
+T1-T2-T4_T5/trial_40;3;128;0,0045;ReLU;Huber;1;Adam;0,8681;0,8681;663
+T1-T2-T4_T5/trial_41;1;128;0,0003;ReLU;Huber;1;Adam;0,8746;0,8746;1 170
+T1-T2-T4_T5/trial_42;1;64;0,0002;ReLU;Huber;1;Adam;0,8754;0,8754;1 677
+T1-T2-T4_T5/trial_43;1;64;0;ReLU;Huber;1;Adam;0,8665;0,8665;5 109
+T1-T2-T4_T5/trial_44;1;64;0,0002;ReLU;Huber;1;Adagrad;0,8065;0,8065;7 800
+T1-T2-T4_T5/trial_45;2;64;0,0001;tanh;Huber;1;Adam;0,6419;0,6419;7 800
+T1-T2-T4_T5/trial_46;1;256;0,0009;ReLU;Huber;1;Adam;0,8733;0,8733;819
+T1-T2-T4_T5/trial_47;2;256;0;sigmoid;MAE;1;Adam;0,4585;0,4585;7 800
+T1-T2-T4_T5/trial_48;1;256;0,0005;ReLU;Huber;1;Adam;0,8745;0,8745;858
+T1-T2-T4_T5/trial_49;5;256;0,0028;ReLU;MSE;1;Adagrad;0,8781;0,8781;1 716
+T1-T2-T4_T5/trial_5;5;64;0,0002;sigmoid;MAE;1;Adagrad;-7,5727;-7,5727;7 800
+T1-T2-T4_T5/trial_6;5;512;0,0001;tanh;MAE;1;Adagrad;-6,0025;-6,0025;7 800
+T1-T2-T4_T5/trial_7;5;64;0,0028;sigmoid;Huber;0;Adagrad;-0,8319;-0,8319;4 000
+T1-T2-T4_T5/trial_8;2;256;0,0001;tanh;MSE;0;Adam;0,7992;0,7992;1 750
+T1-T2-T4_T5/trial_9;2;256;0,0001;tanh;MAE;0;RMSprop;0,7826;0,7826;1 050
+T1-T3_T5/trial_0;4;256;0,003;ReLU;MSE;0;Adam;0,7636;0,7636;310
+T1-T3_T5/trial_1;2;64;0,0001;ReLU;Huber;0;Adagrad;-0,3736;-0,3736;8 000
+T1-T3_T5/trial_10;3;512;0,0006;tanh;Huber;1;Adagrad;-0,1941;-0,1941;16 000
+T1-T3_T5/trial_11;4;128;0,0012;sigmoid;MAE;1;RMSprop;-0,1474;-0,1474;1 920
+T1-T3_T5/trial_12;5;1 024;0,0017;tanh;Huber;0;RMSprop;-0,1475;-0,1475;640
+T1-T3_T5/trial_13;4;64;0,0085;tanh;MAE;1;RMSprop;-0,0073;-0,0073;430
+T1-T3_T5/trial_14;3;512;0,0001;sigmoid;Huber;0;Adagrad;-3,424;-3,424;4 000
+T1-T3_T5/trial_15;2;128;0,0015;ReLU;MAE;1;Adagrad;0,6588;0,6588;4 160
+T1-T3_T5/trial_16;2;128;0,0007;tanh;MAE;1;Adagrad;-2,2406;-2,2406;16 000
+T1-T3_T5/trial_17;1;128;0,0098;tanh;Huber;1;Adagrad;0,6157;0,6157;1 840
+T1-T3_T5/trial_18;2;32;0,0002;ReLU;Huber;1;Adagrad;0,3929;0,3929;16 000
+T1-T3_T5/trial_19;3;1 024;0,001;sigmoid;MAE;1;Adagrad;-0,1455;-0,1455;16 000
+T1-T3_T5/trial_2;3;64;0,0043;sigmoid;MSE;1;RMSprop;-0,0122;-0,0122;660
+T1-T3_T5/trial_20;1;128;0,0004;tanh;Huber;1;Adagrad;-1,7102;-1,7102;16 000
+T1-T3_T5/trial_21;1;128;0,0031;tanh;Huber;1;Adagrad;0,6577;0,6577;6 400
+T1-T3_T5/trial_22;1;128;0,0032;tanh;Huber;1;Adagrad;0,6421;0,6421;5 120
+T1-T3_T5/trial_23;1;128;0,0037;tanh;Huber;1;Adagrad;0,626;0,626;4 640
+T1-T3_T5/trial_24;1;128;0,0026;tanh;Huber;1;Adagrad;0,4979;0,4979;2 000
+T1-T3_T5/trial_25;1;1 024;0,0056;tanh;Huber;1;Adam;-0,1471;-0,1471;1 520
+T1-T3_T5/trial_26;2;128;0,0094;tanh;Huber;1;Adagrad;0,6235;0,6235;2 240
+T1-T3_T5/trial_27;1;32;0,0028;tanh;Huber;1;Adagrad;-0,2467;-0,2467;16 000
+T1-T3_T5/trial_28;2;512;0,0006;tanh;Huber;1;Adagrad;0,6216;0,6216;16 000
+T1-T3_T5/trial_29;1;256;0,0036;tanh;MSE;1;Adam;-0,004;-0,004;120
+T1-T3_T5/trial_3;1;1 024;0,0068;ReLU;MSE;0;Adam;0,7148;0,7148;240
+T1-T3_T5/trial_30;1;1 024;0,0024;tanh;Huber;1;Adagrad;0,7471;0,7471;270
+T1-T3_T5/trial_31;1;1 024;0,002;tanh;Huber;1;Adagrad;0,6746;0,6746;280
+T1-T3_T5/trial_32;2;1 024;0,0057;tanh;Huber;1;Adagrad;0,6832;0,6832;300
+T1-T3_T5/trial_33;1;1 024;0,0035;tanh;Huber;1;Adagrad;0,7415;0,7415;450
+T1-T3_T5/trial_34;2;1 024;0,0064;sigmoid;Huber;1;Adagrad;0,6445;0,6445;370
+T1-T3_T5/trial_35;1;1 024;0,0043;tanh;MSE;1;Adam;0,6396;0,6396;690
+T1-T3_T5/trial_36;1;1 024;0,0011;tanh;Huber;1;Adagrad;0,7075;0,7075;630
+T1-T3_T5/trial_37;2;1 024;0,0011;tanh;MSE;0;Adagrad;0,7143;0,7143;800
+T1-T3_T5/trial_38;1;1 024;0,0009;tanh;Huber;1;Adam;0,7171;0,7171;360
+T1-T3_T5/trial_39;1;1 024;0,0005;sigmoid;Huber;1;Adam;0,7033;0,7033;490
+T1-T3_T5/trial_4;1;256;0,0049;ReLU;MSE;0;RMSprop;0,7303;0,7303;560
+T1-T3_T5/trial_40;1;1 024;0,0002;sigmoid;MSE;0;Adam;0,7308;0,7308;940
+T1-T3_T5/trial_41;1;1 024;0,0004;sigmoid;Huber;1;Adam;0,7151;0,7151;420
+T1-T3_T5/trial_42;1;1 024;0,0004;sigmoid;Huber;1;Adam;0,7332;0,7332;510
+T1-T3_T5/trial_43;1;1 024;0,0002;sigmoid;Huber;1;Adam;0,7263;0,7263;890
+T1-T3_T5/trial_44;1;1 024;0,0001;sigmoid;Huber;1;Adam;0,7119;0,7119;1 720
+T1-T3_T5/trial_45;1;256;0,0002;sigmoid;Huber;1;Adam;0,701;0,701;1 550
+T1-T3_T5/trial_46;5;64;0,0001;sigmoid;Huber;1;Adam;-7,3914;-7,3914;2 000
+T1-T3_T5/trial_47;2;1 024;0,0004;sigmoid;Huber;0;Adam;-0,0153;-0,0153;160
+T1-T3_T5/trial_48;1;1 024;0;sigmoid;Huber;1;Adam;0,7372;0,7372;4 040
+T1-T3_T5/trial_49;1;1 024;0;sigmoid;Huber;1;Adam;0,7347;0,7347;5 320
+T1-T3_T5/trial_5;5;256;0;tanh;MAE;1;Adam;-6,7446;-6,7446;8 000
+T1-T3_T5/trial_6;2;1 024;0,0091;tanh;Huber;1;Adagrad;0,6548;0,6548;1 840
+T1-T3_T5/trial_7;2;1 024;0,0003;tanh;MAE;1;Adagrad;0,6633;0,6633;8 000
+T1-T3_T5/trial_8;4;64;0,0022;ReLU;MAE;0;RMSprop;0,7035;0,7035;420
+T1-T3_T5/trial_9;2;32;0;ReLU;Huber;0;Adagrad;-5,8218;-5,8218;4 000
+T2_T4/trial_0;4;512;0;tanh;MAE;1;RMSprop;-1,6159;-1,6159;5 600
+T2_T4/trial_1;1;128;0,0005;tanh;MSE;1;RMSprop;0,6367;0,6367;1 106
+T2_T4/trial_10;2;256;0,0001;ReLU;MAE;0;RMSprop;0,6727;0,6727;1 595
+T2_T4/trial_11;3;64;0,0001;ReLU;MAE;0;Adam;0,641;0,641;3 052
+T2_T4/trial_12;3;256;0;ReLU;MAE;0;Adam;0,6451;0,6451;4 687
+T2_T4/trial_13;2;512;0,0002;ReLU;MAE;0;Adam;0,6745;0,6745;2 180
+T2_T4/trial_14;2;64;0,0009;ReLU;MAE;0;RMSprop;0,529;0,529;420
+T2_T4/trial_15;2;32;0,0002;sigmoid;MAE;0;Adam;0,4502;0,4502;11 227
+T2_T4/trial_16;1;128;0,0012;ReLU;MAE;0;RMSprop;0,6207;0,6207;1 308
+T2_T4/trial_17;2;256;0,0003;ReLU;MAE;0;Adam;0,642;0,642;1 090
+T2_T4/trial_18;3;512;0,0001;tanh;Huber;0;RMSprop;0,4411;0,4411;1 064
+T2_T4/trial_19;3;256;0,0002;sigmoid;MSE;0;Adam;-0,0557;-0,0557;1 595
+T2_T4/trial_2;5;1 024;0,0004;ReLU;MSE;1;Adagrad;0,7015;0,7015;4 290
+T2_T4/trial_20;4;512;0,0008;ReLU;MAE;0;RMSprop;0,6681;0,6681;2 289
+T2_T4/trial_21;3;512;0;ReLU;MAE;1;Adam;0,6667;0,6667;3 379
+T2_T4/trial_22;3;512;0,0001;ReLU;MAE;1;Adam;0,6767;0,6767;2 725
+T2_T4/trial_23;3;512;0,0001;ReLU;MAE;1;Adam;0,6689;0,6689;2 071
+T2_T4/trial_24;4;512;0,0001;ReLU;MAE;1;Adam;0,6243;0,6243;2 725
+T2_T4/trial_25;3;128;0;ReLU;MAE;1;Adam;0,6727;0,6727;5 123
+T2_T4/trial_26;3;64;0;ReLU;MAE;1;RMSprop;0,639;0,639;8 175
+T2_T4/trial_27;4;32;0;ReLU;MAE;1;Adam;-12,7645;-12,7645;11 000
+T2_T4/trial_28;3;256;0,0001;tanh;Huber;1;Adam;0,5916;0,5916;5 600
+T2_T4/trial_29;5;512;0;sigmoid;MSE;1;RMSprop;-7,4657;-7,4657;5 600
+T2_T4/trial_3;3;256;0,0001;ReLU;MAE;0;RMSprop;0,6722;0,6722;3 270
+T2_T4/trial_30;4;512;0;tanh;MAE;1;RMSprop;-0,1124;-0,1124;12 753
+T2_T4/trial_31;2;512;0,0001;ReLU;MAE;0;Adam;0,6769;0,6769;1 308
+T2_T4/trial_32;2;512;0,0091;ReLU;MAE;0;Adam;0,6181;0,6181;1 090
+T2_T4/trial_33;1;512;0,0001;ReLU;MAE;1;Adam;0,6405;0,6405;2 071
+T2_T4/trial_34;3;128;0,0004;ReLU;MSE;0;Adam;0,718;0,718;518
+T2_T4/trial_35;2;1 024;0,0003;tanh;MAE;1;Adagrad;0,571;0,571;21 800
+T2_T4/trial_36;3;512;0,0006;ReLU;Huber;1;Adam;0,6326;0,6326;1 417
+T2_T4/trial_37;3;256;0,0007;ReLU;Huber;1;Adagrad;0,6819;0,6819;2 420
+T2_T4/trial_38;4;256;0,0007;sigmoid;Huber;1;Adagrad;-9,9922;-9,9922;11 000
+T2_T4/trial_39;3;256;0,0023;ReLU;Huber;1;Adagrad;0,686;0,686;1 430
+T2_T4/trial_4;4;256;0;tanh;Huber;0;Adagrad;-9,9103;-9,9103;2 800
+T2_T4/trial_40;4;256;0,0019;ReLU;Huber;1;Adagrad;0,6867;0,6867;1 870
+T2_T4/trial_41;5;256;0,0014;ReLU;Huber;1;Adagrad;0,6746;0,6746;1 925
+T2_T4/trial_42;5;256;0,0022;ReLU;Huber;1;Adagrad;0,6905;0,6905;1 430
+T2_T4/trial_43;5;256;0,0022;ReLU;Huber;1;Adagrad;0,678;0,678;1 375
+T2_T4/trial_44;5;256;0,0025;ReLU;Huber;1;Adagrad;0,6735;0,6735;990
+T2_T4/trial_45;5;256;0,0039;ReLU;Huber;1;Adagrad;0,6692;0,6692;1 485
+T2_T4/trial_46;5;256;0,0017;ReLU;Huber;1;Adagrad;0,7004;0,7004;1 650
+T2_T4/trial_47;5;256;0,0048;ReLU;Huber;1;Adagrad;0,7019;0,7019;1 320
+T2_T4/trial_48;4;256;0,003;tanh;Huber;1;Adagrad;-0,8358;-0,8358;11 000
+T2_T4/trial_49;5;256;0,0016;ReLU;Huber;1;Adagrad;0,6812;0,6812;1 870
+T2_T4/trial_5;4;1 024;0,0043;sigmoid;Huber;1;Adagrad;-0,1124;-0,1124;3 488
+T2_T4/trial_6;1;1 024;0;sigmoid;Huber;0;Adagrad;-10,0768;-10,0768;2 800
+T2_T4/trial_7;3;512;0;ReLU;MAE;1;Adam;0,6773;0,6773;4 905
+T2_T4/trial_8;5;512;0,0022;ReLU;MSE;1;Adam;0,6483;0,6483;1 090
+T2_T4/trial_9;2;32;0,0001;ReLU;MAE;1;Adagrad;-4,6119;-4,6119;2 800
+T1-T3-T4_T5/trial_0;5;64;0,0042;ReLU;Huber;1;Adam;-1,4248;-1,4248;4 000
+T1-T3-T4_T5/trial_1;3;512;0,0013;ReLU;MSE;1;Adagrad;0,8676;0,8676;250
+T1-T3-T4_T5/trial_10;1;128;0,0001;sigmoid;MAE;1;RMSprop;0,7986;0,7986;5 850
+T1-T3-T4_T5/trial_11;1;128;0,0001;sigmoid;MAE;1;RMSprop;0,7924;0,7924;6 318
+T1-T3-T4_T5/trial_12;1;128;0,0002;sigmoid;MAE;1;RMSprop;0,7376;0,7376;4 134
+T1-T3-T4_T5/trial_13;2;256;0,0004;sigmoid;MAE;1;RMSprop;0,7006;0,7006;2 262
+T1-T3-T4_T5/trial_14;1;128;0,0001;sigmoid;MAE;1;RMSprop;0,7932;0,7932;9 594
+T1-T3-T4_T5/trial_15;2;128;0;sigmoid;MAE;1;RMSprop;0,727;0,727;15 600
+T1-T3-T4_T5/trial_16;1;256;0;tanh;MAE;1;RMSprop;0,814;0,814;13 884
+T1-T3-T4_T5/trial_17;2;256;0;tanh;MAE;1;RMSprop;0,5365;0,5365;15 600
+T1-T3-T4_T5/trial_18;1;256;0;tanh;Huber;1;RMSprop;-0,6725;-0,6725;4 000
+T1-T3-T4_T5/trial_19;4;1 024;0;tanh;MSE;1;Adagrad;-7,0655;-7,0655;15 600
+T1-T3-T4_T5/trial_2;5;512;0,0027;ReLU;MAE;0;RMSprop;0,2364;0,2364;150
+T1-T3-T4_T5/trial_20;2;256;0,0002;tanh;MAE;1;RMSprop;0,7522;0,7522;3 198
+T1-T3-T4_T5/trial_21;1;128;0,0001;sigmoid;MAE;1;RMSprop;0,7892;0,7892;10 374
+T1-T3-T4_T5/trial_22;1;128;0;sigmoid;MAE;1;RMSprop;0,8081;0,8081;13 884
+T1-T3-T4_T5/trial_23;1;256;0,0096;tanh;MAE;1;RMSprop;-0,6395;-0,6395;936
+T1-T3-T4_T5/trial_24;2;128;0;sigmoid;MAE;1;RMSprop;-0,7758;-0,7758;15 600
+T1-T3-T4_T5/trial_25;1;32;0,0001;tanh;MAE;1;RMSprop;0,7176;0,7176;14 118
+T1-T3-T4_T5/trial_26;2;1 024;0,0008;sigmoid;MAE;1;RMSprop;0,8147;0,8147;350
+T1-T3-T4_T5/trial_27;1;64;0,0001;sigmoid;Huber;1;RMSprop;-2,7323;-2,7323;4 000
+T1-T3-T4_T5/trial_28;2;256;0,0001;ReLU;MSE;1;Adagrad;0,8431;0,8431;7 800
+T1-T3-T4_T5/trial_29;4;64;0;tanh;MAE;1;Adam;-7,4592;-7,4592;4 000
+T1-T3-T4_T5/trial_3;3;128;0,0004;ReLU;MSE;0;RMSprop;0,8066;0,8066;500
+T1-T3-T4_T5/trial_30;1;128;0;ReLU;Huber;1;Adam;0,8286;0,8286;2 808
+T1-T3-T4_T5/trial_31;1;128;0;ReLU;Huber;1;Adam;0,8327;0,8327;2 262
+T1-T3-T4_T5/trial_32;1;128;0;ReLU;Huber;1;Adam;0,8385;0,8385;4 758
+T1-T3-T4_T5/trial_33;1;128;0;ReLU;Huber;1;Adam;0,8353;0,8353;2 730
+T1-T3-T4_T5/trial_34;2;128;0;ReLU;Huber;1;Adam;0,8652;0,8652;1 050
+T1-T3-T4_T5/trial_35;3;128;0;ReLU;Huber;0;Adam;0,8643;0,8643;1 130
+T1-T3-T4_T5/trial_36;3;512;0;ReLU;Huber;0;Adam;0,8717;0,8717;470
+T1-T3-T4_T5/trial_37;3;512;0;ReLU;Huber;0;Adam;0,8768;0,8768;560
+T1-T3-T4_T5/trial_38;3;512;0;ReLU;Huber;0;Adam;0,8686;0,8686;490
+T1-T3-T4_T5/trial_39;3;512;0;ReLU;Huber;0;Adam;0,8738;0,8738;540
+T1-T3-T4_T5/trial_4;3;1 024;0,0039;sigmoid;MAE;0;Adam;-0,0562;-0,0562;312
+T1-T3-T4_T5/trial_40;3;512;0;ReLU;Huber;0;Adam;0,8739;0,8739;570
+T1-T3-T4_T5/trial_41;3;512;0;ReLU;Huber;0;Adam;0,8703;0,8703;550
+T1-T3-T4_T5/trial_42;3;512;0;ReLU;Huber;0;Adam;0,8675;0,8675;540
+T1-T3-T4_T5/trial_43;3;512;0;ReLU;Huber;0;Adam;0,8706;0,8706;620
+T1-T3-T4_T5/trial_44;4;512;0;ReLU;Huber;0;Adam;0,869;0,869;650
+T1-T3-T4_T5/trial_45;4;512;0;ReLU;Huber;0;Adam;0,8733;0,8733;680
+T1-T3-T4_T5/trial_46;4;512;0;ReLU;Huber;0;Adam;0,8696;0,8696;650
+T1-T3-T4_T5/trial_47;4;512;0;ReLU;Huber;0;Adam;0,8713;0,8713;710
+T1-T3-T4_T5/trial_48;5;512;0;ReLU;Huber;0;Adam;0,8671;0,8671;320
+T1-T3-T4_T5/trial_49;4;512;0;ReLU;MSE;0;Adam;0,8766;0,8766;770
+T1-T3-T4_T5/trial_5;5;32;0;sigmoid;MAE;0;Adagrad;-8,6194;-8,6194;7 800
+T1-T3-T4_T5/trial_6;1;128;0,0001;sigmoid;MAE;1;RMSprop;0,8123;0,8123;12 324
+T1-T3-T4_T5/trial_7;2;32;0;sigmoid;MSE;0;Adagrad;-10,9829;-10,9829;15 600
+T1-T3-T4_T5/trial_8;4;512;0,0001;tanh;Huber;1;Adam;-0,057;-0,057;7 800
+T1-T3-T4_T5/trial_9;5;64;0,0038;tanh;Huber;0;Adam;-0,035;-0,035;200
+T1-T3_T4/trial_0;1;1 024;0,0057;ReLU;MAE;0;Adagrad;0,87;0,87;350
+T1-T3_T4/trial_1;5;32;0,0001;sigmoid;MSE;0;Adagrad;-10,2665;-10,2665;2 800
+T1-T3_T4/trial_10;3;512;0,0006;tanh;Huber;1;Adam;-0,0441;-0,0441;784
+T1-T3_T4/trial_11;4;128;0,0011;ReLU;Huber;1;RMSprop;0,861;0,861;1 853
+T1-T3_T4/trial_12;5;128;0,001;ReLU;Huber;1;RMSprop;0,8457;0,8457;2 071
+T1-T3_T4/trial_13;4;64;0,0001;ReLU;Huber;1;RMSprop;0,8693;0,8693;5 886
+T1-T3_T4/trial_14;3;64;0;ReLU;Huber;1;RMSprop;0,8719;0,8719;9 047
+T1-T3_T4/trial_15;2;64;0;tanh;Huber;1;Adam;-7,6059;-7,6059;5 600
+T1-T3_T4/trial_16;3;64;0;ReLU;MSE;1;RMSprop;0,8601;0,8601;3 052
+T1-T3_T4/trial_17;1;512;0,0001;ReLU;Huber;1;Adam;0,8708;0,8708;1 526
+T1-T3_T4/trial_18;2;1 024;0;sigmoid;Huber;1;RMSprop;0,8562;0,8562;6 545
+T1-T3_T4/trial_19;3;64;0,0002;tanh;MSE;1;Adam;0,7547;0,7547;19 620
+T1-T3_T4/trial_2;2;256;0,0057;ReLU;MAE;1;Adagrad;0,8568;0,8568;392
+T1-T3_T4/trial_20;2;64;0,0001;ReLU;Huber;1;RMSprop;0,8523;0,8523;1 232
+T1-T3_T4/trial_21;1;512;0,0002;ReLU;Huber;1;Adam;0,8649;0,8649;1 308
+T1-T3_T4/trial_22;1;512;0,0001;ReLU;Huber;1;Adam;0,8426;0,8426;1 635
+T1-T3_T4/trial_23;1;512;0;ReLU;Huber;1;Adam;0,8715;0,8715;2 725
+T1-T3_T4/trial_24;3;1 024;0;ReLU;Huber;1;Adam;0,8669;0,8669;1 526
+T1-T3_T4/trial_25;2;512;0;ReLU;Huber;1;Adam;0,8624;0,8624;5 123
+T1-T3_T4/trial_26;1;32;0;ReLU;Huber;1;Adam;0,8689;0,8689;5 600
+T1-T3_T4/trial_27;3;1 024;0,0001;ReLU;Huber;1;RMSprop;0,8296;0,8296;770
+T1-T3_T4/trial_28;2;64;0,0003;sigmoid;MAE;1;Adam;0,7826;0,7826;8 829
+T1-T3_T4/trial_29;1;512;0;tanh;MSE;0;RMSprop;0,7377;0,7377;2 800
+T1-T3_T4/trial_3;4;128;0,0021;ReLU;Huber;1;Adagrad;0,8809;0,8809;896
+T1-T3_T4/trial_30;1;1 024;0,0001;ReLU;MAE;1;Adam;0,8698;0,8698;924
+T1-T3_T4/trial_31;3;1 024;0;ReLU;Huber;1;Adam;0,8731;0,8731;1 635
+T1-T3_T4/trial_32;3;1 024;0,0001;ReLU;Huber;1;Adam;0,8655;0,8655;1 635
+T1-T3_T4/trial_33;4;1 024;0;ReLU;Huber;1;Adam;0,8673;0,8673;2 398
+T1-T3_T4/trial_34;5;1 024;0;ReLU;Huber;1;Adagrad;0,7829;0,7829;21 800
+T1-T3_T4/trial_35;4;32;0;ReLU;Huber;0;Adam;0,8684;0,8684;15 042
+T1-T3_T4/trial_36;4;32;0;sigmoid;MSE;0;Adam;-9,5472;-9,5472;2 800
+T1-T3_T4/trial_37;5;32;0;ReLU;Huber;0;Adam;0,8686;0,8686;21 800
+T1-T3_T4/trial_38;4;256;0;ReLU;MAE;0;Adam;0,8727;0,8727;4 578
+T1-T3_T4/trial_39;4;32;0;ReLU;Huber;0;Adam;0,8757;0,8757;2 800
+T1-T3_T4/trial_4;4;256;0,0001;sigmoid;Huber;0;RMSprop;0,7032;0,7032;2 604
+T1-T3_T4/trial_40;5;32;0,0001;sigmoid;Huber;0;Adagrad;-11,6502;-11,6502;21 800
+T1-T3_T4/trial_41;5;32;0;ReLU;Huber;0;Adam;0,869;0,869;19 293
+T1-T3_T4/trial_42;5;32;0;ReLU;Huber;0;Adam;0,8681;0,8681;12 317
+T1-T3_T4/trial_43;4;32;0;ReLU;Huber;0;Adam;0,8594;0,8594;21 800
+T1-T3_T4/trial_44;5;128;0;ReLU;Huber;0;Adam;0,8721;0,8721;7 194
+T1-T3_T4/trial_45;5;128;0;ReLU;Huber;0;Adam;0,8785;0,8785;5 170
+T1-T3_T4/trial_46;5;128;0;tanh;Huber;0;Adam;-0,3068;-0,3068;11 000
+T1-T3_T4/trial_47;5;128;0;ReLU;MAE;0;Adagrad;0,669;0,669;11 000
+T1-T3_T4/trial_48;5;128;0;ReLU;Huber;0;Adam;0,8752;0,8752;5 445
+T1-T3_T4/trial_49;5;128;0,0031;ReLU;MSE;0;Adam;0,8302;0,8302;660
+T1-T3_T4/trial_5;2;1 024;0;ReLU;MSE;0;Adam;0,8842;0,8842;840
+T1-T3_T4/trial_6;1;1 024;0,0003;tanh;MAE;0;Adam;0,8268;0,8268;660
+T1-T3_T4/trial_7;3;256;0,0038;sigmoid;Huber;0;Adagrad;-0,0547;-0,0547;1 540
+T1-T3_T4/trial_8;2;1 024;0,0001;ReLU;Huber;1;Adam;0,8773;0,8773;392
+T1-T3_T4/trial_9;2;32;0,0065;ReLU;MAE;1;Adagrad;0,8693;0,8693;3 052
