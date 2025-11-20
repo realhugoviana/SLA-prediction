@@ -1,9 +1,0 @@
-activation: tanh
-criterion: MSE
-decroissant: false
-input_dim: 884
-learning_rate: 9.635728973272189e-05
-n_layer: 1
-n_units: 512
-optimizer: Adagrad
-output_dim: 1
