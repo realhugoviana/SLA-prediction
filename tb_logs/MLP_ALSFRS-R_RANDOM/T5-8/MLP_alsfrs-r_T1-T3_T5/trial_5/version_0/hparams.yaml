@@ -1,0 +1,9 @@
+activation: tanh
+criterion: MAE
+decroissant: true
+input_dim: 442
+learning_rate: 1.2751729022637153e-05
+n_layer: 5
+n_units: 256
+optimizer: Adam
+output_dim: 1

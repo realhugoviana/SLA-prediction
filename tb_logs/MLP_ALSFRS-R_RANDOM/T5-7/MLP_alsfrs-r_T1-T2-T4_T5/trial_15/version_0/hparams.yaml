@@ -1,0 +1,9 @@
+activation: ReLU
+criterion: MSE
+decroissant: false
+input_dim: 663
+learning_rate: 0.0006519881873542822
+n_layer: 1
+n_units: 32
+optimizer: Adam
+output_dim: 1
