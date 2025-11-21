@@ -12,10 +12,10 @@ from model import NN
 from data import DataModule
 
 
-datasets_dir = "datasets"
+datasets_dir = "datasets/to_train"
 csv_files = glob.glob(os.path.join(datasets_dir, "*.csv"))
 
-max_epoch = 200
+max_epoch = 1
 
 if torch.backends.mps.is_available():
     accelerator = "mps"
@@ -24,19 +24,67 @@ elif torch.cuda.is_available():
 else:
     accelerator = "cpu"
 
+
 def run_trainings(data_path):
     input_size = len(pd.read_csv(data_path).columns) - 1
     output_size = 1 
     dataset_name = os.path.splitext(os.path.basename(data_path))[0]
+
+    n_layer_list = [1, 2, 3]
+    n_units_list = [128, 256, 512]
+    decroissant_list = [True, False]
+    learning_rate_list = [1e-5, 1e-4, 1e-3]
+    batch_size = 16
+    criterion = 'Huber'
+    optimizer = 'Adam'
+    activation = 'ReLU'
+
+    trial_num = 0
+    for n_layer in n_layer_list:
+        for n_units in n_units_list:
+            for decroissant in decroissant_list:
+                for learning_rate in learning_rate_list:
+
+                    model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+                    dm = DataModule(csv_path=data_path, batch_size=batch_size)
+
+                    logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_20-11/{dataset_name}", name=f"trial_{trial_num}")
+
+                    trainer = L.Trainer(
+                        max_epochs=max_epoch,
+                        accelerator=accelerator,
+                        callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
+                        logger=logger,
+                        enable_checkpointing=False
+                    )
+
+                    logger.experiment.add_text("hyperparameters", 
+                        f"batch_size: {batch_size}, learning_rate: {learning_rate}, n_layer: {n_layer}, n_units: {n_units}")
+                    logger.experiment.add_text("architecture", str(model))
+                    logger.experiment.add_scalar("parameters", sum(p.numel() for p in model.parameters()))
+
+                    trainer.fit(model, dm)
+                    val_result = trainer.validate(model, datamodule=dm)
+                    val_loss = val_result[0]['val_loss']
+                    trainer.test(model, datamodule=dm)
+                    print(f"Tested: layers={n_layer}, units={n_units}, dec={decroissant}, lr={learning_rate}, batch={batch_size} -> val_loss={val_loss:.4f}")
+
+                    trial_num += 1
+
+
+def run_trainings_random(data_path):
+    input_size = len(pd.read_csv(data_path).columns) - 1
+    output_size = 1 
+    dataset_name = os.path.splitext(os.path.basename(data_path))[0]
     def objective(trial):
-        n_layer = trial.suggest_int('n_layer', 1, 5)
-        n_units = trial.suggest_categorical('n_units', [32, 64, 128, 256, 512, 1024])
+        n_layer = trial.suggest_int('n_layer', 1, 3)
+        n_units = trial.suggest_categorical('n_units', [128, 256, 512])
         decroissant = trial.suggest_categorical('decroissant', [True, False])
-        learning_rate = trial.suggest_loguniform('learning_rate', 1e-5, 1e-2)
+        learning_rate = trial.suggest_categorical('learning_rate', [1e-5, 1e-4, 1e-3])
         batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128])
-        criterion = trial.suggest_categorical('criterion', ['MSE', 'MAE', 'Huber'])
-        optimizer = trial.suggest_categorical('optimizer', ['Adam', 'RMSprop', 'Adagrad'])
-        activation = trial.suggest_categorical('activation', ['ReLU', 'sigmoid', 'tanh'])
+        criterion = trial.suggest_categorical('criterion', ['Huber'])
+        optimizer = trial.suggest_categorical('optimizer', ['Adam'])
+        activation = trial.suggest_categorical('activation', ['ReLU'])
 
 
         model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)

@@ -14,6 +14,12 @@ df_mae["Value"] = df_mae["Value"].str.replace(",", ".").astype(float)
 df_r2["Value"] = df_r2["Value"].str.replace(",", ".").astype(float)
 df_rmse["Value"] = df_rmse["Value"].str.replace(",", ".").astype(float)
 
+df_batch_size = pd.read_csv("stats_entrainement/batch_size.csv")
+df_batch_size = df_batch_size[['dataset', 'trial', 'batch_size']]
+df_batch_size["dataset"] = df_batch_size["dataset"].str.replace("MLP_alsfrs-r_", "")
+
+df_mae = df_mae.merge(df_batch_size, on=["dataset", "trial"])
+
 df_mae.boxplot(column="Value", by="criterion", grid=False)
 
 df_mae.boxplot(column="Value", by="n_layer", grid=False)
@@ -29,6 +35,8 @@ df_mae.boxplot(column="Value", by="decroissant", grid=False)
 df_mae.plot.scatter(x="learning_rate", y="Value")
 
 df_mae.boxplot(column="Value", by="learning_rate", grid=False)
+
+df_mae.boxplot(column="Value", by="batch_size", grid=False)
 
 plt.show()
 
