@@ -54,11 +54,3 @@ for subdir in os.listdir(log_dir):
 
 df_hyperparams = pd.DataFrame(all_data)
 df_hyperparams.to_csv("stats_entrainement/batch_size.csv", index=False)
-                        
-
-# trial_path = "tb_logs/MLP_ALSFRS-R_RANDOM/T2/MLP_alsfrs-r_T1_T2/trial_0/version_0"
-# hyperparams = get_hyperparameters_from_tensor(trial_path)
-
-# print("\nHyperparameters for this trial:\n")
-# for k, v in hyperparams.items():
-#     print(f"{k} -> {v}")
