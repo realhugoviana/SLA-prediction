@@ -15,7 +15,7 @@ from data import DataModule
 datasets_dir = "datasets/to_train"
 csv_files = glob.glob(os.path.join(datasets_dir, "*.csv"))
 
-max_epoch = 1
+max_epoch = 200
 
 if torch.backends.mps.is_available():
     accelerator = "mps"
