@@ -24,8 +24,55 @@ elif torch.cuda.is_available():
 else:
     accelerator = "cpu"
 
+def run_trainings_23_11():
+    df_best_trials = pd.read_csv("stats_entrainement/MLP_ALSFRS-R_20-11/best_trials_combined_zscore.csv")
 
-def run_trainings(data_path):
+    criterion = 'Huber'
+    optimizer = 'Adam'
+    activation = 'ReLU'
+    batch_size = 16
+    learning_rate_list = [1e-6, 5e-6, 1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 5e-3, 1e-2, 5e-2]
+
+    for _, trial in df_best_trials.iterrows():
+        data_path = os.path.join(datasets_dir, f"MLP_alsfrs-r_{trial['dataset']}.csv")
+
+        input_size = len(pd.read_csv(data_path).columns) - 1
+        output_size = 1 
+        dataset_name = os.path.splitext(os.path.basename(data_path))[0]
+
+        n_layer = int(trial['n_layer'])
+        n_units = int(trial['n_units'])
+        decroissant = bool(trial['decroissant'])
+
+        trial_num = 0
+        for learning_rate in learning_rate_list:
+            model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+            dm = DataModule(csv_path=data_path, batch_size=batch_size)
+
+            logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_23-11/{dataset_name}", name=f"trial_{trial_num}")
+
+            trainer = L.Trainer(
+                max_epochs=max_epoch,
+                accelerator=accelerator,
+                callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
+                logger=logger,
+                enable_checkpointing=False
+            )
+
+            logger.experiment.add_text("hyperparameters", 
+                f"batch_size: {batch_size}, learning_rate: {learning_rate}, n_layer: {n_layer}, n_units: {n_units}")
+            logger.experiment.add_text("architecture", str(model))
+            logger.experiment.add_scalar("parameters", sum(p.numel() for p in model.parameters()))
+
+            trainer.fit(model, dm)
+            val_result = trainer.validate(model, datamodule=dm)
+            val_loss = val_result[0]['val_loss']
+            trainer.test(model, datamodule=dm)
+            print(f"Tested: layers={n_layer}, units={n_units}, dec={decroissant}, lr={learning_rate}, batch={batch_size} -> val_loss={val_loss:.4f}")
+
+            trial_num += 1
+
+def run_trainings_20_11(data_path):
     input_size = len(pd.read_csv(data_path).columns) - 1
     output_size = 1 
     dataset_name = os.path.splitext(os.path.basename(data_path))[0]
@@ -132,8 +179,4 @@ def run_trainings_random(data_path):
 if __name__ == '__main__':
     L.seed_everything(42, workers=True)
 
-    for csv_file in csv_files:
-        print("###########################################")
-        print(f"Starting training for dataset: {csv_file}")
-        print("###########################################")
-        run_trainings(csv_file)
+    run_trainings_23_11()
