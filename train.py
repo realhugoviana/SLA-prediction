@@ -25,7 +25,7 @@ else:
     accelerator = "cpu"
 
 def run_trainings_23_11():
-    df_best_trials = pd.read_csv("stats_entrainement/MLP_ALSFRS-R_20-11/best_trials_combined_zscore.csv")
+    df_best_trials = pd.read_csv("stats_entrainement/MLP_ALSFRS-R_20-11/best_trials_mae.csv")
 
     criterion = 'Huber'
     optimizer = 'Adam'
@@ -49,7 +49,7 @@ def run_trainings_23_11():
             model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
             dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
-            logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_23-11/{dataset_name}", name=f"trial_{trial_num}")
+            logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_05-12/{dataset_name}", name=f"trial_{trial_num}")
 
             trainer = L.Trainer(
                 max_epochs=max_epoch,

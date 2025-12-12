@@ -31,10 +31,10 @@ runlog_data["combined_zscore"] = (runlog_data["mae_zscore"] +
                                   runlog_data["rmse_zscore"] +
                                   runlog_data["r2_zscore"])
 
-best_trials = runlog_data.loc[runlog_data.groupby("dataset")["combined_zscore"].idxmin()]
-best_trials = best_trials[["dataset", "trial", "mae", "rmse", "r2", "combined_zscore", "n_layer", "n_units", "learning_rate", "decroissant"]]
+best_trials = runlog_data.loc[runlog_data.groupby("dataset")["mae"].idxmin()]
+best_trials = best_trials[["dataset", "n_layer", "n_units", "decroissant", "learning_rate", "mae", "rmse", "r2", "trial"]]
 
-best_trials.to_csv("stats_entrainement/MLP_ALSFRS-R_20-11/best_trials_combined_zscore.csv", index=False)
+best_trials.to_csv("stats_entrainement/MLP_ALSFRS-R_20-11/best_trials_mae.csv", index=False)
 
 
 ########################################################################
