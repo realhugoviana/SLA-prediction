@@ -72,10 +72,11 @@ class NN(L.LightningModule):
         y = y.view(-1, 1)
         y_hat = self.forward(x)
         loss = self.criterion(y_hat, y)
-        self.log_dict({'train_loss': loss,
-                       'train_mae': self.train_mae(y_hat, y),
-                       'train_rmse': self.train_rmse(y_hat, y),
-                       'train_r2': self.train_r2(y_hat, y)})
+        if len(y) > 1:
+            self.log_dict({'train_loss': loss,
+                        'train_mae': self.train_mae(y_hat, y),
+                        'train_rmse': self.train_rmse(y_hat, y),
+                        'train_r2': self.train_r2(y_hat, y)})
         return loss
     
     def validation_step(self, batch, batch_idx):

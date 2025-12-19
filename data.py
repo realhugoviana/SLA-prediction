@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from torch.utils.data import Dataset, DataLoader
 import torch
 from lightning import LightningDataModule
@@ -29,6 +30,7 @@ class DataModule(LightningDataModule):
         self.test_size = test_size
         self.val_size = val_size
         self.random_state = random_state
+        self.scaler = StandardScaler()
 
     def prepare_data(self):
         self.dataframe = pd.read_csv(self.csv_path)
@@ -36,6 +38,11 @@ class DataModule(LightningDataModule):
     def setup(self, stage=None):
         train_val_df, test_df = train_test_split(self.dataframe, test_size=self.test_size, random_state=self.random_state)
         train_df, val_df = train_test_split(train_val_df, test_size=self.val_size, random_state=self.random_state)
+
+        self.feature_cols = self.feature_cols if self.feature_cols else [col for col in self.dataframe.columns if col != self.target_col]
+        train_df[self.feature_cols] = self.scaler.fit_transform(train_df[self.feature_cols])
+        val_df[self.feature_cols] = self.scaler.transform(val_df[self.feature_cols])
+        test_df[self.feature_cols] = self.scaler.transform(test_df[self.feature_cols])
 
         self.train_dataset = ALSFRSDataset(train_df, feature_cols=self.feature_cols, target_col=self.target_col)
         self.val_dataset = ALSFRSDataset(val_df, feature_cols=self.feature_cols, target_col=self.target_col)
