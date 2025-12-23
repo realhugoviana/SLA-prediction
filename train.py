@@ -295,7 +295,7 @@ def run_grid_search(data_path):
                     model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
                     dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
-                    logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_LAB_NO_DELTA_17-12/{dataset_name}", name=f"trial_{trial_num}")
+                    logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_COMBINED/{dataset_name}", name=f"trial_{trial_num}")
 
                     trainer = L.Trainer(
                         max_epochs=max_epoch,
@@ -323,7 +323,12 @@ if __name__ == '__main__':
 
     start = time.time()
 
-    run_grid_search("datasets/LAB_NO_DELTA/MLP_alsfrs-r_lab_no_delta_thresh80_T4_T5.csv")
+    run_grid_search("../datasets/COMBINED/MLP_alsfrs-r_combined_3M.csv")
+
+    run_grid_search("../datasets/COMBINED/MLP_alsfrs-r_combined_6M.csv")
+
+    run_grid_search("../datasets/COMBINED/MLP_alsfrs-r_combined_9M.csv")
+
     end = time.time()
 
     training_time = end - start
