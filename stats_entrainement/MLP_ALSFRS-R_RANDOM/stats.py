@@ -1,11 +1,34 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib as mpl
 
-sns.set_style("whitegrid")
+# =========================
+# GLOBAL FONT CONFIGURATION
+# =========================
+mpl.rcParams.update({
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Helvetica Neue"],
+    "font.weight": "bold",
+    "axes.titleweight": "bold",
+    "axes.labelweight": "bold",
+    "xtick.labelsize": 14,  # slightly larger ticks
+    "ytick.labelsize": 14,
+    "legend.fontsize": 12,
+    "legend.title_fontsize": 13,
+    "text.color": "black",
+    "axes.labelcolor": "black",
+    "xtick.color": "black",
+    "ytick.color": "black"
+})
+
+# Use ticks style to remove background grid lines
+sns.set_style("ticks")
 sns.set_context("talk")
-sns.set_palette("pastel")
 
+# =========================
+# DATA LOADING
+# =========================
 df_mae = pd.read_csv("stats_entrainement/MLP_ALSFRS-R_RANDOM/MAE.csv", sep=';')
 df_r2 = pd.read_csv("stats_entrainement/MLP_ALSFRS-R_RANDOM/R2.csv", sep=';')
 df_rmse = pd.read_csv("stats_entrainement/MLP_ALSFRS-R_RANDOM/RMSE.csv", sep=';')
@@ -23,37 +46,54 @@ df_batch_size = df_batch_size[['dataset', 'trial', 'batch_size']]
 df_batch_size["dataset"] = df_batch_size["dataset"].str.replace("MLP_alsfrs-r_", "")
 
 df_mae = df_mae.merge(df_batch_size, on=["dataset", "trial"])
-df_mae["n_units"] = df_mae["n_units"].astype(str).str.replace("\u202f", "")
+
+df_mae["n_units"] = (
+    df_mae["n_units"]
+    .astype(str)
+    .str.replace("\u202f", "")
+)
 df_mae["n_units"] = pd.to_numeric(df_mae["n_units"], errors='coerce')
 
 unit_order = sorted(df_mae["n_units"].unique())
 
-# Create the boxplot
-plt.figure(figsize=(8,6), facecolor='none')
-ax = sns.boxplot(x="n_units", 
-                 y="Value", 
-                 data=df_mae, 
-                 order=unit_order,
-                 palette="Set2",
-                 boxprops=dict(edgecolor='black'),
-                 medianprops=dict(color='black'))
+# =========================
+# PLOT
+# =========================
+plt.figure(figsize=(8, 6), facecolor='none')
+
+ax = sns.boxplot(
+    x="n_units",
+    y="Value",
+    data=df_mae,
+    order=unit_order,
+    color="#FF968D",  # Only fill color
+    boxprops=dict(edgecolor="black", linewidth=4),
+    whiskerprops=dict(color="black", linewidth=6),
+    capprops=dict(color="black", linewidth=6),
+    medianprops=dict(color="black", linewidth=6)
+)
 
 ax.set_facecolor('none')
 
-# Set title and axes labels
-ax.set_title("Distribution of the MAE by number of neurons per layer", fontsize=16, fontname="Times New Roman")
-ax.set_xlabel("Number of neurons", fontsize=14, fontname="Times New Roman")
-ax.set_ylabel("MAE", fontsize=14, fontname="Times New Roman")
+# ---- BLACK AXES ----
+for spine in ax.spines.values():
+    spine.set_color("black")
+    spine.set_linewidth(2.5)
 
-# Remove the automatic 'Boxplot grouped by...' title
+ax.tick_params(axis="both", colors="black", width=2.0, direction="out")
+
+# ---- TITLE AND LABELS (LARGER) ----
+# ax.set_title(
+#     "Distribution of the MAE by number of neurons per layer",
+#     fontsize=100,  # increased
+#     color="black"
+# )
+ax.set_xlabel("Number of neurons", fontsize=50, color="black")  # increased
+ax.set_ylabel("MAE", fontsize=50, color="black")  # increased
+
 plt.suptitle("")
+sns.despine(offset=0, trim=False)  # keep axes lines
 
-# Optional: improve style
-plt.xticks(fontsize=12, fontname="Times New Roman")
-plt.yticks(fontsize=12, fontname="Times New Roman")
-
-sns.despine()
-# Show the plot
 plt.show()
 
 # df_mae.boxplot(column="Value", by="criterion", grid=False)
