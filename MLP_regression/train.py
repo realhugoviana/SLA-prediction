@@ -8,8 +8,8 @@ import os
 import glob
 import time
 
-from model import NN
-from data import DataModule
+from MLP_regression.model import MLP_regressor
+from MLP_regression.data import DataModule
 
 
 datasets_dir = "datasets/COMBINED"
@@ -46,7 +46,7 @@ def run_trainings_23_11():
 
         trial_num = 0
         for learning_rate in learning_rate_list:
-            model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+            model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
             dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
             logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_05-12/{dataset_name}", name=f"trial_{trial_num}")
@@ -92,7 +92,7 @@ def run_trainings_20_11(data_path):
             for decroissant in decroissant_list:
                 for learning_rate in learning_rate_list:
 
-                    model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+                    model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
                     dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
                     logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_20-11/{dataset_name}", name=f"trial_{trial_num}")
@@ -134,7 +134,7 @@ def run_trainings_random(data_path):
         activation = trial.suggest_categorical('activation', ['ReLU'])
 
 
-        model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+        model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
         dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
         logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R/{dataset_name}", name=f"trial_{trial.number}")
@@ -202,7 +202,7 @@ def run_trainings_17_12():
             output_size = 1 
             dataset_name = os.path.splitext(os.path.basename(data_path))[0]
 
-            model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+            model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
             dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
             logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_LAB_NO_DELTA_17-12/{dataset_name}", name=f"trial_0")
@@ -246,7 +246,7 @@ def run_trainings_combined_18_12(data_path):
             for decroissant in decroissant_list:
                 for learning_rate in learning_rate_list:
 
-                    model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+                    model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
                     dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
                     logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_COMBINED/{dataset_name}", name=f"trial_{trial_num}")
@@ -292,7 +292,7 @@ def run_grid_search(data_path):
             for decroissant in decroissant_list:
                 for learning_rate in learning_rate_list:
 
-                    model = NN(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+                    model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
                     dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
                     logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_COMBINED/{dataset_name}", name=f"trial_{trial_num}")
