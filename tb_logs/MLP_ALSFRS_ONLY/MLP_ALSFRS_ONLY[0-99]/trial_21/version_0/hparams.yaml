@@ -1,5 +1,0 @@
-input_dim: 11
-learning_rate: 6.326340154467713e-05
-n_layer: 2
-n_units: 256
-output_dim: 1

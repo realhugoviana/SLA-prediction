@@ -2,6 +2,7 @@ import torch
 import lightning as L
 from lightning.pytorch.loggers import TensorBoardLogger
 from lightning.pytorch.callbacks import EarlyStopping
+from optuna.integration import PyTorchLightningPruningCallback
 import optuna
 import pandas as pd
 import os
@@ -37,10 +38,14 @@ def run_trainings(data_path):
 
         logger = TensorBoardLogger(f"MLP_classifier/tb_logs/MLP_ALSFRS-R/{dataset_name}", name=f"trial_{trial.number}")
 
+        pruning_callback = PyTorchLightningPruningCallback(
+            trial, monitor="val_loss"
+        )
+
         trainer = L.Trainer(
             max_epochs=max_epoch,
             accelerator=accelerator,
-            callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
+            callbacks=[EarlyStopping(monitor='val_loss', patience=5), pruning_callback],
             logger=logger,
             enable_checkpointing=False
         )
