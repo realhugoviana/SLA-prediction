@@ -1,0 +1,335 @@
+import torch
+import lightning as L
+from lightning.pytorch.loggers import TensorBoardLogger
+from lightning.pytorch.callbacks import EarlyStopping
+import optuna
+import pandas as pd
+import os
+import glob
+import time
+
+from MLP_regression.model import MLP_regressor
+from MLP_regression.data import DataModule
+
+
+datasets_dir = "datasets/COMBINED"
+csv_files = glob.glob(os.path.join(datasets_dir, "*.csv"))
+
+max_epoch = 200
+
+if torch.backends.mps.is_available():
+    accelerator = "mps"
+elif torch.cuda.is_available():
+    accelerator = "gpu"
+else:
+    accelerator = "cpu"
+
+def run_trainings_23_11():
+    df_best_trials = pd.read_csv("stats_entrainement/MLP_ALSFRS-R_20-11/best_trials_mae.csv")
+
+    criterion = 'Huber'
+    optimizer = 'Adam'
+    activation = 'ReLU'
+    batch_size = 16
+    learning_rate_list = [1e-6, 5e-6, 1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 5e-3, 1e-2, 5e-2]
+
+    for _, trial in df_best_trials.iterrows():
+        data_path = os.path.join(datasets_dir, f"MLP_alsfrs-r_{trial['dataset']}.csv")
+
+        input_size = len(pd.read_csv(data_path).columns) - 1
+        output_size = 1 
+        dataset_name = os.path.splitext(os.path.basename(data_path))[0]
+
+        n_layer = int(trial['n_layer'])
+        n_units = int(trial['n_units'])
+        decroissant = bool(trial['decroissant'])
+
+        trial_num = 0
+        for learning_rate in learning_rate_list:
+            model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+            dm = DataModule(csv_path=data_path, batch_size=batch_size)
+
+            logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_05-12/{dataset_name}", name=f"trial_{trial_num}")
+
+            trainer = L.Trainer(
+                max_epochs=max_epoch,
+                accelerator=accelerator,
+                callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
+                logger=logger,
+                enable_checkpointing=False
+            )
+
+            logger.experiment.add_text("hyperparameters", 
+                f"batch_size: {batch_size}, learning_rate: {learning_rate}, n_layer: {n_layer}, n_units: {n_units}")
+            logger.experiment.add_text("architecture", str(model))
+            logger.experiment.add_scalar("parameters", sum(p.numel() for p in model.parameters()))
+
+            trainer.fit(model, dm)
+            val_result = trainer.validate(model, datamodule=dm)
+            val_loss = val_result[0]['val_loss']
+            trainer.test(model, datamodule=dm)
+            print(f"Tested: layers={n_layer}, units={n_units}, dec={decroissant}, lr={learning_rate}, batch={batch_size} -> val_loss={val_loss:.4f}")
+
+            trial_num += 1
+
+def run_trainings_20_11(data_path):
+    input_size = len(pd.read_csv(data_path).columns) - 1
+    output_size = 1 
+    dataset_name = os.path.splitext(os.path.basename(data_path))[0]
+
+    n_layer_list = [1, 2, 3]
+    n_units_list = [128, 256, 512]
+    decroissant_list = [True, False]
+    learning_rate_list = [1e-5, 1e-4, 1e-3]
+    batch_size = 16
+    criterion = 'Huber'
+    optimizer = 'Adam'
+    activation = 'ReLU'
+
+    trial_num = 0
+    for n_layer in n_layer_list:
+        for n_units in n_units_list:
+            for decroissant in decroissant_list:
+                for learning_rate in learning_rate_list:
+
+                    model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+                    dm = DataModule(csv_path=data_path, batch_size=batch_size)
+
+                    logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_20-11/{dataset_name}", name=f"trial_{trial_num}")
+
+                    trainer = L.Trainer(
+                        max_epochs=max_epoch,
+                        accelerator=accelerator,
+                        callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
+                        logger=logger,
+                        enable_checkpointing=False
+                    )
+
+                    logger.experiment.add_text("hyperparameters", 
+                        f"batch_size: {batch_size}, learning_rate: {learning_rate}, n_layer: {n_layer}, n_units: {n_units}")
+                    logger.experiment.add_text("architecture", str(model))
+                    logger.experiment.add_scalar("parameters", sum(p.numel() for p in model.parameters()))
+
+                    trainer.fit(model, dm)
+                    val_result = trainer.validate(model, datamodule=dm)
+                    val_loss = val_result[0]['val_loss']
+                    trainer.test(model, datamodule=dm)
+                    print(f"Tested: layers={n_layer}, units={n_units}, dec={decroissant}, lr={learning_rate}, batch={batch_size} -> val_loss={val_loss:.4f}")
+
+                    trial_num += 1
+
+
+def run_trainings_random(data_path):
+    input_size = len(pd.read_csv(data_path).columns) - 1
+    output_size = 1 
+    dataset_name = os.path.splitext(os.path.basename(data_path))[0]
+    def objective(trial):
+        n_layer = trial.suggest_int('n_layer', 1, 3)
+        n_units = trial.suggest_categorical('n_units', [128, 256, 512])
+        decroissant = trial.suggest_categorical('decroissant', [True, False])
+        learning_rate = trial.suggest_categorical('learning_rate', [1e-5, 1e-4, 1e-3])
+        batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128])
+        criterion = trial.suggest_categorical('criterion', ['Huber'])
+        optimizer = trial.suggest_categorical('optimizer', ['Adam'])
+        activation = trial.suggest_categorical('activation', ['ReLU'])
+
+
+        model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+        dm = DataModule(csv_path=data_path, batch_size=batch_size)
+
+        logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R/{dataset_name}", name=f"trial_{trial.number}")
+
+        trainer = L.Trainer(
+            max_epochs=max_epoch,
+            accelerator=accelerator,
+            callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
+            logger=logger,
+            enable_checkpointing=False
+        )
+
+        logger.experiment.add_text("hyperparameters", 
+            f"batch_size: {batch_size}, learning_rate: {learning_rate}, n_layer: {n_layer}, n_units: {n_units}")
+        logger.experiment.add_text("architecture", str(model))
+        logger.experiment.add_scalar("parameters", sum(p.numel() for p in model.parameters()))
+
+        trainer.fit(model, dm)
+        val_result = trainer.validate(model, datamodule=dm)
+        val_loss = val_result[0]['val_loss']
+        trainer.test(model, datamodule=dm)
+        
+        return val_loss
+    
+    start_time = time.time()
+
+    study = optuna.create_study(direction='minimize')
+    study.optimize(objective, n_trials=50)
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Optimization completed in {elapsed_time:.2f} seconds for dataset {dataset_name}.")
+
+    print("Best trial:")
+    trial = study.best_trial
+
+    print(f"  Value: {trial.value}")
+    print("  Params: ")
+    for key, value in trial.params.items():
+        print(f"    {key}: {value}")
+
+def run_trainings_17_12():
+    df_best_trials = pd.read_csv("stats_entrainement/MLP_ALSFRS-R_05-12/best_trials_mae.csv")
+
+    criterion = 'Huber'
+    optimizer = 'Adam'
+    activation = 'ReLU'
+    batch_size = 16
+
+    for _, trial in df_best_trials.iterrows():
+
+        n_layer = int(trial['n_layer'])
+        n_units = int(trial['n_units'])
+        decroissant = bool(trial['decroissant'])
+        learning_rate = float(trial['learning_rate'])
+
+
+        dataset_configs = ["lab_thresh80", "no_delta_thresh80", "lab_no_delta_thresh80", "lab_r2eta2top100", "no_delta_r2eta2top100", "lab_no_delta_r2eta2top100", "control"]
+
+        for config in [dataset_configs[6]]:
+
+            data_path = os.path.join(datasets_dir, f"MLP_alsfrs-r_{config}_{trial['dataset']}.csv")
+
+            input_size = len(pd.read_csv(data_path).columns) - 1
+            output_size = 1 
+            dataset_name = os.path.splitext(os.path.basename(data_path))[0]
+
+            model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+            dm = DataModule(csv_path=data_path, batch_size=batch_size)
+
+            logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_LAB_NO_DELTA_17-12/{dataset_name}", name=f"trial_0")
+
+            trainer = L.Trainer(
+                max_epochs=max_epoch,
+                accelerator=accelerator,
+                callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
+                logger=logger,
+                enable_checkpointing=False
+            )
+
+            logger.experiment.add_text("hyperparameters", 
+                f"batch_size: {batch_size}, learning_rate: {learning_rate}, n_layer: {n_layer}, n_units: {n_units}")
+            logger.experiment.add_text("architecture", str(model))
+            logger.experiment.add_scalar("parameters", sum(p.numel() for p in model.parameters()))
+
+            trainer.fit(model, dm)
+            val_result = trainer.validate(model, datamodule=dm)
+            val_loss = val_result[0]['val_loss']
+            trainer.test(model, datamodule=dm)
+            print(f"Tested: layers={n_layer}, units={n_units}, dec={decroissant}, lr={learning_rate}, batch={batch_size} -> val_loss={val_loss:.4f}")
+
+def run_trainings_combined_18_12(data_path):
+    input_size = len(pd.read_csv(data_path).columns) - 1
+    output_size = 1 
+    dataset_name = os.path.splitext(os.path.basename(data_path))[0]
+
+    n_layer_list = [3]
+    n_units_list = [512]
+    decroissant_list = [False]
+    learning_rate_list = [5e-6]
+    batch_size = 16
+    criterion = 'Huber'
+    optimizer = 'Adam'
+    activation = 'ReLU'
+
+    trial_num = 0
+    for n_layer in n_layer_list:
+        for n_units in n_units_list:
+            for decroissant in decroissant_list:
+                for learning_rate in learning_rate_list:
+
+                    model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+                    dm = DataModule(csv_path=data_path, batch_size=batch_size)
+
+                    logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_COMBINED/{dataset_name}", name=f"trial_{trial_num}")
+
+                    trainer = L.Trainer(
+                        max_epochs=max_epoch,
+                        accelerator=accelerator,
+                        callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
+                        logger=logger,
+                        enable_checkpointing=False
+                    )
+
+                    logger.experiment.add_text("hyperparameters", 
+                        f"batch_size: {batch_size}, learning_rate: {learning_rate}, n_layer: {n_layer}, n_units: {n_units}")
+                    logger.experiment.add_text("architecture", str(model))
+                    logger.experiment.add_scalar("parameters", sum(p.numel() for p in model.parameters()))
+
+                    trainer.fit(model, dm)
+                    val_result = trainer.validate(model, datamodule=dm)
+                    val_loss = val_result[0]['val_loss']
+                    trainer.test(model, datamodule=dm)
+                    print(f"Tested: layers={n_layer}, units={n_units}, dec={decroissant}, lr={learning_rate}, batch={batch_size} -> val_loss={val_loss:.4f}")
+
+                    trial_num += 1
+
+def run_grid_search(data_path):
+    input_size = len(pd.read_csv(data_path).columns) - 1
+    output_size = 1 
+    dataset_name = os.path.splitext(os.path.basename(data_path))[0]
+
+    n_layer_list = [1, 2, 3]
+    n_units_list = [256, 512]
+    decroissant_list = [False, True]
+    learning_rate_list = [5e-6, 5e-5, 5e-4]
+    batch_size = 16
+    criterion = 'Huber'
+    optimizer = 'Adam'
+    activation = 'ReLU'
+
+    trial_num = 0
+    for n_layer in n_layer_list:
+        for n_units in n_units_list:
+            for decroissant in decroissant_list:
+                for learning_rate in learning_rate_list:
+
+                    model = MLP_regressor(input_size, output_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+                    dm = DataModule(csv_path=data_path, batch_size=batch_size)
+
+                    logger = TensorBoardLogger(f"tb_logs/MLP_ALSFRS-R_COMBINED/{dataset_name}", name=f"trial_{trial_num}")
+
+                    trainer = L.Trainer(
+                        max_epochs=max_epoch,
+                        accelerator=accelerator,
+                        callbacks=[EarlyStopping(monitor='val_loss', patience=5)],
+                        logger=logger,
+                        enable_checkpointing=False
+                    )
+
+                    logger.experiment.add_text("hyperparameters", 
+                        f"batch_size: {batch_size}, learning_rate: {learning_rate}, n_layer: {n_layer}, n_units: {n_units}")
+                    logger.experiment.add_text("architecture", str(model))
+                    logger.experiment.add_scalar("parameters", sum(p.numel() for p in model.parameters()))
+
+                    trainer.fit(model, dm)
+                    val_result = trainer.validate(model, datamodule=dm)
+                    val_loss = val_result[0]['val_loss']
+                    trainer.test(model, datamodule=dm)
+                    print(f"Tested: layers={n_layer}, units={n_units}, dec={decroissant}, lr={learning_rate}, batch={batch_size} -> val_loss={val_loss:.4f}")
+
+                    trial_num += 1
+
+if __name__ == '__main__':
+    L.seed_everything(42, workers=True)
+
+    start = time.time()
+
+    run_grid_search("../datasets/COMBINED/MLP_alsfrs-r_combined_3M.csv")
+
+    run_grid_search("../datasets/COMBINED/MLP_alsfrs-r_combined_6M.csv")
+
+    run_grid_search("../datasets/COMBINED/MLP_alsfrs-r_combined_9M.csv")
+
+    end = time.time()
+
+    training_time = end - start
+    print(f"Durée des entrainements : {training_time}")
