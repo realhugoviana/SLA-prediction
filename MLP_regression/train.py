@@ -9,7 +9,7 @@ import os
 import glob
 import time
 
-from model import MLP_classifier
+from model import MLP_regressor
 from data import DataModule
 
 
