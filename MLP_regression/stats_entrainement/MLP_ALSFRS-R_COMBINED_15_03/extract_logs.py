@@ -29,7 +29,7 @@ def get_batch_size(trial_path):
 
     return hp_dict
 
-log_dir = "MLP_classifier/tb_logs/MLP_ALSFRS-R/"
+log_dir = "MLP_regression/tb_logs/MLP_ALSFRS-R_COMBINED/"
 runlog_data = pd.DataFrame({"dataset": [], 
                             "trial": [], 
                             "n_layer": [], 
@@ -93,4 +93,4 @@ for dataset_name in os.listdir(log_dir):
                 traceback.print_exc()
 
 runlog_data["dataset"] = runlog_data["dataset"].str.replace("MLP_alsfrs-r_", "")
-runlog_data.to_csv("MLP_classifier/stats_entrainement/runlog_summary.csv", index=False)
+runlog_data.to_csv("MLP_regression/stats_entrainement/MLP_ALSFRS-R_COMBINED_15_03/runlog_summary.csv", index=False)
