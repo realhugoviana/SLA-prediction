@@ -30,13 +30,13 @@ def run_trainings(data_path):
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-3, log=True)
         batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128])
         optimizer = trial.suggest_categorical('optimizer', ['Adam'])
-        activation = trial.suggest_categorical('activation', ['ReLU'])
+        activation = trial.suggest_categorical('activation', ['ReLU', 'sigmoid', 'tanh'])
 
 
         model = MLP_classifier(input_size, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer)
         dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
-        logger = TensorBoardLogger(f"MLP_classifier/tb_logs/MLP_ALSFRS-R/{dataset_name}", name=f"trial_{trial.number}")
+        logger = TensorBoardLogger(f"MLP_classifier/tb_logs/MLP_ALSFRS-R_COMBINED/{dataset_name}", name=f"trial_{trial.number}")
 
         pruning_callback = PyTorchLightningPruningCallback(
             trial, monitor="val_loss"
@@ -81,7 +81,7 @@ def run_trainings(data_path):
 
 if __name__ == '__main__':
 
-    datasets_dir = "../datasets/to_train"
+    datasets_dir = "../datasets/COMBINED"
     csv_files = glob.glob(os.path.join(datasets_dir, "*.csv"))
 
     max_epoch = 200
