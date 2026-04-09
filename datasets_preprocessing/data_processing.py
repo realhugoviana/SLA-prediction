@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 # Drops questions 10 and ALSFRS scores columns (not ALSFRS-R score)
 # Input: Pandas Dataframe
@@ -53,13 +54,14 @@ def separate_datasets_by_intervals(df, file_prefix='datasets/ALSFRS_R_FIXED/ALSF
     datasets_size = pd.DataFrame({"dataset": [], 
                     "size": []})
     
-    for target_i in range(1, len(intervals)):
-        for start_i in range(target_i):
-            df_temp = create_dataset_from_intervals(df, intervals, start_i, target_i)
-            csv_name = f'{file_prefix}_{start_i*3}_{target_i*3}M.csv'
-            df_temp.to_csv(csv_name, index=False)
+    target_i = len(intervals) - 1
 
-            datasets_size = pd.concat([datasets_size, pd.DataFrame({"dataset": [csv_name], "size": [len(df_temp)]})])
+    for start_i in range(target_i):
+        df_temp = create_dataset_from_intervals(df, intervals, start_i, target_i)
+        csv_name = f'{file_prefix}_{start_i*3}_{target_i*3}M.csv'
+        df_temp.to_csv(csv_name, index=False)
+
+        datasets_size = pd.concat([datasets_size, pd.DataFrame({"dataset": [csv_name], "size": [len(df_temp)]})])
 
     return datasets_size
 
@@ -73,13 +75,36 @@ def generate_datasets(df, file_prefix='datasets/ALSFRS_R_FIXED/ALSFRS_R_FIXED'):
 
     return datasets_size
 
-# Unseparated datasets
-df_alsfrs_r_Fixed_0_69M = pd.read_csv('../donnees_04_26/ALSFRS/Fixed_0_69M.csv')
-df_alsfrs_r_F_S_Fixed_0_300M = pd.read_csv('../donnees_04_26/ALSFRS_First_Symptoms/Fixed_0_300M.csv')
+# Generates datasets from all csv files in a folder and saves them to csv files, also outputs a dataframe of the size of the generated datasets
+# Input: String path to the folder containing the csv files, String prefix for the generated csv files
+# Output: Pandas Dataframe
+def generate_datasets_from_folder(folder_path, file_prefix):
+    csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
+    datasets_sizes = []
+    
+    for csv_file in csv_files:
+        file_path = os.path.join(folder_path, csv_file)
+        
+        if os.path.getsize(file_path) == 0:
+            print(f"Skipped empty file: {csv_file}")
+            continue
+        
+        try:
+            df = pd.read_csv(file_path)
+        except pd.errors.EmptyDataError:
+            print(f"Skipped unreadable file: {csv_file}")
+            continue
+        datasets_size = generate_datasets(df, file_prefix)
+        datasets_sizes.append(datasets_size)
+    
+    return pd.concat(datasets_sizes, ignore_index=True)
+
+alsfrs_r_fixed_path = '../donnees_04_26/ALSFRS/Fixed'
+alsfrs_r_first_symptoms_fixed_path = '../donnees_04_26/ALSFRS_First_Symptoms'
 
 # Generate datasets and save them to csv files, also outputs a dataframe of the size of the generated datasets
-datasets_size_Fixed_0_69M = generate_datasets(df_alsfrs_r_Fixed_0_69M)
-datasets_size_Fixed_0_69M.to_csv('datasets/ALSFRS_R_FIXED/datasets_size.csv', index=False)
+datasets_size_Fixed = generate_datasets_from_folder(alsfrs_r_fixed_path, 'datasets/ALSFRS_R_FIXED/ALSFRS_R_FIXED')
+datasets_size_Fixed.to_csv('datasets/ALSFRS_R_FIXED/datasets_size.csv', index=False)
 
-datasets_size_F_S_Fixed_0_300M = generate_datasets(df_alsfrs_r_F_S_Fixed_0_300M, 'datasets/ALSFRS_R_F_S_FIXED/ALSFRS_R_F_S_FIXED')
-datasets_size_F_S_Fixed_0_300M.to_csv('datasets/ALSFRS_R_F_S_FIXED/datasets_size.csv', index=False)
+datasets_size_F_S_Fixed = generate_datasets_from_folder(alsfrs_r_first_symptoms_fixed_path, 'datasets/ALSFRS_R_F_S_FIXED/ALSFRS_R_F_S_FIXED')
+datasets_size_F_S_Fixed.to_csv('datasets/ALSFRS_R_F_S_FIXED/datasets_size.csv', index=False)
