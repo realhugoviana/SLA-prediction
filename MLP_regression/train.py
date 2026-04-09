@@ -20,7 +20,7 @@ elif torch.cuda.is_available():
 else:
     accelerator = "cpu"
 
-def run_trainings(data_path):
+def run_trainings(data_path, log_dir="MLP_regression/tb_logs/"):
     input_size = len(pd.read_csv(data_path).columns) - 1
     dataset_name = os.path.splitext(os.path.basename(data_path))[0]
     def objective(trial):
@@ -37,7 +37,7 @@ def run_trainings(data_path):
         model = MLP_regressor(input_size, output_dim=1, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
         dm = DataModule(csv_path=data_path, batch_size=batch_size)
 
-        logger = TensorBoardLogger(f"MLP_regressor/tb_logs/MLP_ALSFRS-R_COMBINED/{dataset_name}", name=f"trial_{trial.number}")
+        logger = TensorBoardLogger(f"{log_dir}{dataset_name}", name=f"trial_{trial.number}")
 
         pruning_callback = PyTorchLightningPruningCallback(
             trial, monitor="val_loss"
@@ -81,15 +81,29 @@ def run_trainings(data_path):
         print(f"    {key}: {value}")
 
 if __name__ == '__main__':
-
-    datasets_dir = "../datasets/COMBINED"
-    csv_files = glob.glob(os.path.join(datasets_dir, "*.csv"))
+    csv_combined = glob.glob(os.path.join("datasets/ALSFRS_R_COMBINED", "*.csv"))
+    csv_fixed = glob.glob(os.path.join("datasets/ALSFRS_R_FIXED", "*.csv"))
+    csv_first_symptoms = glob.glob(os.path.join("datasets/ALSFRS_R_F_S_FIXED", "*.csv"))
 
     max_epoch = 200
 
-    for csv_file in csv_files:
+    for csv_file in csv_combined:
         print(f"Training on dataset: {csv_file}")
 
         L.seed_everything(42)
 
-        run_trainings(csv_file)
+        run_trainings(csv_file, log_dir="MLP_regression/tb_logs/ALSFRS_R_COMBINED/")
+
+    for csv_file in csv_fixed:
+        print(f"Training on dataset: {csv_file}")
+
+        L.seed_everything(42)
+
+        run_trainings(csv_file, log_dir="MLP_regression/tb_logs/ALSFRS_R_FIXED/")
+
+    for csv_file in csv_first_symptoms:
+        print(f"Training on dataset: {csv_file}")
+
+        L.seed_everything(42)
+
+        run_trainings(csv_file, log_dir="MLP_regression/tb_logs/ALSFRS_R_F_S_FIXED/")
