@@ -11,3 +11,9 @@ python train.py
 ```bash
 tensorboard --logdir tb_logs
 ```
+
+### Optuna-dashboard
+
+```bash
+optuna-dashboard sqlite:///optuna.db
+```

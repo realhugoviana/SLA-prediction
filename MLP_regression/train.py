@@ -24,7 +24,7 @@ else:
 # Entrée : 
 # - Chemin d'accès au csv
 # - Dossier où mettre les logs
-def run_trainings(data_path, log_dir="MLP_regression/tb_logs/"):
+def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", trials=100, trial_epoch=30, max_epoch=300):
     input_size = len(pd.read_csv(data_path).columns) - 1 # Nombre de colonnes - target
     dataset_name = os.path.splitext(os.path.basename(data_path))[0]
 
@@ -37,18 +37,12 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/"):
         decroissant = trial.suggest_categorical('decroissant', [True, False])
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-3, log=True)
         batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128])
-        criterion = trial.suggest_categorical('criterion', ['MSE', 'MAE', 'Huber'])
-        optimizer = trial.suggest_categorical('optimizer', ['Adam'])
-        activation = trial.suggest_categorical('activation', ['ReLU', 'tanh', 'sigmoid'])
 
-        # Initialisation du modèle avec les paramètres choisis (voir model.py)
-        model = MLP_regressor(input_size, output_dim=1, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation=activation, optimizer=optimizer, criterion=criterion)
+        # Initialisation du modèle avec les paramètres choisis (voir model.py
+        model = MLP_regressor(input_size, output_dim=1, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation='ReLU', optimizer='Adam', criterion='Huber')
 
         # Dataset et dataloader (voir data.py)
         dm = DataModule(csv_path=data_path, batch_size=batch_size)
-
-        # Log de chaque trial
-        logger = TensorBoardLogger(f"{log_dir}{dataset_name}", name=f"trial_{trial.number}")
 
         # Prunning des trials qui convergent trop lentement par rapport aux autres
         pruning_callback = PyTorchLightningPruningCallback(
@@ -57,33 +51,29 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/"):
 
         # Fonction qui execute la boucle d'entrainement
         trainer = L.Trainer(
-            max_epochs=max_epoch, # Nombre d'epoch maximum
+            max_epochs=trial_epoch, # Nombre d'epoch maximum
             accelerator=accelerator, # GPU si possible
             callbacks=[EarlyStopping(monitor='val_loss', patience=5), # Early stopping 
                        pruning_callback], # Prunning
-            logger=logger, # Log
             enable_checkpointing=False # Ne stocke pas les poids
         )
 
-        # Log les paramètres
-        logger.experiment.add_text("hyperparameters", 
-            f"batch_size: {batch_size}, learning_rate: {learning_rate}, n_layer: {n_layer}, n_units: {n_units}")
-        logger.experiment.add_text("architecture", str(model))
-        logger.experiment.add_scalar("parameters", sum(p.numel() for p in model.parameters()))
-
-        # Entrainement du trial, validation et test
+        # Entrainement du trial et validation
         trainer.fit(model, dm)
         val_result = trainer.validate(model, datamodule=dm) 
         val_loss = val_result[0]['val_loss']
-        trainer.test(model, datamodule=dm)
         
         return val_loss # Retourne la perte du dataset de validation
     
     start_time = time.time() # Chronomètre
 
     # Optimisation
-    study = optuna.create_study(direction='minimize') # On cherche à minimiser la sortie de objective donc la perte de la validation
-    study.optimize(objective, n_trials=100) # 100 trials
+    study = optuna.create_study(
+        storage=f"sqlite:///optuna.db", # Stockage de l'étude dans une base de données pour visualisation
+        study_name=f"mlp_regression_{dataset_name}", # Nom de l'étude
+        load_if_exists=True, # Si l'étude crash elle peut reprendre là où elle s'était arrêtée
+        direction='minimize') # On cherche à minimiser la sortie de objective donc la perte de la validation
+    study.optimize(objective, n_trials=trials) # trials
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -98,30 +88,69 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/"):
     for key, value in trial.params.items():
         print(f"    {key}: {value}")
 
+    # Entrainement du modèle avec les meilleurs paramètres sur le nombre d'epoch maximum
+    best_params = trial.params
+    best_model = MLP_regressor(input_size, 
+                               output_dim=1, 
+                               n_layer=best_params['n_layer'], 
+                               n_units=best_params['n_units'], 
+                               learning_rate=best_params['learning_rate'], 
+                               decroissant=best_params['decroissant'], 
+                               activation='ReLU', 
+                               optimizer='Adam', 
+                               criterion='Huber')
+    
+    dm = DataModule(csv_path=data_path, batch_size=best_params['batch_size'])
+
+    trainer = L.Trainer(
+        max_epochs=max_epoch, # Nombre d'epoch maximum
+        accelerator=accelerator, # GPU si possible
+        callbacks=[EarlyStopping(monitor='val_loss', patience=5)], # Early stopping 
+        logger=TensorBoardLogger(f"{log_dir}{dataset_name}", name=f"best_trial"), # Log
+        enable_checkpointing=True # Stocke les poids du meilleur modèle
+    )
+
+    trainer.fit(best_model, dm) # Entrainement
+    trainer.test(best_model, datamodule=dm) # Test
+
 if __name__ == '__main__':
     csv_combined = glob.glob(os.path.join("datasets/ALSFRS_R_COMBINED", "*.csv"))
     csv_fixed = glob.glob(os.path.join("datasets/ALSFRS_R_FIXED", "*.csv"))
     csv_first_symptoms = glob.glob(os.path.join("datasets/ALSFRS_R_F_S_FIXED", "*.csv"))
 
-    max_epoch = 200
+    trials = 100
+    trial_epoch = 30
+    max_epoch = 300
 
     for csv_file in csv_combined:
         print(f"Training on dataset: {csv_file}")
 
         L.seed_everything(42)
 
-        run_trainings(csv_file, log_dir="MLP_regression/tb_logs/ALSFRS_R_COMBINED/")
+        run_trainings(csv_file, 
+                      log_dir="MLP_regression/tb_logs/ALSFRS_R_COMBINED/",
+                      trials=trials,
+                      trial_epoch=trial_epoch,
+                      max_epoch=max_epoch)
 
     for csv_file in csv_fixed:
         print(f"Training on dataset: {csv_file}")
 
         L.seed_everything(42)
 
-        run_trainings(csv_file, log_dir="MLP_regression/tb_logs/ALSFRS_R_FIXED/")
+        run_trainings(csv_file, 
+                      log_dir="MLP_regression/tb_logs/ALSFRS_R_FIXED/",
+                      trials=trials,
+                      trial_epoch=trial_epoch,
+                      max_epoch=max_epoch)
 
-    for csv_file in csv_first_symptoms:
-        print(f"Training on dataset: {csv_file}")
+    # for csv_file in csv_first_symptoms:
+    #     print(f"Training on dataset: {csv_file}")
 
-        L.seed_everything(42)
+    #     L.seed_everything(42)
 
-        run_trainings(csv_file, log_dir="MLP_regression/tb_logs/ALSFRS_R_F_S_FIXED/")
+    #     run_trainings(csv_file, 
+    #                   log_dir="MLP_regression/tb_logs/ALSFRS_R_F_S_FIXED/",
+    #                   trials=trials,
+    #                   trial_epoch=trial_epoch,
+    #                   max_epoch=max_epoch)

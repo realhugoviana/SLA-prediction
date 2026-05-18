@@ -1,0 +1,14 @@
+torch
+lightning
+torchmetrics
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+optuna
+optuna-dashboard
+tensorboard
+tbparse
+tensorflow
+plotly
