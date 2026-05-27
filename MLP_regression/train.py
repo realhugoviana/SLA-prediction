@@ -61,9 +61,9 @@ def run_optimization(data_path, study_name="mlp_regression", input_size=None, da
         # Entrainement du trial et validation
         trainer.fit(model, dm)
         val_result = trainer.validate(model, datamodule=dm) 
-        val_loss = val_result[0]['val_loss']
+        val_mae = val_result[0]['val_mae'] # Récupère la MAE de validation
         
-        return val_loss # Retourne la perte du dataset de validation
+        return val_mae # Retourne la MAE du dataset de validation
     
     start_time = time.time() # Chronomètre
 
@@ -143,26 +143,40 @@ if __name__ == '__main__':
 
         L.seed_everything(42)
 
-        run_trainings(csv_file, 
-                      log_dir="MLP_regression/tb_logs/ALSFRS_R_COMBINED/",
-                      study_name="mlp_regression_combined",
-                      input_size=input_size,
-                      dataset_name=dataset_name,
-                      trials=trials,
-                      trial_epoch=trial_epoch,
-                      max_epoch=max_epoch)
+        run_optimization(csv_file,
+                         study_name="mlp_regression_27_05",
+                         input_size=input_size,
+                         dataset_name=dataset_name,
+                         trials=trials,
+                         trial_epoch=trial_epoch)
+
+        # run_trainings(csv_file, 
+        #               log_dir="MLP_regression/tb_logs/ALSFRS_R_COMBINED/",
+        #               study_name="mlp_regression",
+        #               input_size=input_size,
+        #               dataset_name=dataset_name,
+        #               max_epoch=max_epoch)
 
     for csv_file in csv_fixed:
         print(f"Training on dataset: {csv_file}")
+        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
 
         L.seed_everything(42)
 
-        run_trainings(csv_file,
-                        log_dir="MLP_regression/tb_logs/ALSFRS_R_FIXED/",
-                        study_name="mlp_regression_fixed",
-                        trials=trials,
-                        trial_epoch=trial_epoch,
-                        max_epoch=max_epoch)
+        run_optimization(csv_file,
+                         study_name="mlp_regression_27_05",
+                         input_size=input_size,
+                         dataset_name=dataset_name,
+                         trials=trials,
+                         trial_epoch=trial_epoch)
+
+        # run_trainings(csv_file,
+        #                 log_dir="MLP_regression/tb_logs/ALSFRS_R_FIXED/",
+        #                 study_name="mlp_regression",
+        #                 input_size=input_size,
+        #                 dataset_name=dataset_name,
+        #                 max_epoch=max_epoch)
 
     # for csv_file in csv_first_symptoms:
     #     print(f"Training on dataset: {csv_file}")

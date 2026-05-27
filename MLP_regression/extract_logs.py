@@ -31,14 +31,6 @@ def get_batch_size(trial_path):
 def log_to_csv(log_dir, output_dir):
     runlog_data = pd.DataFrame({"dataset": [], 
                                 "trial": [],
-                                "n_layer": [], 
-                                "n_units": [], 
-                                "learning_rate": [],
-                                "decroissant": [],
-                                "batch_size": [],
-                                "criterion": [],
-                                "activation": [],
-                                "optimizer": [],
                                 "mae": [], 
                                 "rmse": [], 
                                 "r2": []})
@@ -56,34 +48,12 @@ def log_to_csv(log_dir, output_dir):
                     if "test_mae" not in tags:
                         continue
 
-                    reader = SummaryReader(version_path)
-                    hp = reader.hparams
-                    hp_dict = dict(zip(hp["tag"], hp["value"]))
-
                     mae = event_acc.Scalars("test_mae")[-1].value
                     rmse = event_acc.Scalars("test_rmse")[-1].value
                     r2 = event_acc.Scalars("test_r2")[-1].value
 
-                    batch_size = get_batch_size(version_path)["batch_size"]
-
-                    n_layer = hp_dict["n_layer"]
-                    n_units = hp_dict["n_units"]
-                    learning_rate = hp_dict["learning_rate"]
-                    decroissant = hp_dict["decroissant"]
-                    criterion = hp_dict["criterion"]
-                    activation = hp_dict["activation"]
-                    optimizer = hp_dict["optimizer"]
-
                     r = {"dataset": [dataset_name], 
                         "trial": [trial_name],
-                        "n_layer": [n_layer], 
-                        "n_units": [n_units], 
-                        "learning_rate": [learning_rate],
-                        "decroissant": [decroissant],
-                        "batch_size": [batch_size],
-                        "criterion": [criterion],
-                        "activation": [activation],
-                        "optimizer": [optimizer],
                         "mae": [mae], 
                         "rmse": [rmse], 
                         "r2": [r2]}
@@ -100,8 +70,40 @@ def log_to_csv(log_dir, output_dir):
 
     runlog_data = pd.read_csv(f'{output_dir}/runlog_summary.csv')
 
-    best_trials = runlog_data.loc[runlog_data.groupby("dataset")["mae"].idxmin()]
-    best_trials.to_csv(f'{output_dir}/best_trials.csv', index=False)
+    # Fonction pour calculer l'intervalle de confiance 95%
+    def calculate_ci(series):
+        mean = series.mean()
+        std = series.std()
+        n = len(series)
+        # Utilisation du z-score critique (1.96) pour un niveau de confiance de 95%, 
+        # adapté à une grande taille d'échantillon (N).
+        margin_of_error = 1.96 * std / (n**0.5)
+        return mean - margin_of_error, mean + margin_of_error
+
+    # Calcul des statistiques pour chaque dataset
+    summary_stats = runlog_data.groupby('dataset').agg(
+        mae_mean=('mae', 'mean'),
+        mae_min=('mae', 'min'),
+        mae_max=('mae', 'max'),
+        mae_ci_low=('mae', lambda x: calculate_ci(x)[0]), # CI bas
+        mae_ci_high=('mae', lambda x: calculate_ci(x)[1]),# CI haut
+
+        rmse_mean=('rmse', 'mean'),
+        rmse_min=('rmse', 'min'),
+        rmse_max=('rmse', 'max'),
+        rmse_ci_low=('rmse', lambda x: calculate_ci(x)[0]), 
+        rmse_ci_high=('rmse', lambda x: calculate_ci(x)[1]),
+
+        r2_mean=('r2', 'mean'),
+        r2_min=('r2', 'min'),
+        r2_max=('r2', 'max'),
+        r2_ci_low=('r2', lambda x: calculate_ci(x)[0]),
+        r2_ci_high=('r2', lambda x: calculate_ci(x)[1])
+    )
+
+    # Sauvegarde des statistiques agrégées
+    summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
+
 
 log_dir = "MLP_regression/tb_logs/ALSFRS_R_COMBINED/"
 output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_COMBINED/"
