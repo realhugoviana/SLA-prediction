@@ -36,7 +36,7 @@ def run_optimization(data_path, study_name="mlp_regression", input_size=None, da
         decroissant = trial.suggest_categorical('decroissant', [True, False])
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-3, log=True)
         batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128])
-        weight_decay = trial.suggest_float('weight_decay', 0.0, 1e-4, log=True)
+        weight_decay = trial.suggest_float('weight_decay', 1e-8, 1e-4, log=True)
         dropout = trial.suggest_float('dropout', 0.0, 0.5)
 
         # Initialisation du modèle avec les paramètres choisis (voir model.py
