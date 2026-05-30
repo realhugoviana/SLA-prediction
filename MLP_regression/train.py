@@ -36,9 +36,11 @@ def run_optimization(data_path, study_name="mlp_regression", input_size=None, da
         decroissant = trial.suggest_categorical('decroissant', [True, False])
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-3, log=True)
         batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128])
+        weight_decay = trial.suggest_float('weight_decay', 0.0, 1e-4, log=True)
+        dropout = trial.suggest_float('dropout', 0.0, 0.5)
 
         # Initialisation du modèle avec les paramètres choisis (voir model.py
-        model = MLP_regressor(input_size, output_dim=1, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation='ReLU', optimizer='Adam', criterion='Huber')
+        model = MLP_regressor(input_size, output_dim=1, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation='ReLU', optimizer='Adam', criterion='Huber', weight_decay=weight_decay, dropout=dropout)
 
         # Dataset et dataloader (voir data.py)
         dm = DataModule(csv_path=data_path, batch_size=batch_size)
@@ -107,7 +109,9 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
                                decroissant=best_params['decroissant'], 
                                activation='ReLU', 
                                optimizer='Adam', 
-                               criterion='Huber')
+                               criterion='Huber',
+                               weight_decay=best_params['weight_decay'],
+                               dropout=best_params['dropout'])
     
     for training in range(50):
         print(f"Training {training+1}/50 for dataset {dataset_name} with best parameters...")
@@ -133,29 +137,8 @@ if __name__ == '__main__':
     csv_first_symptoms = glob.glob(os.path.join("datasets/ALSFRS_R_F_S_FIXED", "*.csv"))
 
     trials = 100
-    trial_epoch = 200
+    trial_epoch = 30
     max_epoch = 300
-
-    for csv_file in csv_combined:
-        print(f"Training on dataset: {csv_file}")
-        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
-        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
-
-        L.seed_everything(42)
-
-        run_optimization(csv_file,
-                         study_name="mlp_regression_27_05",
-                         input_size=input_size,
-                         dataset_name=dataset_name,
-                         trials=trials,
-                         trial_epoch=trial_epoch)
-
-        # run_trainings(csv_file, 
-        #               log_dir="MLP_regression/tb_logs/ALSFRS_R_COMBINED/",
-        #               study_name="mlp_regression",
-        #               input_size=input_size,
-        #               dataset_name=dataset_name,
-        #               max_epoch=max_epoch)
 
     for csv_file in csv_fixed:
         print(f"Training on dataset: {csv_file}")
@@ -165,18 +148,39 @@ if __name__ == '__main__':
         L.seed_everything(42)
 
         run_optimization(csv_file,
-                         study_name="mlp_regression_27_05",
+                         study_name="mlp_regression_30_05",
                          input_size=input_size,
                          dataset_name=dataset_name,
                          trials=trials,
                          trial_epoch=trial_epoch)
 
-        # run_trainings(csv_file,
-        #                 log_dir="MLP_regression/tb_logs/ALSFRS_R_FIXED/",
-        #                 study_name="mlp_regression",
-        #                 input_size=input_size,
-        #                 dataset_name=dataset_name,
-        #                 max_epoch=max_epoch)
+        run_trainings(csv_file,
+                        log_dir="MLP_regression/tb_logs/ALSFRS_R_FIXED_30_05/",
+                        study_name="mlp_regression_30_05",
+                        input_size=input_size,
+                        dataset_name=dataset_name,
+                        max_epoch=max_epoch)
+
+    for csv_file in csv_combined:
+        print(f"Training on dataset: {csv_file}")
+        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+        L.seed_everything(42)
+
+        run_optimization(csv_file,
+                         study_name="mlp_regression_30_05",
+                         input_size=input_size,
+                         dataset_name=dataset_name,
+                         trials=trials,
+                         trial_epoch=trial_epoch)
+
+        run_trainings(csv_file, 
+                      log_dir="MLP_regression/tb_logs/ALSFRS_R_COMBINED_30_05/",
+                      study_name="mlp_regression_30_05",
+                      input_size=input_size,
+                      dataset_name=dataset_name,
+                      max_epoch=max_epoch)
 
     # for csv_file in csv_first_symptoms:
     #     print(f"Training on dataset: {csv_file}")

@@ -5,14 +5,15 @@ import torchmetrics
 
 # Module lighting : pratique car pas besoin de coder à la main les boucles d'entrainement
 class MLP_regressor(L.LightningModule):
-    def __init__(self, input_dim, output_dim, n_layer=2, n_units=16, learning_rate=1e-3, decroissant=False, activation='ReLU', optimizer='Adam', criterion='MSE'):
+    def __init__(self, input_dim, output_dim, n_layer=2, n_units=16, learning_rate=1e-3, decroissant=False, activation='ReLU', optimizer='Adam', criterion='MSE', weight_decay=0.0, dropout=0.0):
         super().__init__()
 
         # Sauvegarde des paramètres
         self.save_hyperparameters()
 
         self.lr = learning_rate # Learning rate
-
+        self.weight_decay = weight_decay
+        self.dropout = dropout
         # Sélection de la fonction d'activation en fonction de l'entrée
         self.activation_fn = {
             'ReLU': nn.ReLU(),
@@ -32,13 +33,16 @@ class MLP_regressor(L.LightningModule):
             for i in range(n_layer - 1): # On créer autant de couche que précisé en entrée
                 self.layers.add_module(f'hidden_layer_{i+1}', nn.Linear(in_units, out_units))
                 self.layers.add_module(f'hidden_activation_{i+1}', self.activation_fn)
+                if self.dropout > 0.0:
+                    self.layers.add_module(f'hidden_dropout_{i+1}', nn.Dropout(self.dropout))
                 in_units = out_units
                 out_units = in_units // 2
             self.out = nn.Linear(out_units*2, output_dim) # Dernière couche sans activation 
         else:
             for i in range(n_layer - 1):
                 self.layers.add_module(f'hidden_layer_{i+1}', nn.Linear(n_units, n_units))
-                self.layers.add_module(f'hidden_activation_{i+1}', self.activation_fn)
+                if self.dropout > 0.0:
+                    self.layers.add_module(f'hidden_dropout_{i+1}', nn.Dropout(self.dropout))
             self.out = nn.Linear(n_units, output_dim)
 
         # Fonction de perte
@@ -115,9 +119,9 @@ class MLP_regressor(L.LightningModule):
     
     # Configuration de l'optimizer
     def configure_optimizers(self):
-        optimizer =  self.optimizer(self.parameters(), lr=self.lr) # Prend en entrée les paramètres et le learning rate
+        optimizer =  self.optimizer(self.parameters(), lr=self.lr, weight_decay=self.weight_decay) # Prend en entrée les paramètres et le learning rate
         return optimizer
     
-    def on_train_epoch_end(self):
-        if self.device.type == 'mps':
-            torch.mps.empty_cache()
+    # def on_train_epoch_end(self):
+    #     if self.device.type == 'mps':
+    #         torch.mps.empty_cache()

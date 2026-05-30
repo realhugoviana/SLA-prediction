@@ -105,12 +105,12 @@ def log_to_csv(log_dir, output_dir):
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
 
-log_dir = "MLP_regression/tb_logs/ALSFRS_R_COMBINED/"
-output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_COMBINED/"
+log_dir = "MLP_regression/tb_logs/ALSFRS_R_COMBINED_27_05/"
+output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_COMBINED_27_05/"
 
 log_to_csv(log_dir, output_dir)
 
-log_dir = "MLP_regression/tb_logs/ALSFRS_R_FIXED/"
-output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_FIXED/"
+log_dir = "MLP_regression/tb_logs/ALSFRS_R_FIXED_27_05/"
+output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_FIXED_27_05/"
 
 log_to_csv(log_dir, output_dir)

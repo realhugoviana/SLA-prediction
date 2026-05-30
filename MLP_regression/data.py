@@ -45,10 +45,10 @@ class DataModule(LightningDataModule):
         train_val_df, test_df = train_test_split(self.dataframe, test_size=self.test_size, random_state=self.random_state) # Découpage du df en train+Val et test
         train_df, val_df = train_test_split(train_val_df, test_size=self.val_size, random_state=self.random_state) # Découpage de train+val en train et val
 
-        self.feature_cols = self.feature_cols if self.feature_cols else [col for col in self.dataframe.columns if col != self.target_col] # Features si précisé, sinon toutes sauf target
-        train_df[self.feature_cols] = self.scaler.fit_transform(train_df[self.feature_cols]) # Normalisation des features sur le train
-        val_df[self.feature_cols] = self.scaler.transform(val_df[self.feature_cols]) # Normalisation de val en utilisant le scaler de train
-        test_df[self.feature_cols] = self.scaler.transform(test_df[self.feature_cols]) # Même chose pour le test
+        # self.feature_cols = self.feature_cols if self.feature_cols else [col for col in self.dataframe.columns if col != self.target_col] # Features si précisé, sinon toutes sauf target
+        # train_df[self.feature_cols] = self.scaler.fit_transform(train_df[self.feature_cols]) # Normalisation des features sur le train
+        # val_df[self.feature_cols] = self.scaler.transform(val_df[self.feature_cols]) # Normalisation de val en utilisant le scaler de train
+        # test_df[self.feature_cols] = self.scaler.transform(test_df[self.feature_cols]) # Même chose pour le test
 
         self.train_dataset = ALSFRSDataset(train_df, feature_cols=self.feature_cols, target_col=self.target_col) # Création du dataset de train
         self.val_dataset = ALSFRSDataset(val_df, feature_cols=self.feature_cols, target_col=self.target_col) # val
