@@ -2,33 +2,10 @@ import os
 import traceback
 import pandas as pd
 from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
-from tbparse import SummaryReader
-
-def get_batch_size(trial_path):
-    ea = EventAccumulator(trial_path)
-    ea.Reload()
-
-    tags = ea.Tags()
-    if "tensors" not in tags or 'hyperparameters/text_summary' not in tags['tensors']:
-        raise ValueError("No 'hyperparameters/text_summary' tensor found in this trial.")
-
-    tensor_events = ea.Tensors('hyperparameters/text_summary')
-    if not tensor_events:
-        raise ValueError("No tensor events found for 'hyperparameters/text_summary'.")
-
-    tensor_proto = tensor_events[0].tensor_proto
-    text_bytes = tensor_proto.string_val[0]
-    text = text_bytes.decode('utf-8')
-
-    hp_dict = {}
-    for item in text.split(","):
-        key, value = item.split(":")
-        if key.strip() == "batch_size":
-            hp_dict[key.strip()] = value.strip()
-
-    return hp_dict
 
 def log_to_csv(log_dir, output_dir):
+    os.makedirs(output_dir, exist_ok=True)
+
     runlog_data = pd.DataFrame({"dataset": [], 
                                 "trial": [],
                                 "mae": [], 
@@ -83,34 +60,27 @@ def log_to_csv(log_dir, output_dir):
     # Calcul des statistiques pour chaque dataset
     summary_stats = runlog_data.groupby('dataset').agg(
         mae_mean=('mae', 'mean'),
-        mae_min=('mae', 'min'),
-        mae_max=('mae', 'max'),
-        mae_ci_low=('mae', lambda x: calculate_ci(x)[0]), # CI bas
-        mae_ci_high=('mae', lambda x: calculate_ci(x)[1]),# CI haut
+        mae_IC_95_low=('mae', lambda x: calculate_ci(x)[0]), # CI bas
+        mae_IC_95_high=('mae', lambda x: calculate_ci(x)[1]),# CI haut
 
         rmse_mean=('rmse', 'mean'),
-        rmse_min=('rmse', 'min'),
-        rmse_max=('rmse', 'max'),
-        rmse_ci_low=('rmse', lambda x: calculate_ci(x)[0]), 
-        rmse_ci_high=('rmse', lambda x: calculate_ci(x)[1]),
+        rmse_IC_95_low=('rmse', lambda x: calculate_ci(x)[0]), 
+        rmse_IC_95_high=('rmse', lambda x: calculate_ci(x)[1]),
 
         r2_mean=('r2', 'mean'),
-        r2_min=('r2', 'min'),
-        r2_max=('r2', 'max'),
-        r2_ci_low=('r2', lambda x: calculate_ci(x)[0]),
-        r2_ci_high=('r2', lambda x: calculate_ci(x)[1])
+        r2_IC_95_low=('r2', lambda x: calculate_ci(x)[0]),
+        r2_IC_95_high=('r2', lambda x: calculate_ci(x)[1])
     )
 
     # Sauvegarde des statistiques agrégées
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
-
-log_dir = "MLP_regression/tb_logs/ALSFRS_R_COMBINED_27_05/"
-output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_COMBINED_27_05/"
+log_dir = "MLP_regression/tb_logs/ALSFRS_R_COMBINED_30_05/"
+output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_COMBINED_30_05/"
 
 log_to_csv(log_dir, output_dir)
 
-log_dir = "MLP_regression/tb_logs/ALSFRS_R_FIXED_27_05/"
-output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_FIXED_27_05/"
+log_dir = "MLP_regression/tb_logs/ALSFRS_R_FIXED_30_05/"
+output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_FIXED_30_05/"
 
 log_to_csv(log_dir, output_dir)
