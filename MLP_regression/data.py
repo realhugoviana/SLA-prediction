@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import Dataset, DataLoader
 import torch
@@ -18,22 +18,33 @@ class ALSFRSDataset(Dataset):
 
     # Retourne une ligne du dataset
     def __getitem__(self, idx):
-        row = self.dataframe.iloc[idx] # Récupère la ligne par son indice
-        features = torch.tensor(row[self.feature_cols].values, dtype=torch.float32) # Conversion des features en tensors
+        row = self.dataframe.iloc[idx] 
+
+        # 1. Select the features subset (this results in a Pandas Series/DataFrame slice)
+        feature_slice = row[self.feature_cols]
+
+        # 2. Convert the entire slice to a NumPy array and ensure the dtype is float32
+        # We use .values.astype(np.float32) or simply .to_numpy(dtype=...)
+        features_numpy = feature_slice.values.astype('float32') 
+
+        # 3. Create the PyTorch tensor from the guaranteed numeric NumPy array
+        features = torch.from_numpy(features_numpy).float() # Use .float() to ensure float32 is used
+        
         target = torch.tensor(row[self.target_col], dtype=torch.float32) # Conversion de la target en tensor
         return features, target
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class DataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_col='Target', test_size=0.2, val_size=0.1, random_state=42):
+    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_col='Target', test_size=0.2, n_folds=10, random_state=42, fold_index=0):
         super().__init__()
         self.csv_path = csv_path # Fichier csv contenant les données
         self.batch_size = batch_size # Taille de batch
         self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
         self.target_col = target_col # Target
         self.test_size = test_size # Fraction du dataset pour le test
-        self.val_size = val_size # Fraction du dataset pour la validation
+        self.n_folds = n_folds # Nombre de folds pour le cross-validation
         self.random_state = random_state # Seed
+        self.fold_index = fold_index # Index de la fold pour le cross-validation
         self.scaler = StandardScaler() # Normalisation
 
     # Lecture du csv
@@ -43,7 +54,15 @@ class DataModule(LightningDataModule):
     # Découpage du dataset en train, val, test et normalisation des features
     def setup(self, stage=None):
         train_val_df, test_df = train_test_split(self.dataframe, test_size=self.test_size, random_state=self.random_state) # Découpage du df en train+Val et test
-        train_df, val_df = train_test_split(train_val_df, test_size=self.val_size, random_state=self.random_state) # Découpage de train+val en train et val
+
+        if self.n_folds > 1:
+            kf = KFold(n_splits=self.n_folds, shuffle=True, random_state=self.random_state) # KFold pour le cross-validation
+            folds = list(kf.split(train_val_df)) # Création des folds
+            train_indices, val_indices = folds[self.fold_index] # Récupération des indices de la fold courante
+            train_df = train_val_df.iloc[train_indices] # Création du df de train
+            val_df = train_val_df.iloc[val_indices] # Création du df de validation
+        else:
+            train_df, val_df = train_test_split(train_val_df, test_size=0.1, random_state=self.random_state) # Découpage de train+val en train et val
 
         # self.feature_cols = self.feature_cols if self.feature_cols else [col for col in self.dataframe.columns if col != self.target_col] # Features si précisé, sinon toutes sauf target
         # train_df[self.feature_cols] = self.scaler.fit_transform(train_df[self.feature_cols]) # Normalisation des features sur le train
