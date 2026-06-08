@@ -130,84 +130,15 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
         trainer.test(best_model, datamodule=dm) # Test
 
 if __name__ == '__main__':
-    csv_sliding_windows_baseline = glob.glob(os.path.join("datasets/ALSFRS_baseline/Sliding_windows", "*.csv"))
-    csv_fixed_baseline = glob.glob(os.path.join("datasets/ALSFRS_baseline/Fixed", "*.csv"))
-    csv_first_symptoms_baseline = glob.glob(os.path.join("datasets/ALSFRS_baseline/First_symptoms", "*.csv"))
 
-    csv_sliding_windows = glob.glob(os.path.join("datasets/ALSFRS/Sliding_windows", "*.csv"))
-    csv_fixed = glob.glob(os.path.join("datasets/ALSFRS/Fixed", "*.csv"))
-    csv_first_symptoms = glob.glob(os.path.join("datasets/ALSFRS/First_symptoms", "*.csv"))   
+    csv_sliding_windows = glob.glob(os.path.join("datasets/ALL_DATA_UNION/Sliding_windows", "*.csv"))
+    csv_fixed = glob.glob(os.path.join("datasets/ALL_DATA_UNION/Fixed", "*.csv"))
+    csv_first_symptoms = glob.glob(os.path.join("datasets/ALL_DATA_UNION/First_symptoms", "*.csv"))   
 
     trials = 100
     trial_epoch = 30
     max_epoch = 300
     n_folds = 10
-
-    for csv_file in csv_fixed_baseline:
-        print(f"Training on dataset: {csv_file}")
-        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
-        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
-
-        L.seed_everything(42)
-
-        run_optimization(csv_file,
-                         study_name="mlp_regression_07_06_baseline",
-                         input_size=input_size,
-                         dataset_name=dataset_name,
-                         trials=trials,
-                         trial_epoch=trial_epoch)
-
-        run_trainings(csv_file,
-                        log_dir="MLP_regression/tb_logs/baseline_fixed/",
-                        study_name="mlp_regression_07_06_baseline",
-                        input_size=input_size,
-                        dataset_name=dataset_name,
-                        max_epoch=max_epoch,
-                        n_folds=n_folds)
-
-    for csv_file in csv_sliding_windows_baseline:
-        print(f"Training on dataset: {csv_file}")
-        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
-        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
-
-        L.seed_everything(42)
-
-        run_optimization(csv_file,
-                         study_name="mlp_regression_07_06_baseline",
-                         input_size=input_size,
-                         dataset_name=dataset_name,
-                         trials=trials,
-                         trial_epoch=trial_epoch)
-
-        run_trainings(csv_file, 
-                      log_dir="MLP_regression/tb_logs/baseline_sliding_windows/",
-                      study_name="mlp_regression_07_06_baseline",
-                      input_size=input_size,
-                      dataset_name=dataset_name,
-                      max_epoch=max_epoch,
-                      n_folds=n_folds)
-
-    for csv_file in csv_first_symptoms_baseline:
-        print(f"Training on dataset: {csv_file}")
-        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
-        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
-
-        L.seed_everything(42)
-
-        run_optimization(csv_file,
-                         study_name="mlp_regression_07_06_baseline",
-                         input_size=input_size,
-                         dataset_name=dataset_name,
-                         trials=trials,
-                         trial_epoch=trial_epoch)
-        
-        run_trainings(csv_file,
-                      log_dir="MLP_regression/tb_logs/baseline_first_symptoms/",
-                      study_name="mlp_regression_07_06_baseline",
-                      input_size=input_size,
-                      dataset_name=dataset_name,
-                      max_epoch=max_epoch,
-                      n_folds=n_folds)
 
     for csv_file in csv_fixed:
         print(f"Training on dataset: {csv_file}")
@@ -217,15 +148,15 @@ if __name__ == '__main__':
         L.seed_everything(42)
 
         run_optimization(csv_file,
-                         study_name="mlp_regression_07_06_alsfrs",
+                         study_name="mlp_regression_08_06_all_data",
                          input_size=input_size,
                          dataset_name=dataset_name,
                          trials=trials,
                          trial_epoch=trial_epoch)
 
         run_trainings(csv_file,
-                        log_dir="MLP_regression/tb_logs/alsfrs_fixed/",
-                        study_name="mlp_regression_07_06_alsfrs",
+                        log_dir="MLP_regression/tb_logs/alls_data_fixed/",
+                        study_name="mlp_regression_08_06_all_data",
                         input_size=input_size,
                         dataset_name=dataset_name,
                         max_epoch=max_epoch,
@@ -239,15 +170,15 @@ if __name__ == '__main__':
         L.seed_everything(42)
 
         run_optimization(csv_file,
-                         study_name="mlp_regression_07_06_alsfrs",
+                         study_name="mlp_regression_08_06_all_data",
                          input_size=input_size,
                          dataset_name=dataset_name,
                          trials=trials,
                          trial_epoch=trial_epoch)
 
         run_trainings(csv_file, 
-                      log_dir="MLP_regression/tb_logs/alsfrs_sliding_windows/",
-                      study_name="mlp_regression_07_06_alsfrs",
+                      log_dir="MLP_regression/tb_logs/alls_data_sliding_windows/",
+                      study_name="mlp_regression_08_06_all_data",
                       input_size=input_size,
                       dataset_name=dataset_name,
                       max_epoch=max_epoch,
@@ -261,15 +192,15 @@ if __name__ == '__main__':
         L.seed_everything(42)
 
         run_optimization(csv_file,
-                         study_name="mlp_regression_07_06_alsfrs",
+                         study_name="mlp_regression_08_06_all_data",
                          input_size=input_size,
                          dataset_name=dataset_name,
                          trials=trials,
                          trial_epoch=trial_epoch)
         
         run_trainings(csv_file,
-                      log_dir="MLP_regression/tb_logs/alsfrs_first_symptoms/",
-                      study_name="mlp_regression_07_06_alsfrs",
+                      log_dir="MLP_regression/tb_logs/alls_data_first_symptoms/",
+                      study_name="mlp_regression_08_06_all_data",
                       input_size=input_size,
                       dataset_name=dataset_name,
                       max_epoch=max_epoch,
