@@ -7,16 +7,16 @@ def log_to_csv(log_dir, output_dir):
     os.makedirs(output_dir, exist_ok=True)
 
     runlog_data = pd.DataFrame({"dataset": [], 
-                                "trial": [],
+                                "fold": [],
                                 "mae": [], 
                                 "rmse": [], 
                                 "r2": []})
     for dataset_name in os.listdir(log_dir):
         dataset_path = os.path.join(log_dir, dataset_name)
-        for trial_name in os.listdir(dataset_path):
-            trial_path = os.path.join(dataset_path, trial_name)
-            for version_name in os.listdir(trial_path):
-                version_path = os.path.join(trial_path, version_name)
+        for fold_index in os.listdir(dataset_path):
+            fold_path = os.path.join(dataset_path, fold_index)
+            for version_name in os.listdir(fold_path):
+                version_path = os.path.join(fold_path, version_name)
                 try:
                     event_acc = EventAccumulator(version_path)
                     event_acc.Reload()
@@ -30,7 +30,7 @@ def log_to_csv(log_dir, output_dir):
                     r2 = event_acc.Scalars("test_r2")[-1].value
 
                     r = {"dataset": [dataset_name], 
-                        "trial": [trial_name],
+                        "fold": [fold_index],
                         "mae": [mae], 
                         "rmse": [rmse], 
                         "r2": [r2]}
@@ -62,25 +62,63 @@ def log_to_csv(log_dir, output_dir):
         mae_mean=('mae', 'mean'),
         mae_IC_95_low=('mae', lambda x: calculate_ci(x)[0]), # CI bas
         mae_IC_95_high=('mae', lambda x: calculate_ci(x)[1]),# CI haut
+        mae_std=('mae', 'std'),
 
         rmse_mean=('rmse', 'mean'),
         rmse_IC_95_low=('rmse', lambda x: calculate_ci(x)[0]), 
         rmse_IC_95_high=('rmse', lambda x: calculate_ci(x)[1]),
+        rmse_std=('rmse', 'std'),
 
         r2_mean=('r2', 'mean'),
         r2_IC_95_low=('r2', lambda x: calculate_ci(x)[0]),
-        r2_IC_95_high=('r2', lambda x: calculate_ci(x)[1])
+        r2_IC_95_high=('r2', lambda x: calculate_ci(x)[1]),
+        r2_std=('r2', 'std')
     )
 
     # Sauvegarde des statistiques agrégées
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
-log_dir = "MLP_regression/tb_logs/ALSFRS_R_COMBINED_30_05/"
-output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_COMBINED_30_05/"
+log_dir = "MLP_regression/tb_logs/alsfrs_first_symptoms/"
+output_dir = "MLP_regression/stats_entrainement/alsfrs_first_symptoms/"
 
 log_to_csv(log_dir, output_dir)
 
-log_dir = "MLP_regression/tb_logs/ALSFRS_R_FIXED_30_05/"
-output_dir = "MLP_regression/stats_entrainement/ALSFRS_R_FIXED_30_05/"
+log_dir = "MLP_regression/tb_logs/alsfrs_fixed/"
+output_dir = "MLP_regression/stats_entrainement/alsfrs_fixed/"
+
+log_to_csv(log_dir, output_dir)
+
+log_dir = "MLP_regression/tb_logs/alsfrs_sliding_windows/"
+output_dir = "MLP_regression/stats_entrainement/alsfrs_sliding_windows/"
+
+log_to_csv(log_dir, output_dir)
+
+log_dir = "MLP_regression/tb_logs/baseline_first_symptoms/"
+output_dir = "MLP_regression/stats_entrainement/baseline_first_symptoms/"
+
+log_to_csv(log_dir, output_dir)
+
+log_dir = "MLP_regression/tb_logs/baseline_fixed/"
+output_dir = "MLP_regression/stats_entrainement/baseline_fixed/"
+
+log_to_csv(log_dir, output_dir)
+
+log_dir = "MLP_regression/tb_logs/baseline_sliding_windows/"
+output_dir = "MLP_regression/stats_entrainement/baseline_sliding_windows/"
+
+log_to_csv(log_dir, output_dir)
+
+log_dir = "MLP_regression/tb_logs/best_performing_merge_first_symptoms/"
+output_dir = "MLP_regression/stats_entrainement/best_performing_merge_first_symptoms/"
+
+log_to_csv(log_dir, output_dir)
+
+log_dir = "MLP_regression/tb_logs/best_performing_merge_fixed/"
+output_dir = "MLP_regression/stats_entrainement/best_performing_merge_fixed/"
+
+log_to_csv(log_dir, output_dir)
+
+log_dir = "MLP_regression/tb_logs/best_performing_merge_sliding_windows/"
+output_dir = "MLP_regression/stats_entrainement/best_performing_merge_sliding_windows/"
 
 log_to_csv(log_dir, output_dir)
