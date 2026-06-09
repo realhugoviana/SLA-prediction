@@ -131,77 +131,83 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
 
 if __name__ == '__main__':
 
-    csv_sliding_windows = glob.glob(os.path.join("datasets/ALL_DATA_UNION/Sliding_windows", "*.csv"))
-    csv_fixed = glob.glob(os.path.join("datasets/ALL_DATA_UNION/Fixed", "*.csv"))
-    csv_first_symptoms = glob.glob(os.path.join("datasets/ALL_DATA_UNION/First_symptoms", "*.csv"))   
+    sliding_windows_path = "datasets/BEST_MERGE/Sliding_windows/to_train"
+    fixed_path = "datasets/BEST_MERGE/Fixed/to_train"
+    first_symptoms_path = "datasets/BEST_MERGE/First_symptoms/to_train"
 
-    trials = 100
+    trials = 8
     trial_epoch = 30
     max_epoch = 300
     n_folds = 10
 
-    for csv_file in csv_fixed:
-        print(f"Training on dataset: {csv_file}")
-        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
-        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+    for table_path in os.scandir(fixed_path):
+        table = os.path.basename(table_path)
+        for csv_file in glob.glob(os.path.join(table_path.path, "*.csv")):
+            print(f"Training on dataset: {csv_file}")
+            input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+            dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
 
-        L.seed_everything(42)
+            L.seed_everything(42)
 
-        run_optimization(csv_file,
-                         study_name="mlp_regression_08_06_all_data",
-                         input_size=input_size,
-                         dataset_name=dataset_name,
-                         trials=trials,
-                         trial_epoch=trial_epoch)
+            run_optimization(csv_file,
+                            study_name=f"mlp_regression_09_06_best_merge_{table}",
+                            input_size=input_size,
+                            dataset_name=dataset_name,
+                            trials=trials,
+                            trial_epoch=trial_epoch)
 
-        run_trainings(csv_file,
-                        log_dir="MLP_regression/tb_logs/alls_data_fixed/",
-                        study_name="mlp_regression_08_06_all_data",
+            run_trainings(csv_file,
+                            log_dir=f"MLP_regression/tb_logs/best_merge_{table}_fixed/",
+                            study_name=f"mlp_regression_09_06_best_merge_{table}",
+                            input_size=input_size,
+                            dataset_name=dataset_name,
+                            max_epoch=max_epoch,
+                            n_folds=n_folds)
+
+    for table_path in os.scandir(sliding_windows_path):
+        table = os.path.basename(table_path)
+        for csv_file in glob.glob(os.path.join(table_path.path, "*.csv")):
+            print(f"Training on dataset: {csv_file}")
+            input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+            dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+            L.seed_everything(42)
+
+            run_optimization(csv_file,
+                            study_name=f"mlp_regression_09_06_best_merge_{table}",
+                            input_size=input_size,
+                            dataset_name=dataset_name,
+                            trials=trials,
+                            trial_epoch=trial_epoch)
+
+            run_trainings(csv_file, 
+                        log_dir=f"MLP_regression/tb_logs/best_merge_{table}_sliding_windows/",
+                        study_name=f"mlp_regression_09_06_best_merge_{table}",
                         input_size=input_size,
                         dataset_name=dataset_name,
                         max_epoch=max_epoch,
                         n_folds=n_folds)
 
-    for csv_file in csv_sliding_windows:
-        print(f"Training on dataset: {csv_file}")
-        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
-        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+    for table_path in os.scandir(first_symptoms_path):
+        table = os.path.basename(table_path)
+        for csv_file in glob.glob(os.path.join(table_path.path, "*.csv")):
+                print(f"Training on dataset: {csv_file}")
+                input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+                dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
 
-        L.seed_everything(42)
+                L.seed_everything(42)
 
-        run_optimization(csv_file,
-                         study_name="mlp_regression_08_06_all_data",
-                         input_size=input_size,
-                         dataset_name=dataset_name,
-                         trials=trials,
-                         trial_epoch=trial_epoch)
-
-        run_trainings(csv_file, 
-                      log_dir="MLP_regression/tb_logs/alls_data_sliding_windows/",
-                      study_name="mlp_regression_08_06_all_data",
-                      input_size=input_size,
-                      dataset_name=dataset_name,
-                      max_epoch=max_epoch,
-                      n_folds=n_folds)
-
-    for csv_file in csv_first_symptoms:
-        print(f"Training on dataset: {csv_file}")
-        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
-        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
-
-        L.seed_everything(42)
-
-        run_optimization(csv_file,
-                         study_name="mlp_regression_08_06_all_data",
-                         input_size=input_size,
-                         dataset_name=dataset_name,
-                         trials=trials,
-                         trial_epoch=trial_epoch)
-        
-        run_trainings(csv_file,
-                      log_dir="MLP_regression/tb_logs/alls_data_first_symptoms/",
-                      study_name="mlp_regression_08_06_all_data",
-                      input_size=input_size,
-                      dataset_name=dataset_name,
-                      max_epoch=max_epoch,
-                      n_folds=n_folds)
+                run_optimization(csv_file,
+                                study_name=f"mlp_regression_09_06_best_merge_{table}",
+                                input_size=input_size,
+                                dataset_name=dataset_name,
+                                trials=trials,
+                                trial_epoch=trial_epoch)
+                
+                run_trainings(csv_file,
+                            log_dir=f"MLP_regression/tb_logs/best_merge_{table}_first_symptoms/",
+                            study_name=f"mlp_regression_09_06_best_merge_{table}",
+                            input_size=input_size,
+                            dataset_name=dataset_name,
+                            max_epoch=max_epoch,
+                            n_folds=n_folds)
