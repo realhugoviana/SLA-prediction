@@ -1,0 +1,117 @@
+import torch
+import torch.nn as nn
+import lightning as L
+import torchmetrics
+
+# Module lighting : pratique car pas besoin de coder à la main les boucles d'entrainement
+class BasicRNN(L.LightningModule):
+    def __init__(self, input_dim, output_dim, n_layer=2, n_units=16, learning_rate=1e-3, activation='relu', optimizer='Adam', criterion='MSE', weight_decay=0.0, dropout=0.0, bidirectional=False):
+        super().__init__()
+
+        # Sauvegarde des paramètres
+        self.save_hyperparameters()
+
+        self.input_dim = input_dim # Nombre de features
+        self.output_dim = output_dim # Nombre de cibles à prédire
+        self.n_layer = n_layer # Nombre de couches cachées
+        self.n_units = n_units # Nombre de neurones par couche cachée
+        self.lr = learning_rate # Learning rate
+        self.weight_decay = weight_decay # Poids de régularisation L2
+        self.dropout = dropout # Taux de dropout
+        self.bidirectional = bidirectional # RNN bidirectionnelle ou non
+        self.activation = activation # Fonction d'activation
+
+        # Architecture
+        self.rnn = nn.RNN(input_size=input_dim, 
+                          hidden_size=n_units, 
+                          num_layers=n_layer, 
+                          nonlinearity=activation, 
+                          dropout=dropout if n_layer > 1 else 0.0, 
+                          batch_first=True, 
+                          bidirectional=bidirectional)
+        if not self.bidirectional:
+            self.out = nn.Linear(n_units, output_dim)
+        else:
+            self.out = nn.Linear(2 * n_units, output_dim)
+
+        # Fonction de perte
+        self.criterion = {
+            'MSE': nn.MSELoss(),
+            'MAE': nn.L1Loss(),
+            'Huber': nn.SmoothL1Loss()
+        }[criterion]
+
+        # Optimizer (déscente de gradient & retro-propagation)
+        self.optimizer = {
+            'Adam': torch.optim.Adam,
+            'RMSprop': torch.optim.RMSprop,
+            'Adagrad': torch.optim.Adagrad
+        }[optimizer]
+
+        # Métriques : MAE, RMSE, R2
+        self.train_mae = torchmetrics.MeanAbsoluteError()
+        self.val_mae = torchmetrics.MeanAbsoluteError()
+        self.test_mae = torchmetrics.MeanAbsoluteError()
+
+        self.train_rmse = torchmetrics.MeanSquaredError(squared=False)
+        self.val_rmse = torchmetrics.MeanSquaredError(squared=False)
+        self.test_rmse = torchmetrics.MeanSquaredError(squared=False)
+
+        self.train_r2 = torchmetrics.R2Score()
+        self.val_r2 = torchmetrics.R2Score()
+        self.test_r2 = torchmetrics.R2Score()
+        
+    # Fonction de passe dans le NN
+    def forward(self, x):
+        rnn_out, _ = self.rnn(x) # Sortie du RNN
+        last_time_step = rnn_out[:, -1, :] # On prend la sortie du dernier time step
+        out = self.out(last_time_step) # Passage dans la couche de sortie
+        return out
+    
+    # Fonction d'entrainement pour une batch
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        y = y.view(-1, 1)
+        y_hat = self.forward(x) # Prédiction
+        loss = self.criterion(y_hat, y) # Perte
+        if len(y) > 1: # Log
+            self.log_dict({'train_loss': loss,
+                        'train_mae': self.train_mae(y_hat, y),
+                        'train_rmse': self.train_rmse(y_hat, y),
+                        'train_r2': self.train_r2(y_hat, y)})
+        return loss # Retourne la perte
+    
+    # Validation, pas de retro propagation
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        y = y.view(-1, 1)
+        y_hat = self.forward(x)
+        loss = self.criterion(y_hat, y)
+        if len(y) > 1:
+            self.log_dict({'val_loss': loss,
+                        'val_mae': self.val_mae(y_hat, y),
+                        'val_rmse': self.val_rmse(y_hat, y),
+                        'val_r2': self.val_r2(y_hat, y)})
+        return loss
+    
+    # Test
+    def test_step(self, batch, batch_idx):
+        x, y = batch
+        y = y.view(-1, 1)
+        y_hat = self.forward(x)
+        loss = self.criterion(y_hat, y)
+        if len(y) > 1:
+            self.log_dict({'test_loss': loss,
+                        'test_mae': self.test_mae(y_hat, y),
+                        'test_rmse': self.test_rmse(y_hat, y),
+                        'test_r2': self.test_r2(y_hat, y)})
+        return loss
+    
+    # Configuration de l'optimizer
+    def configure_optimizers(self):
+        optimizer =  self.optimizer(self.parameters(), lr=self.lr, weight_decay=self.weight_decay) # Prend en entrée les paramètres et le learning rate
+        return optimizer
+    
+    def on_train_epoch_end(self):
+        if self.device.type == 'mps':
+            torch.mps.empty_cache()
