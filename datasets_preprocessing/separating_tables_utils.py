@@ -49,3 +49,18 @@ def separate_datasets_by_tables(df, output_prefix, file_name):
     os.makedirs(os.path.dirname(f'{output_prefix}/no_delta/'), exist_ok=True)
 
     df_no_delta.to_csv(f'{output_prefix}/no_delta/{file_name}', index=False)
+
+def separate_datasets_no_delta_SVC(df, output_prefix, file_name):
+
+    cols_to_keep = df.columns[
+        df.columns.str.startswith('ALS') |
+        df.columns.str.contains('Target') |
+        ~(df.columns.str.contains(r'\d{1,4}_\d{2,4}', na=False)) |
+        df.columns.str.startswith('SVC')
+    ]
+
+    df_no_delta_SVC = df[cols_to_keep].copy()
+
+    os.makedirs(os.path.dirname(f'{output_prefix}/no_delta_SVC/'), exist_ok=True)
+
+    df_no_delta_SVC.to_csv(f'{output_prefix}/no_delta_SVC/{file_name}', index=False)

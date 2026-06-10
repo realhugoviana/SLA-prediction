@@ -121,6 +121,10 @@ def drop_features_thresh(df, df_ref, thresh):
 
     cols_to_keep_df = cols_to_keep.intersection(df.columns)
 
+    cols_to_drop = df.columns.difference(cols_to_keep_df)
+    cols_to_drop_df = pd.DataFrame({"col": cols_to_drop})
+    cols_to_drop_df.to_csv('cols_to_drop.csv', index=False)
+
     df_temp = df[cols_to_keep_df].copy()
 
     return df_temp

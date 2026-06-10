@@ -69,46 +69,19 @@ def generate_datasets_from_folder(folder_path, file_prefix, drop_feat=True, thre
     
     return pd.concat(datasets_sizes, ignore_index=True)
 
-fixed_path = 'datasets/BEST_MERGE/Fixed/unprocessed/'
-sliding_windows_path = 'datasets/BEST_MERGE/Sliding_windows/unprocessed/'
-first_symptoms_path = 'datasets/BEST_MERGE/First_symptoms/unprocessed/'
+fixed_path = 'datasets/BEST_MERGE/Fixed/unprocessed/no_delta_SVC/'
+sliding_windows_path = 'datasets/BEST_MERGE/Sliding_windows/unprocessed/no_delta_SVC/'
+first_symptoms_path = 'datasets/BEST_MERGE/First_symptoms/unprocessed/no_delta_SVC/'
 
+os.makedirs('datasets/BEST_MERGE/Fixed/to_train/no_delta_SVC/', exist_ok=True)
+os.makedirs('datasets/BEST_MERGE/Sliding_windows/to_train/no_delta_SVC/', exist_ok=True)
+os.makedirs('datasets/BEST_MERGE/First_symptoms/to_train/no_delta_SVC/', exist_ok=True)
 
-for table_path in os.scandir(fixed_path):
-    table = os.path.basename(table_path)
+datasets_size_Fixed = generate_datasets_from_folder(fixed_path, f'datasets/BEST_MERGE/Fixed/to_train/no_delta_SVC/', drop_feat=True, thresh=70, baseline=False)
+datasets_size_Fixed.to_csv(f'datasets/BEST_MERGE_no_delta_SVC_Fixed_datasets_size.csv', index=False)
 
-    if table == ".DS_Store":
-        continue
-    
-    os.makedirs(os.path.dirname(f'datasets/BEST_MERGE/Fixed/to_train/{table}/'), exist_ok=True)
-    if table == "VIT":
-        datasets_size_Fixed = generate_datasets_from_folder(table_path, f'datasets/BEST_MERGE/Fixed/to_train/{table}/', drop_feat=True, thresh=70, baseline=False)
-    else:
-        datasets_size_Fixed = generate_datasets_from_folder(table_path, f'datasets/BEST_MERGE/Fixed/to_train/{table}/', drop_feat=True, thresh=80, baseline=False)
-    datasets_size_Fixed.to_csv(f'datasets/BEST_MERGE_{table}_Fixed_datasets_size.csv', index=False)
+# datasets_size_Sliding_Windows = preprocess_sliding_windows_datasets_from_folder(sliding_windows_path, f'datasets/BEST_MERGE/Sliding_windows/to_train/no_delta_SVC/', drop_feat=True, thresh=70, baseline=False)
+# datasets_size_Sliding_Windows.to_csv(f'datasets/BEST_MERGE_no_delta_SVC_Sliding_windows_datasets_size.csv', index=False)
 
-for table_path in os.scandir(sliding_windows_path):
-    table = os.path.basename(table_path)
-
-    if table == ".DS_Store":
-        continue
-
-    os.makedirs(os.path.dirname(f'datasets/BEST_MERGE/Sliding_windows/to_train/{table}/'), exist_ok=True)
-    if table == "VIT":
-        datasets_size_Sliding_Windows = preprocess_sliding_windows_datasets_from_folder(table_path, f'datasets/BEST_MERGE/Sliding_windows/to_train/{table}/', drop_feat=True, thresh=70, baseline=False)
-    else:
-        datasets_size_Sliding_Windows = preprocess_sliding_windows_datasets_from_folder(table_path, f'datasets/BEST_MERGE/Sliding_windows/to_train/{table}/', drop_feat=True, thresh=80, baseline=False)
-    datasets_size_Sliding_Windows.to_csv(f'datasets/BEST_MERGE_{table}_Sliding_windows_datasets_size.csv', index=False)
-
-for table_path in os.scandir(first_symptoms_path):
-    table = os.path.basename(table_path)
-
-    if table == ".DS_Store":
-        continue
-
-    os.makedirs(os.path.dirname(f'datasets/BEST_MERGE/First_symptoms/to_train/{table}/'), exist_ok=True)
-    if table == "VIT":
-        datasets_size_F_S_Fixed = generate_datasets_from_folder(table_path, f'datasets/BEST_MERGE/First_symptoms/to_train/{table}/', drop_feat=True, thresh=70, baseline=False)
-    else:
-        datasets_size_F_S_Fixed = generate_datasets_from_folder(table_path, f'datasets/BEST_MERGE/First_symptoms/to_train/{table}/', drop_feat=True, thresh=80, baseline=False)
-    datasets_size_F_S_Fixed.to_csv(f'datasets/BEST_MERGE_{table}_First_symptoms_datasets_size.csv', index=False)
+# datasets_size_F_S_Fixed = generate_datasets_from_folder(first_symptoms_path, f'datasets/BEST_MERGE/First_symptoms/to_train/no_delta_SVC/', drop_feat=True, thresh=70, baseline=False)
+# datasets_size_F_S_Fixed.to_csv(f'datasets/BEST_MERGE_no_delta_SVC_First_symptoms_datasets_size.csv', index=False)

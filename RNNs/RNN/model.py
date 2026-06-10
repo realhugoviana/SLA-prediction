@@ -29,6 +29,7 @@ class BasicRNN(L.LightningModule):
                           dropout=dropout if n_layer > 1 else 0.0, 
                           batch_first=True, 
                           bidirectional=bidirectional)
+        
         if not self.bidirectional:
             self.out = nn.Linear(n_units, output_dim)
         else:

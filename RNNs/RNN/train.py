@@ -9,7 +9,7 @@ import os
 import glob
 import time
 
-from model import MLP_regressor
+from model import BasicRNN
 from data import DataModule
 
 # Permets d'utiliser le GPU
@@ -31,16 +31,28 @@ def run_optimization(data_path, study_name="mlp_regression", input_size=None, da
     def objective(trial):
 
         # Paramètres optimisés
-        n_layer = trial.suggest_int('n_layer', 1, 3)
-        n_units = trial.suggest_categorical('n_units', [32, 64, 128, 256, 512])
-        decroissant = trial.suggest_categorical('decroissant', [True, False])
+        n_layer = trial.suggest_int('n_layer', 1, 5)
+        n_units = trial.suggest_categorical('n_units', [32, 64, 128, 256, 512, 1024])
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-3, log=True)
-        batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128])
+        activation = trial.suggest_categorical('activation', ['relu', 'tanh'])
+        criterion = trial.suggest_categorical('criterion', ['MSE', 'MAE', 'Huber'])
+        batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128, 256, 512])
         weight_decay = trial.suggest_float('weight_decay', 1e-8, 1e-4, log=True)
         dropout = trial.suggest_float('dropout', 0.0, 0.5)
+        bidirectional = trial.suggest_categorical('bidirectional', [True, False])
 
         # Initialisation du modèle avec les paramètres choisis (voir model.py
-        model = MLP_regressor(input_size, output_dim=1, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation='ReLU', optimizer='Adam', criterion='Huber', weight_decay=weight_decay, dropout=dropout)
+        model = BasicRNN(input_size, 
+                         output_dim=1, 
+                         n_layer=n_layer, 
+                         n_units=n_units, 
+                         learning_rate=learning_rate, 
+                         activation=activation, 
+                         optimizer='Adam', 
+                         criterion=criterion, 
+                         weight_decay=weight_decay, 
+                         dropout=dropout, 
+                         bidirectional=bidirectional)
 
         # Dataset et dataloader (voir data.py)
         dm = DataModule(csv_path=data_path, batch_size=batch_size, n_folds=-1) # n_folds=-1 pour ne pas faire de cross-validation pendant l'optimisation
@@ -101,17 +113,17 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
 
     # Entrainement du modèle avec les meilleurs paramètres sur le nombre d'epoch maximum
     best_params = trial.params
-    best_model = MLP_regressor(input_size, 
-                               output_dim=1, 
-                               n_layer=best_params['n_layer'], 
-                               n_units=best_params['n_units'], 
-                               learning_rate=best_params['learning_rate'], 
-                               decroissant=best_params['decroissant'], 
-                               activation='ReLU', 
-                               optimizer='Adam', 
-                               criterion='Huber',
-                               weight_decay=best_params['weight_decay'],
-                               dropout=best_params['dropout'])
+    best_model = BasicRNN(input_size, 
+                           output_dim=1, 
+                           n_layer=best_params['n_layer'], 
+                           n_units=best_params['n_units'], 
+                           learning_rate=best_params['learning_rate'],
+                           activation=best_params['activation'], 
+                           optimizer='Adam', 
+                           criterion=best_params['criterion'],
+                           weight_decay=best_params['weight_decay'],
+                           dropout=best_params['dropout'],
+                           bidirectional=best_params['bidirectional'])
     
     for training in range(n_folds):
         print(f"Training {training+1}/{n_folds} for dataset {dataset_name} with best parameters...")

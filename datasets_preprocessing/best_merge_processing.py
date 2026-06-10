@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 
-from processing_utils import encode_simple_categorical, drop_features_thresh, calculate_fill_rates, drop_baseline, drop_unused_cols, generate_datasets, preprocess_sliding_windows_dataset
-from separating_tables_utils import separate_datasets_by_tables
+from separating_tables_utils import separate_datasets_by_tables, separate_datasets_no_delta_SVC
 
 fixed_path = '../donnees_04_26/ALL_DATA_UNION/Fixed/to_train'
 sliding_windows_path = '../donnees_04_26/ALL_DATA_UNION/Combined/to_train'
@@ -25,7 +24,7 @@ for csv_file in csv_files:
         print(f"Skipped unreadable file: {csv_file}")
         continue
     print(f"Processing {csv_file}")
-    separate_datasets_by_tables(df, f'datasets/BEST_MERGE/Fixed/unprocessed/', csv_file)
+    separate_datasets_no_delta_SVC(df, f'datasets/BEST_MERGE/Fixed/unprocessed/', csv_file)
 
 csv_files = [f for f in os.listdir(sliding_windows_path) if f.endswith('.csv')]
 datasets_sizes = []
@@ -43,7 +42,7 @@ for csv_file in csv_files:
         print(f"Skipped unreadable file: {csv_file}")
         continue
     print(f"Processing {csv_file}")
-    separate_datasets_by_tables(df, f'datasets/BEST_MERGE/Sliding_windows/unprocessed/', csv_file)
+    separate_datasets_no_delta_SVC(df, f'datasets/BEST_MERGE/Sliding_windows/unprocessed/', csv_file)
 
 csv_files = [f for f in os.listdir(first_symptoms_path) if f.endswith('.csv')]
 datasets_sizes = []
@@ -61,5 +60,5 @@ for csv_file in csv_files:
         print(f"Skipped unreadable file: {csv_file}")
         continue
     print(f"Processing {csv_file}")
-    separate_datasets_by_tables(df, f'datasets/BEST_MERGE/First_symptoms/unprocessed/', csv_file)
+    separate_datasets_no_delta_SVC(df, f'datasets/BEST_MERGE/First_symptoms/unprocessed/', csv_file)
 
