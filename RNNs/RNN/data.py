@@ -1,9 +1,12 @@
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import Dataset, DataLoader
 import torch
 from lightning import LightningDataModule
+
+from utils import get_intervals, sort_df
 
 # Conversion du dataframe pandas en dataset PyTorch
 class ALSFRSDataset(Dataset):
@@ -11,6 +14,9 @@ class ALSFRSDataset(Dataset):
         self.dataframe = dataframe # DataFrame source
         self.feature_cols = feature_cols if feature_cols else [col for col in dataframe.columns if col != target_col] # Features définis comme tout ce qui n'est pas target
         self.target_col = target_col # Colonne à prédire
+
+        self.intervals = get_intervals(self.dataframe)
+        self.dataframe = sort_df(self.dataframe, self.intervals)
 
     # Retourne la taille du dataset
     def __len__(self):
@@ -20,12 +26,14 @@ class ALSFRSDataset(Dataset):
     def __getitem__(self, idx):
         row = self.dataframe.iloc[idx] 
 
-        # 1. Select the features subset (this results in a Pandas Series/DataFrame slice)
-        feature_slice = row[self.feature_cols]
+        feature_list = []
+        for interval in self.intervals:
+            feature_slice = row[self.feature_cols[self.feature_cols.str.contains(rf'{interval}', na=False)]]
+            feature_list.append(feature_slice)
 
         # 2. Convert the entire slice to a NumPy array and ensure the dtype is float32
         # We use .values.astype(np.float32) or simply .to_numpy(dtype=...)
-        features_numpy = feature_slice.values.astype('float32') 
+        features_numpy = np.concatenate(feature_list, axis=0).astype('float32') 
 
         # 3. Create the PyTorch tensor from the guaranteed numeric NumPy array
         features = torch.from_numpy(features_numpy).float() # Use .float() to ensure float32 is used
