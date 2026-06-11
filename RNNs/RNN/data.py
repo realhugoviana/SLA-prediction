@@ -12,7 +12,7 @@ from utils import get_intervals, sort_df
 class ALSFRSDataset(Dataset):
     def __init__(self, dataframe, feature_cols=None, target_col='Target'):
         self.dataframe = dataframe # DataFrame source
-        self.feature_cols = feature_cols if feature_cols else [col for col in dataframe.columns if col != target_col] # Features définis comme tout ce qui n'est pas target
+        self.feature_cols = feature_cols if feature_cols is not None else pd.Index([col for col in dataframe.columns if col != target_col]) # Features définis comme tout ce qui n'est pas target
         self.target_col = target_col # Colonne à prédire
 
         self.intervals = get_intervals(self.dataframe)
@@ -29,15 +29,17 @@ class ALSFRSDataset(Dataset):
         feature_list = []
         for interval in self.intervals:
             feature_slice = row[self.feature_cols[self.feature_cols.str.contains(rf'{interval}', na=False)]]
-            feature_list.append(feature_slice)
+            feature_list.append(feature_slice.reset_index(drop=True))
+
 
         # 2. Convert the entire slice to a NumPy array and ensure the dtype is float32
         # We use .values.astype(np.float32) or simply .to_numpy(dtype=...)
-        features_numpy = np.concatenate(feature_list, axis=0).astype('float32') 
+        features_numpy = pd.concat(feature_list, axis=1).values.astype('float32') 
 
         # 3. Create the PyTorch tensor from the guaranteed numeric NumPy array
-        features = torch.from_numpy(features_numpy).float() # Use .float() to ensure float32 is used
+        features = torch.from_numpy(features_numpy).float().T # Use .float() to ensure float32 is used
         
+
         target = torch.tensor(row[self.target_col], dtype=torch.float32) # Conversion de la target en tensor
         return features, target
 
@@ -72,7 +74,7 @@ class DataModule(LightningDataModule):
         else:
             train_df, val_df = train_test_split(train_val_df, test_size=0.1, random_state=self.random_state) # Découpage de train+val en train et val
 
-        # self.feature_cols = self.feature_cols if self.feature_cols else [col for col in self.dataframe.columns if col != self.target_col] # Features si précisé, sinon toutes sauf target
+        self.feature_cols = self.dataframe.columns[~self.dataframe.columns.str.contains(r'Target')] # Features si précisé, sinon toutes sauf target
         # train_df[self.feature_cols] = self.scaler.fit_transform(train_df[self.feature_cols]) # Normalisation des features sur le train
         # val_df[self.feature_cols] = self.scaler.transform(val_df[self.feature_cols]) # Normalisation de val en utilisant le scaler de train
         # test_df[self.feature_cols] = self.scaler.transform(test_df[self.feature_cols]) # Même chose pour le test

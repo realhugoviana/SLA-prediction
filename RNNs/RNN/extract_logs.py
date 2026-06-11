@@ -78,7 +78,7 @@ def log_to_csv(log_dir, output_dir):
     # Sauvegarde des statistiques agrégées
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
-log_dir = "MLP_regression/tb_logs/best_merge_LAB_fixed/"
-output_dir = "MLP_regression/stats_entrainement/best_merge_LAB_fixed/"
+log_dir = "RNNs/RNN/tb_logs/test_scaler/"
+output_dir = "RNNs/RNN/stats_entrainement/test_scaler/"
 
 log_to_csv(log_dir, output_dir)

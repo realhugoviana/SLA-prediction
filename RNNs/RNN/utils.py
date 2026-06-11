@@ -22,6 +22,11 @@ def get_intervals(df):
     print(f"Intervals found: {sorted_intervals}")
     return pd.Series(sorted_intervals)
 
+def get_features(df):
+    columns = df.columns
+    
+    return list(sorted(columns.str.replace(r'_\d{1,4}_\d{2,4}', '', regex=True).unique()))
+
 def sort_df(df, intervals):
     sorted_columns = []
 
@@ -31,3 +36,6 @@ def sort_df(df, intervals):
 
     sorted_columns.append("Target")
     return df[sorted_columns]
+
+def get_input_size(df):
+    return len(get_features(df)) -1
