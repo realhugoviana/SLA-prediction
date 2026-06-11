@@ -4,13 +4,13 @@ import lightning as L
 import torchmetrics
 
 # Module lighting : pratique car pas besoin de coder à la main les boucles d'entrainement
-class BasicRNN(L.LightningModule):
-    def __init__(self, input_dim, output_dim, n_layer=2, n_units=16, learning_rate=1e-3, activation='relu', optimizer='Adam', criterion='MSE', weight_decay=0.0, dropout=0.0, bidirectional=False):
+class RNNmodel(L.LightningModule):
+    def __init__(self, input_dim, output_dim, architecture, n_layer=2, n_units=16, learning_rate=1e-3, activation='relu', optimizer='Adam', criterion='MSE', weight_decay=0.0, dropout=0.0, bidirectional=False):
         super().__init__()
 
         # Sauvegarde des paramètres
         self.save_hyperparameters()
-
+        self.architecture = architecture # RNN, GRU, LSTM
         self.input_dim = input_dim # Nombre de features
         self.output_dim = output_dim # Nombre de cibles à prédire
         self.n_layer = n_layer # Nombre de couches cachées
@@ -22,13 +22,28 @@ class BasicRNN(L.LightningModule):
         self.activation = activation # Fonction d'activation
 
         # Architecture
-        self.rnn = nn.RNN(input_size=input_dim, 
-                          hidden_size=n_units, 
-                          num_layers=n_layer, 
-                          nonlinearity=activation, 
-                          dropout=dropout if n_layer > 1 else 0.0, 
-                          batch_first=True, 
-                          bidirectional=bidirectional)
+        if self.architecture == "RNN":
+            self.rnn = nn.RNN(input_size=input_dim, 
+                            hidden_size=n_units, 
+                            num_layers=n_layer, 
+                            nonlinearity=activation, 
+                            dropout=dropout if n_layer > 1 else 0.0, 
+                            batch_first=True, 
+                            bidirectional=bidirectional)
+        elif self.architecture == "GRU":
+            self.rnn = nn.GRU(input_size=input_dim,
+                              hidden_size=n_units,
+                              num_layers=n_layer,
+                              dropout=dropout if n_layer > 1 else 0.0,
+                              batch_first=True,
+                              bidirectional=bidirectional)
+        elif self.architecture == "LSTM":
+            self.rnn = nn.LSTM(input_size=input_dim,
+                               hidden_size=n_units,
+                               num_layers=n_layer,
+                               dropout=dropout if n_layer > 1 else 0.0,
+                               batch_first=True,
+                               bidirectional=bidirectional)
         
         if not self.bidirectional:
             self.out = nn.Linear(n_units, output_dim)

@@ -9,7 +9,7 @@ import os
 import glob
 import time
 
-from model import BasicRNN
+from model import RNNmodel
 from data import DataModule
 from utils import get_input_size
 
@@ -26,7 +26,7 @@ else:
 # - Chemin d'accès au csv
 # - Dossier où mettre les logs
 # - Nom de l'étude Optuna
-def run_optimization(data_path, study_name="mlp_regression", input_size=None, dataset_name=None, trials=100, trial_epoch=30):
+def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size=None, dataset_name=None, trials=100, trial_epoch=30):
 
     # Fonction d'optimisation Optuna
     def objective(trial):
@@ -35,16 +35,20 @@ def run_optimization(data_path, study_name="mlp_regression", input_size=None, da
         n_layer = trial.suggest_int('n_layer', 1, 5)
         n_units = trial.suggest_categorical('n_units', [32, 64, 128, 256, 512, 1024])
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-3, log=True)
-        activation = trial.suggest_categorical('activation', ['relu', 'tanh'])
+        if architecture == "RNN":
+            activation = trial.suggest_categorical('activation', ['relu', 'tanh'])
+        else:
+            activation = None
         criterion = trial.suggest_categorical('criterion', ['MSE', 'MAE', 'Huber'])
         batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128, 256, 512])
         weight_decay = trial.suggest_float('weight_decay', 1e-8, 1e-4, log=True)
         dropout = trial.suggest_float('dropout', 0.0, 0.5)
         bidirectional = trial.suggest_categorical('bidirectional', [True, False])
 
-        # Initialisation du modèle avec les paramètres choisis (voir model.py
-        model = BasicRNN(input_size, 
+        # Initialisation du modèle avec les paramètres choisis (voir model.py)
+        model = RNNmodel(input_size, 
                          output_dim=1, 
+                         architecture=architecture,
                          n_layer=n_layer, 
                          n_units=n_units, 
                          learning_rate=learning_rate, 
@@ -103,7 +107,7 @@ def run_optimization(data_path, study_name="mlp_regression", input_size=None, da
     for key, value in trial.params.items():
         print(f"    {key}: {value}")
 
-def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_regression", input_size=None, dataset_name=None, max_epoch=300, n_folds=10):
+def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_regression", architecture="RNN", input_size=None, dataset_name=None, max_epoch=300, n_folds=10):
 
     study = optuna.load_study(
         storage=f"sqlite:///optuna.db",
@@ -114,17 +118,32 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
 
     # Entrainement du modèle avec les meilleurs paramètres sur le nombre d'epoch maximum
     best_params = trial.params
-    best_model = BasicRNN(input_size, 
-                           output_dim=1, 
-                           n_layer=best_params['n_layer'], 
-                           n_units=best_params['n_units'], 
-                           learning_rate=best_params['learning_rate'],
-                           activation=best_params['activation'], 
-                           optimizer='Adam', 
-                           criterion=best_params['criterion'],
-                           weight_decay=best_params['weight_decay'],
-                           dropout=best_params['dropout'],
-                           bidirectional=best_params['bidirectional'])
+    if architecture == "RNN":
+        best_model = RNNmodel(input_size, 
+                            output_dim=1, 
+                            architecture=architecture,
+                            n_layer=best_params['n_layer'], 
+                            n_units=best_params['n_units'], 
+                            learning_rate=best_params['learning_rate'],
+                            activation= best_params['activation'], 
+                            optimizer='Adam', 
+                            criterion=best_params['criterion'],
+                            weight_decay=best_params['weight_decay'],
+                            dropout=best_params['dropout'],
+                            bidirectional=best_params['bidirectional'])
+    else:
+        best_model = RNNmodel(input_size, 
+                            output_dim=1, 
+                            architecture=architecture,
+                            n_layer=best_params['n_layer'], 
+                            n_units=best_params['n_units'], 
+                            learning_rate=best_params['learning_rate'],
+                            activation= None, 
+                            optimizer='Adam', 
+                            criterion=best_params['criterion'],
+                            weight_decay=best_params['weight_decay'],
+                            dropout=best_params['dropout'],
+                            bidirectional=best_params['bidirectional'])
     
     for training in range(n_folds):
         print(f"Training {training+1}/{n_folds} for dataset {dataset_name} with best parameters...")
@@ -148,27 +167,50 @@ if __name__ == '__main__':
     trial_epoch = 30
     max_epoch = 300
     n_folds = 10
+    architecture = "LSTM"
 
-    csv_file = "datasets/ALSFRS_baseline/Fixed/_0_9M.csv"
+    csv_file = "datasets/ALSFRS/Fixed/_0_9M.csv"
 
     input_size = get_input_size(pd.read_csv(csv_file))
     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
 
     L.seed_everything(42)
 
+    # run_optimization(csv_file,
+    #                 study_name=f"lstm_test",
+    #                 architecture=architecture,
+    #                 input_size=input_size,
+    #                 dataset_name=dataset_name,
+    #                 trials=trials,
+    #                 trial_epoch=trial_epoch)
+    
+    run_trainings(csv_file,
+                log_dir=f"RNN/tb_logs/lstm_test/",
+                study_name=f"lstm_test",
+                architecture=architecture,
+                input_size=input_size,
+                dataset_name=dataset_name,
+                max_epoch=max_epoch,
+                n_folds=n_folds)
+    
+    architecture = "GRU"
+
+    L.seed_everything(42)
+
     run_optimization(csv_file,
-                    study_name=f"rnn_test_baseline",
+                    study_name=f"gru_test",
+                    architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
                     trials=trials,
                     trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"RNNs/RNN/tb_logs/test_baseline/",
-                study_name=f"rnn_test_baseline",
+                log_dir=f"RNN/tb_logs/gru_test/",
+                study_name=f"gru_test",
+                architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
                 max_epoch=max_epoch,
                 n_folds=n_folds)
-                
     
