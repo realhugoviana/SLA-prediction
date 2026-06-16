@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+import os
 
 def stats_desc(col):
 
@@ -50,10 +51,11 @@ def plot_discrete(col, trimestre):
     plt.savefig(f"distribution_{trimestre}.png", dpi=150, bbox_inches="tight")
     plt.show()
 
-fichiers = {"../datasets/achives_8_04_26/to_train/MLP_alsfrs-r_T1_T2.csv": "T2",
-            "../datasets/achives_8_04_26/to_train/MLP_alsfrs-r_T1-T2_T3.csv": "T3",
-            "../datasets/achives_8_04_26/to_train/MLP_alsfrs-r_T1-T2-T3_T4.csv": "T4",
-            "../datasets/achives_8_04_26/to_train/MLP_alsfrs-r_T1-T2-T3-T4_T5.csv": "T5"}
+fichiers = {"datasets/papaiz/papaiz_3M.csv": "3M",
+            "datasets/papaiz/papaiz_6M.csv": "6M",
+            "datasets/papaiz/papaiz_9M.csv": "9M",
+            "datasets/papaiz/papaiz_12M.csv": "12M",
+            "datasets/papaiz/papaiz_15M.csv": "15M",}
 
 resultats = []
 
@@ -69,4 +71,5 @@ for fichier, trimestre in fichiers.items():
 stats = pd.DataFrame(resultats)
 stats.index.name = "trimestre"
 
-stats.to_csv("stats_desc.csv")
+os.makedirs('datasets/papaiz/stats/', exist_ok=True)
+stats.to_csv("datasets/papaiz/stats/stats_desc.csv")

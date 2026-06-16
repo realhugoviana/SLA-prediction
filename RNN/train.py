@@ -168,7 +168,7 @@ if __name__ == '__main__':
     max_epoch = 300
     n_folds = 10
 
-    csv_file = "datasets/synthetic_data/synthetic_data_0_15M.csv"
+    csv_file = "datasets/papaiz/papaiz_3M.csv"
 
     input_size = get_input_size(pd.read_csv(csv_file))
     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
@@ -177,38 +177,38 @@ if __name__ == '__main__':
 
     L.seed_everything(42)
 
-    # run_optimization(csv_file,
-    #                 study_name=f"lstm_synthetic",
-    #                 architecture=architecture,
-    #                 input_size=input_size,
-    #                 dataset_name=dataset_name,
-    #                 trials=trials,
-    #                 trial_epoch=trial_epoch)
+    run_optimization(csv_file,
+                    study_name=f"lstm_papaiz",
+                    architecture=architecture,
+                    input_size=input_size,
+                    dataset_name=dataset_name,
+                    trials=trials,
+                    trial_epoch=trial_epoch)
     
-    # run_trainings(csv_file,
-    #             log_dir=f"RNN/tb_logs/lstm_sythetic/",
-    #             study_name=f"lstm_synthetic",
-    #             architecture=architecture,
-    #             input_size=input_size,
-    #             dataset_name=dataset_name,
-    #             max_epoch=max_epoch,
-    #             n_folds=n_folds)
+    run_trainings(csv_file,
+                log_dir=f"RNN/tb_logs/lstm_papaiz/",
+                study_name=f"lstm_papaiz",
+                architecture=architecture,
+                input_size=input_size,
+                dataset_name=dataset_name,
+                max_epoch=max_epoch,
+                n_folds=n_folds)
     
     architecture = "GRU"
 
     L.seed_everything(42)
 
-    # run_optimization(csv_file,
-    #                 study_name=f"gru_synthetic",
-    #                 architecture=architecture,
-    #                 input_size=input_size,
-    #                 dataset_name=dataset_name,
-    #                 trials=trials,
-    #                 trial_epoch=trial_epoch)
+    run_optimization(csv_file,
+                    study_name=f"gru_papaiz",
+                    architecture=architecture,
+                    input_size=input_size,
+                    dataset_name=dataset_name,
+                    trials=trials,
+                    trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/gru_synthetic/",
-                study_name=f"gru_synthetic",
+                log_dir=f"RNN/tb_logs/gru_papaiz/",
+                study_name=f"gru_papaiz",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
@@ -220,7 +220,7 @@ if __name__ == '__main__':
     L.seed_everything(42)
 
     run_optimization(csv_file,
-                    study_name=f"rnn_synthetic",
+                    study_name=f"rnn_papaiz",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -228,11 +228,10 @@ if __name__ == '__main__':
                     trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/rnn_synthetic/",
-                study_name=f"rnn_synthetic",
+                log_dir=f"RNN/tb_logs/rnn_papaiz/",
+                study_name=f"rnn_papaiz",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
                 max_epoch=max_epoch,
                 n_folds=n_folds)
-    
