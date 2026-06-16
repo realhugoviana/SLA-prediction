@@ -78,16 +78,7 @@ def log_to_csv(log_dir, output_dir):
     # Sauvegarde des statistiques agrégées
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
-log_dir = "MLP_regression/tb_logs/best_merge_no_delta_VIT_first_symptoms/"
-output_dir = "MLP_regression/stats_entrainement/best_merge_no_delta_VIT_first_symptoms/"
-
-log_to_csv(log_dir, output_dir)
-
-log_dir = "MLP_regression/tb_logs/best_merge_no_delta_VIT_fixed/"
-output_dir = "MLP_regression/stats_entrainement/best_merge_no_delta_VIT_fixed/"
-
-log_to_csv(log_dir, output_dir)
-log_dir = "MLP_regression/tb_logs/best_merge_no_delta_VIT_sliding_windows/"
-output_dir = "MLP_regression/stats_entrainement/best_merge_no_delta_VIT_sliding_windows/"
+log_dir = "MLP_regression/tb_logs/mlp_sythetic/"
+output_dir = "MLP_regression/stats_entrainement/mlp_sythetic/"
 
 log_to_csv(log_dir, output_dir)
