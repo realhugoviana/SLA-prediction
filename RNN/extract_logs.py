@@ -78,7 +78,12 @@ def log_to_csv(log_dir, output_dir):
     # Sauvegarde des statistiques agrégées
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
-log_dir = "RNN/tb_logs/lstm_papaiz/"
-output_dir = "RNN/stats_entrainement/lstm_papaiz/"
+log_dir = "RNN/tb_logs/gru_papaiz/"
+output_dir = "RNN/stats_entrainement/gru_papaiz/"
+
+log_to_csv(log_dir, output_dir)
+
+log_dir = "RNN/tb_logs/rnn_papaiz/"
+output_dir = "RNN/stats_entrainement/rnn_papaiz/"
 
 log_to_csv(log_dir, output_dir)
