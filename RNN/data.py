@@ -38,7 +38,6 @@ class ALSFRSDataset(Dataset):
 
         # 3. Create the PyTorch tensor from the guaranteed numeric NumPy array
         features = torch.from_numpy(features_numpy).float().T # Use .float() to ensure float32 is used
-        
         target = torch.tensor(row[self.target_col], dtype=torch.float32) # Conversion de la target en tensor
         return features, target
 

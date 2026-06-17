@@ -177,13 +177,13 @@ if __name__ == '__main__':
 
     L.seed_everything(42)
 
-    run_optimization(csv_file,
-                    study_name=f"lstm_synthetic_full",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
+    # run_optimization(csv_file,
+    #                 study_name=f"lstm_synthetic_full",
+    #                 architecture=architecture,
+    #                 input_size=input_size,
+    #                 dataset_name=dataset_name,
+    #                 trials=trials,
+    #                 trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
                 log_dir=f"RNN/tb_logs/lstm_synthetic_full/",
@@ -198,13 +198,13 @@ if __name__ == '__main__':
 
     L.seed_everything(42)
 
-    run_optimization(csv_file,
-                    study_name=f"gru_synthetic_full",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
+    # run_optimization(csv_file,
+    #                 study_name=f"gru_synthetic_full",
+    #                 architecture=architecture,
+    #                 input_size=input_size,
+    #                 dataset_name=dataset_name,
+    #                 trials=trials,
+    #                 trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
                 log_dir=f"RNN/tb_logs/gru_synthetic_full/",
@@ -219,13 +219,13 @@ if __name__ == '__main__':
 
     L.seed_everything(42)
 
-    run_optimization(csv_file,
-                    study_name=f"rnn_synthetic_full",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
+    # run_optimization(csv_file,
+    #                 study_name=f"rnn_synthetic_full",
+    #                 architecture=architecture,
+    #                 input_size=input_size,
+    #                 dataset_name=dataset_name,
+    #                 trials=trials,
+    #                 trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
                 log_dir=f"RNN/tb_logs/rnn_synthetic_full/",
@@ -239,6 +239,7 @@ if __name__ == '__main__':
     csv_file = "datasets/synthetic_data/synthetic_data_interpolate_0_15M.csv"
 
     input_size = get_input_size(pd.read_csv(csv_file))
+    print(input_size)
     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
     
     architecture = "LSTM"

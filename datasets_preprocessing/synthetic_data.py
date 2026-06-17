@@ -43,10 +43,10 @@ print("--- Generating Dataset (3000 curves) ---")
 df_noisy = noisy_dataset()
 df_noisy_missing_data = noisy_dataset_interpolation(df_noisy.copy())
 print(f"Dataset generated successfully: Shape {df_noisy_missing_data.shape}")
-print(df_noisy_missing_data.head())
+print(df_noisy_missing_data.isna().sum())
 os.makedirs("datasets/synthetic_data/", exist_ok=True)
 df_noisy.to_csv('datasets/synthetic_data/synthetic_data_0_15M.csv', index=False)
-df_noisy_missing_data.to_csv('datasets/synthetic_data/synthetic_data_interpolate_0_15M.csv')
+df_noisy_missing_data.to_csv('datasets/synthetic_data/synthetic_data_interpolate_0_15M.csv', index=False)
 
 
 # 2. Calculate the Mean Curve (The underlying signal)

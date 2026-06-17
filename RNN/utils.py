@@ -24,7 +24,6 @@ def get_intervals(df):
 
 def get_features(df):
     columns = df.columns
-    
     return list(sorted(columns.str.replace(r'_\d{1,4}_\d{2,4}', '', regex=True).unique()))
 
 def sort_df(df, intervals):
