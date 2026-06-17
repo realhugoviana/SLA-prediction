@@ -21,19 +21,37 @@ def noisy_dataset():
   df.columns = columns
   return df
 
+def noisy_dataset_missing_data(df):
+  noisy_df = df
+
+  arr = noisy_df.values
+  for row in arr:
+    n_holes = np.random.poisson(5)
+    holes = np.random.choice(np.arange(15), size=n_holes, replace=False).tolist()
+    row[holes] = np.nan
+  
+  return pd.DataFrame(arr, columns=noisy_df.columns)
+
+def noisy_dataset_interpolation(df):
+  noisy_df = noisy_dataset_missing_data(df)
+
+  return noisy_df.interpolate(method='linear', axis=1, limit_direction='both')
+
 
 # 1. Generate the data
 print("--- Generating Dataset (3000 curves) ---")
 df_noisy = noisy_dataset()
-print(f"Dataset generated successfully: Shape {df_noisy.shape}")
-print(df_noisy.head())
+df_noisy_missing_data = noisy_dataset_interpolation(df_noisy.copy())
+print(f"Dataset generated successfully: Shape {df_noisy_missing_data.shape}")
+print(df_noisy_missing_data.head())
 os.makedirs("datasets/synthetic_data/", exist_ok=True)
 df_noisy.to_csv('datasets/synthetic_data/synthetic_data_0_15M.csv', index=False)
+df_noisy_missing_data.to_csv('datasets/synthetic_data/synthetic_data_interpolate_0_15M.csv')
 
 
 # 2. Calculate the Mean Curve (The underlying signal)
 # The mean of all 3000 rows should approximate the original clean sigmoid shape.
-mean_curve = df_noisy.mean(axis=0)
+mean_curve = df_noisy_missing_data.mean(axis=0)
 
 plt.figure(figsize=(15, 7))
 
@@ -45,10 +63,10 @@ plt.plot(mean_curve, label='Mean Curve (Approximate True Signal)', linewidth=3, 
 N_SAMPLES = 500 # How many random curves we want to plot for visualization
 
 # Select N_SAMPLES unique indices from the DataFrame rows
-sample_indices = random.sample(range(df_noisy.shape[0]), N_SAMPLES)
+sample_indices = random.sample(range(df_noisy_missing_data.shape[0]), N_SAMPLES)
 
 for i in sample_indices:
-    row = df_noisy.iloc[i]
+    row = df_noisy_missing_data.iloc[i]
     plt.plot(row, alpha=0.1, color='skyblue', linewidth=1) # Use low opacity (alpha)
 
 # --- Finishing the Plot ---
