@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from scipy import interpolate
+import re
 
 def get_features(df):
     temporal_cols = df.columns[~(df.columns.str.contains('observation_count')) &
@@ -115,7 +116,7 @@ def add_missing_months(df):
 
     return df_missing
 
-def interpolate_missing_months(df):
+def interpolate_missing_months_spline(df):
     df_interpolate = df.copy()
 
     missing_months_cols = [c for c in df.columns if c.endswith("_missing_months")]
@@ -123,7 +124,7 @@ def interpolate_missing_months(df):
     for col in missing_months_cols:
         feature = col.replace("_missing_months", "")
 
-        def compute_interpolation_pairs(row):
+        def compute_spline_interpolation_pairs(row):
             if len(row[col]) == 0:
                 return []
             
@@ -141,7 +142,42 @@ def interpolate_missing_months(df):
             return pairs
         
         df_interpolate[f'{feature}_interpolated_pairs'] = df_interpolate.apply(
-            lambda row: compute_interpolation_pairs(row),
+            lambda row: compute_spline_interpolation_pairs(row),
+            axis=1
+        )
+    
+    return df_interpolate
+
+def interpolate_missing_months_linear(df):
+    df_interpolate = df.copy()
+
+    missing_months_cols = [c for c in df.columns if c.endswith("_missing_months")]
+
+    for col in missing_months_cols:
+        feature = col.replace("_missing_months", "")
+
+        def compute_linear_interpolation_pairs(row):
+            if len(row[col]) == 0:
+                return []
+            
+            deltas_to_interpolate = [(x * 30) + 15 for x in row[col]]
+
+            real_data = row[f'{feature}_pairs']
+
+            if len(real_data) < 2:
+                return []
+
+            df_real_data = pd.DataFrame(real_data, columns=["delta", "value"])
+            df_real_data = df_real_data.sort_values("delta")
+
+            interpolated_values = np.interp(deltas_to_interpolate, df_real_data["delta"], df_real_data["value"])
+
+            interpolated_pairs = list(zip(deltas_to_interpolate, interpolated_values))
+
+            return interpolated_pairs
+        
+        df_interpolate[f'{feature}_interpolated_pairs'] = df_interpolate.apply(
+            lambda row: compute_linear_interpolation_pairs(row),
             axis=1
         )
     
@@ -175,30 +211,58 @@ def merge_interpolated_data(df):
 def make_months_intervals(df):
     df_intervals = df.copy()
 
-    max_month = df_intervals['ALSFRS_Delta_series'].apply(max).max()
+    max_month = int(df_intervals['ALSFRS_Delta_series'].apply(max).max() // 30)
     months = np.arange(0, max_month+1)
 
     merge_cols = [c for c in df_intervals.columns if c.endswith("_full_pairs")]
 
+    for month in months:
+        for col in merge_cols:
+            feature = col.replace('_full_pairs', '')
+            df_intervals[f'{feature}_M{month}'] = np.nan
+
     for col in merge_cols:
         feature = col.replace('_full_pairs', '')
-        for month in months:
-            def aggregate_pairs(row):
-                pairs = row[col]
-                month_pairs = [pair for pair in pairs if (pair[0] // 30 == month)]
+        def aggregate_pairs(row):
+            df_tmp = pd.DataFrame(row[col], columns=["delta", "value"])
+            df_tmp['month'] = (df_tmp['delta'] // 30).astype(int)
 
-                if len(month_pairs) == 0:
-                    return np.nan
-                
-                df_tmp = pd.DataFrame(month_pairs, columns=["delta", "value"])
+            aggregated_df = df_tmp.groupby('month')['value'].mean()
 
-                average_value = df_tmp["value"].mean()
+            for month, value in aggregated_df.items():
+                row[f'{feature}_M{month}'] = value
 
-                return average_value
+            return row
 
-            df_intervals[f'{feature}_M{month}'] = df_intervals.apply(
-                lambda row: aggregate_pairs(row),
-                axis=1
-            )
+        df_intervals = df_intervals.apply(
+            lambda row: aggregate_pairs(row),
+            axis=1
+        )
     
     return df_intervals
+
+
+def clean_df(df):
+    df_clean = df.copy()
+
+    cols_to_drop = df_clean.columns[df_clean.columns.str.contains('pairs') |
+                                    df_clean.columns.str.contains('ALS_') |
+                                    df_clean.columns.str.contains('splines') |
+                                    df_clean.columns.str.contains('missing_months') |
+                                    df_clean.columns.str.contains('series') |
+                                    df_clean.columns.str.contains('-1') |
+                                    df_clean.columns.str.contains('-2') |
+                                    df_clean.columns.str.contains('-3')]
+    
+    df_clean = df_clean.drop(columns=cols_to_drop)
+
+    def sort_key(col):
+        match = re.match(r'^(.+)_M(\d+)$', col)
+        if match:
+            return (1, int(match.group(2)), match.group(1))  # pattern cols: sort by month, then feature
+        return (0, 0, col)  # non-pattern cols: sort alphabetically, placed first
+
+    df_clean = df_clean[sorted(df_clean.columns, key=sort_key)]
+
+
+    return df_clean
