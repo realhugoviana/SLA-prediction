@@ -22,9 +22,16 @@ def get_intervals(df):
     print(f"Intervals found: {sorted_intervals}")
     return pd.Series(sorted_intervals)
 
+def get_months(df):
+    extracted_list = list(set(df.columns.str.extract(r'(-\d+)$')))
+
+    extracted_ints = [int(s) for s in extracted_list]
+    
+    return pd.Series(sorted(extracted_ints))
+
 def get_features(df):
     columns = df.columns
-    return list(sorted(columns.str.replace(r'_\d{1,4}_\d{2,4}', '', regex=True).unique()))
+    return list(sorted(columns.str.replace(r'_M-\d+$', '', regex=True).unique()))
 
 def sort_df(df, intervals):
     sorted_columns = []

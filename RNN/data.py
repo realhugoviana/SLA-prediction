@@ -6,7 +6,7 @@ from torch.utils.data import Dataset, DataLoader
 import torch
 from lightning import LightningDataModule
 
-from utils import get_intervals, sort_df
+from utils import get_intervals, get_months, sort_df
 
 # Conversion du dataframe pandas en dataset PyTorch
 class ALSFRSDataset(Dataset):
@@ -15,7 +15,7 @@ class ALSFRSDataset(Dataset):
         self.feature_cols = feature_cols if feature_cols is not None else pd.Index([col for col in dataframe.columns if col != target_col]) # Features définis comme tout ce qui n'est pas target
         self.target_col = target_col # Colonne à prédire
 
-        self.intervals = get_intervals(self.dataframe)
+        self.months = get_months(self.dataframe)
         self.dataframe = sort_df(self.dataframe, self.intervals)
 
     # Retourne la taille du dataset
@@ -27,16 +27,12 @@ class ALSFRSDataset(Dataset):
         row = self.dataframe.iloc[idx] 
 
         feature_list = []
-        for interval in self.intervals:
-            feature_slice = row[self.feature_cols[self.feature_cols.str.contains(rf'_{interval}', na=False)]]
+        for month in self.months:
+            feature_slice = row[self.feature_cols[self.feature_cols.str.contains(rf'_M{month}', na=False)]]
             feature_list.append(feature_slice.reset_index(drop=True))
 
-
-        # 2. Convert the entire slice to a NumPy array and ensure the dtype is float32
-        # We use .values.astype(np.float32) or simply .to_numpy(dtype=...)
         features_numpy = pd.concat(feature_list, axis=1).values.astype('float32') 
 
-        # 3. Create the PyTorch tensor from the guaranteed numeric NumPy array
         features = torch.from_numpy(features_numpy).float().T # Use .float() to ensure float32 is used
         target = torch.tensor(row[self.target_col], dtype=torch.float32) # Conversion de la target en tensor
         return features, target
