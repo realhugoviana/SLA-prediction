@@ -47,7 +47,7 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
 
         # Initialisation du modèle avec les paramètres choisis (voir model.py)
         model = RNNmodel(input_size, 
-                         output_dim=1, 
+                         output_dim=17, 
                          architecture=architecture,
                          n_layer=n_layer, 
                          n_units=n_units, 
@@ -120,7 +120,7 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
     best_params = trial.params
     if architecture == "RNN":
         best_model = RNNmodel(input_size, 
-                            output_dim=1, 
+                            output_dim=17, 
                             architecture=architecture,
                             n_layer=best_params['n_layer'], 
                             n_units=best_params['n_units'], 
@@ -133,7 +133,7 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
                             bidirectional=best_params['bidirectional'])
     else:
         best_model = RNNmodel(input_size, 
-                            output_dim=1, 
+                            output_dim=17, 
                             architecture=architecture,
                             n_layer=best_params['n_layer'], 
                             n_units=best_params['n_units'], 
@@ -168,7 +168,7 @@ if __name__ == '__main__':
     max_epoch = 300
     n_folds = 10
 
-    csv_file = "datasets/synthetic_data/synthetic_data_0_15M.csv"
+    csv_file = "datasets/interpolation/fixed.csv"
 
     input_size = get_input_size(pd.read_csv(csv_file))
     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
@@ -177,17 +177,17 @@ if __name__ == '__main__':
 
     L.seed_everything(42)
 
-    # run_optimization(csv_file,
-    #                 study_name=f"lstm_synthetic_full",
-    #                 architecture=architecture,
-    #                 input_size=input_size,
-    #                 dataset_name=dataset_name,
-    #                 trials=trials,
-    #                 trial_epoch=trial_epoch)
+    run_optimization(csv_file,
+                    study_name=f"lstm_interpolation_fixed",
+                    architecture=architecture,
+                    input_size=input_size,
+                    dataset_name=dataset_name,
+                    trials=trials,
+                    trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/lstm_synthetic_full/",
-                study_name=f"lstm_synthetic_full",
+                log_dir=f"RNN/tb_logs/lstm_interpolation_fixed/",
+                study_name=f"lstm_interpolation_fixed",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
@@ -198,17 +198,17 @@ if __name__ == '__main__':
 
     L.seed_everything(42)
 
-    # run_optimization(csv_file,
-    #                 study_name=f"gru_synthetic_full",
-    #                 architecture=architecture,
-    #                 input_size=input_size,
-    #                 dataset_name=dataset_name,
-    #                 trials=trials,
-    #                 trial_epoch=trial_epoch)
+    run_optimization(csv_file,
+                    study_name=f"gru_interpolation_fixed",
+                    architecture=architecture,
+                    input_size=input_size,
+                    dataset_name=dataset_name,
+                    trials=trials,
+                    trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/gru_synthetic_full/",
-                study_name=f"gru_synthetic_full",
+                log_dir=f"RNN/tb_logs/gru_interpolation_fixed/",
+                study_name=f"gru_interpolation_fixed",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
@@ -219,24 +219,24 @@ if __name__ == '__main__':
 
     L.seed_everything(42)
 
-    # run_optimization(csv_file,
-    #                 study_name=f"rnn_synthetic_full",
-    #                 architecture=architecture,
-    #                 input_size=input_size,
-    #                 dataset_name=dataset_name,
-    #                 trials=trials,
-    #                 trial_epoch=trial_epoch)
+    run_optimization(csv_file,
+                    study_name=f"rnn_interpolation_fixed",
+                    architecture=architecture,
+                    input_size=input_size,
+                    dataset_name=dataset_name,
+                    trials=trials,
+                    trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/rnn_synthetic_full/",
-                study_name=f"rnn_synthetic_full",
+                log_dir=f"RNN/tb_logs/rnn_interpolation_fixed/",
+                study_name=f"rnn_interpolation_fixed",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
                 max_epoch=max_epoch,
                 n_folds=n_folds)
     
-    csv_file = "datasets/synthetic_data/synthetic_data_interpolate_0_15M.csv"
+    csv_file = "datasets/interpolation/sliding_windows.csv"
 
     input_size = get_input_size(pd.read_csv(csv_file))
     print(input_size)
@@ -247,7 +247,7 @@ if __name__ == '__main__':
     L.seed_everything(42)
 
     run_optimization(csv_file,
-                    study_name=f"lstm_synthetic_interpolate",
+                    study_name=f"lstm_interpolation_sliding_windows",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -255,8 +255,8 @@ if __name__ == '__main__':
                     trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/lstm_synthetic_interpolate/",
-                study_name=f"lstm_synthetic_interpolate",
+                log_dir=f"RNN/tb_logs/lstm_interpolation_sliding_windows/",
+                study_name=f"lstm_interpolation_sliding_windows",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
@@ -268,7 +268,7 @@ if __name__ == '__main__':
     L.seed_everything(42)
 
     run_optimization(csv_file,
-                    study_name=f"gru_synthetic_interpolate",
+                    study_name=f"gru_interpolation_sliding_windows",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -276,8 +276,8 @@ if __name__ == '__main__':
                     trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/gru_synthetic_interpolate/",
-                study_name=f"gru_synthetic_interpolate",
+                log_dir=f"RNN/tb_logs/gru_interpolation_sliding_windows/",
+                study_name=f"gru_interpolation_sliding_windows",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
@@ -289,7 +289,7 @@ if __name__ == '__main__':
     L.seed_everything(42)
 
     run_optimization(csv_file,
-                    study_name=f"rnn_synthetic_interpolate",
+                    study_name=f"rnn_interpolation_sliding_windows",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -297,8 +297,8 @@ if __name__ == '__main__':
                     trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/rnn_synthetic_interpolate/",
-                study_name=f"rnn_synthetic_interpolate",
+                log_dir=f"RNN/tb_logs/rnn_interpolation_sliding_windows/",
+                study_name=f"rnn_interpolation_sliding_windows",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,

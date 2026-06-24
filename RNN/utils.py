@@ -23,15 +23,16 @@ def get_intervals(df):
     return pd.Series(sorted_intervals)
 
 def get_months(df):
-    extracted_list = list(set(df.columns.str.extract(r'(-\d+)$')))
+    extracted_list = df.columns.to_series().str.extract(r'(-\d+)$').stack().unique()
+    return extracted_list
 
-    extracted_ints = [int(s) for s in extracted_list]
+    # extracted_ints = [int(s) for s in extracted_list]
     
-    return pd.Series(sorted(extracted_ints))
+    # return pd.Series(sorted(extracted_ints))
 
 def get_features(df):
     columns = df.columns
-    return list(sorted(columns.str.replace(r'_M-\d+$', '', regex=True).unique()))
+    return list(sorted(columns.str.replace(r'_M-?\d+$', '', regex=True).unique()))
 
 def sort_df(df, intervals):
     sorted_columns = []
@@ -44,4 +45,5 @@ def sort_df(df, intervals):
     return df[sorted_columns]
 
 def get_input_size(df):
-    return len(get_features(df)) -1
+    print(get_features(df))
+    return len(get_features(df))

@@ -97,8 +97,8 @@ if __name__ == '__main__':
 
     df_rnn = align_patients_rnn(df)
     df_sliding_rnn = sliding_windows_rnn(df_rnn)
-    df_rnn = make_target(df_rnn)
-    df_sliding_rnn = make_target(df_sliding_rnn)
+    # df_rnn = make_target(df_rnn)
+    # df_sliding_rnn = make_target(df_sliding_rnn)
     df_rnn = df_rnn.drop(columns='subject_id')
     df_sliding_rnn = df_sliding_rnn.drop(columns='subject_id')
     df_rnn = df_rnn.fillna(0.0)

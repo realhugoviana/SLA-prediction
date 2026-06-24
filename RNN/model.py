@@ -87,7 +87,7 @@ class RNNmodel(L.LightningModule):
     # Fonction d'entrainement pour une batch
     def training_step(self, batch, batch_idx):
         x, y = batch
-        y = y.view(-1, 1)
+        # y = y.view(-1, 1)
         y_hat = self.forward(x) # Prédiction
         loss = self.criterion(y_hat, y) # Perte
         if len(y) > 1: # Log
@@ -100,7 +100,7 @@ class RNNmodel(L.LightningModule):
     # Validation, pas de retro propagation
     def validation_step(self, batch, batch_idx):
         x, y = batch
-        y = y.view(-1, 1)
+        # y = y.view(-1, 1)
         y_hat = self.forward(x)
         loss = self.criterion(y_hat, y)
         if len(y) > 1:
@@ -113,7 +113,7 @@ class RNNmodel(L.LightningModule):
     # Test
     def test_step(self, batch, batch_idx):
         x, y = batch
-        y = y.view(-1, 1)
+        # y = y.view(-1, 1)
         y_hat = self.forward(x)
         loss = self.criterion(y_hat, y)
         if len(y) > 1:
@@ -122,7 +122,7 @@ class RNNmodel(L.LightningModule):
                         'test_rmse': self.test_rmse(y_hat, y),
                         'test_r2': self.test_r2(y_hat, y)})
         return loss
-    
+
     # Configuration de l'optimizer
     def configure_optimizers(self):
         optimizer =  self.optimizer(self.parameters(), lr=self.lr, weight_decay=self.weight_decay) # Prend en entrée les paramètres et le learning rate

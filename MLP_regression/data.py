@@ -7,10 +7,10 @@ from lightning import LightningDataModule
 
 # Conversion du dataframe pandas en dataset PyTorch
 class ALSFRSDataset(Dataset):
-    def __init__(self, dataframe, feature_cols=None, target_col='Target'):
+    def __init__(self, dataframe, feature_cols=None, target_cols='Target'):
         self.dataframe = dataframe # DataFrame source
-        self.feature_cols = feature_cols if feature_cols else [col for col in dataframe.columns if col != target_col] # Features définis comme tout ce qui n'est pas target
-        self.target_col = target_col # Colonne à prédire
+        self.feature_cols = feature_cols # Features définis comme tout ce qui n'est pas target
+        self.target_cols = target_cols # Colonne à prédire
 
     # Retourne la taille du dataset
     def __len__(self):
@@ -30,17 +30,17 @@ class ALSFRSDataset(Dataset):
         # 3. Create the PyTorch tensor from the guaranteed numeric NumPy array
         features = torch.from_numpy(features_numpy).float() # Use .float() to ensure float32 is used
         
-        target = torch.tensor(row[self.target_col], dtype=torch.float32) # Conversion de la target en tensor
+        target = torch.tensor(row[self.target_cols], dtype=torch.float32) # Conversion de la target en tensor
         return features, target
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class DataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_col='Target', test_size=0.2, n_folds=10, random_state=42, fold_index=0):
+    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', test_size=0.2, n_folds=10, random_state=42, fold_index=0):
         super().__init__()
         self.csv_path = csv_path # Fichier csv contenant les données
         self.batch_size = batch_size # Taille de batch
         self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
-        self.target_col = target_col # Target
+        self.target_cols = target_cols # Target
         self.test_size = test_size # Fraction du dataset pour le test
         self.n_folds = n_folds # Nombre de folds pour le cross-validation
         self.random_state = random_state # Seed
@@ -64,14 +64,15 @@ class DataModule(LightningDataModule):
         else:
             train_df, val_df = train_test_split(train_val_df, test_size=0.1, random_state=self.random_state) # Découpage de train+val en train et val
 
-        # self.feature_cols = self.feature_cols if self.feature_cols else [col for col in self.dataframe.columns if col != self.target_col] # Features si précisé, sinon toutes sauf target
+        self.feature_cols = self.dataframe.columns[~self.dataframe.columns.contains('_M0')] # Features si précisé, sinon toutes sauf target
+        self.target_cols = self.dataframe.columns[self.dataframe.columns.contains('_M0')]
         # train_df[self.feature_cols] = self.scaler.fit_transform(train_df[self.feature_cols]) # Normalisation des features sur le train
         # val_df[self.feature_cols] = self.scaler.transform(val_df[self.feature_cols]) # Normalisation de val en utilisant le scaler de train
         # test_df[self.feature_cols] = self.scaler.transform(test_df[self.feature_cols]) # Même chose pour le test
 
-        self.train_dataset = ALSFRSDataset(train_df, feature_cols=self.feature_cols, target_col=self.target_col) # Création du dataset de train
-        self.val_dataset = ALSFRSDataset(val_df, feature_cols=self.feature_cols, target_col=self.target_col) # val
-        self.test_dataset = ALSFRSDataset(test_df, feature_cols=self.feature_cols, target_col=self.target_col) # test
+        self.train_dataset = ALSFRSDataset(train_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # Création du dataset de train
+        self.val_dataset = ALSFRSDataset(val_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # val
+        self.test_dataset = ALSFRSDataset(test_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
 
     # Charge les données en batch pour le train, val et test
     def train_dataloader(self):

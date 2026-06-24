@@ -40,7 +40,7 @@ def run_optimization(data_path, study_name="mlp_regression", input_size=None, da
         dropout = trial.suggest_float('dropout', 0.0, 0.5)
 
         # Initialisation du modèle avec les paramètres choisis (voir model.py
-        model = MLP_regressor(input_size, output_dim=1, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation='ReLU', optimizer='Adam', criterion='Huber', weight_decay=weight_decay, dropout=dropout)
+        model = MLP_regressor(input_size, output_dim=17, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation='ReLU', optimizer='Adam', criterion='Huber', weight_decay=weight_decay, dropout=dropout)
 
         # Dataset et dataloader (voir data.py)
         dm = DataModule(csv_path=data_path, batch_size=batch_size, n_folds=-1) # n_folds=-1 pour ne pas faire de cross-validation pendant l'optimisation
@@ -102,7 +102,7 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
     # Entrainement du modèle avec les meilleurs paramètres sur le nombre d'epoch maximum
     best_params = trial.params
     best_model = MLP_regressor(input_size, 
-                               output_dim=1, 
+                               output_dim=17, 
                                n_layer=best_params['n_layer'], 
                                n_units=best_params['n_units'], 
                                learning_rate=best_params['learning_rate'], 
@@ -136,23 +136,45 @@ if __name__ == '__main__':
     max_epoch = 300
     n_folds = 10
 
-    csv_file = "datasets/papaiz/papaiz_3M.csv"
+    csv_file = "datasets/interpolation/fixed.csv"
 
-    input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    input_size = len(pd.read_csv(csv_file).columns) - 17 # Nombre de colonnes - targets
     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
 
     L.seed_everything(42)
 
     run_optimization(csv_file,
-                    study_name=f"mlp_papaiz",
+                    study_name=f"mlp_interpolation_fixed",
                     input_size=input_size,
                     dataset_name=dataset_name,
                     trials=trials,
                     trial_epoch=trial_epoch)
     
     run_trainings(csv_file,
-                log_dir=f"MLP_regression/tb_logs/mlp_papaiz/",
-                study_name=f"mlp_papaiz",
+                log_dir=f"MLP_regression/tb_logs/mlp_interpolation_fixed/",
+                study_name=f"mlp_interpolation_fixed",
+                input_size=input_size,
+                dataset_name=dataset_name,
+                max_epoch=max_epoch,
+                n_folds=n_folds)
+    
+    csv_file = "datasets/interpolation/sliding_windows.csv"
+
+    input_size = len(pd.read_csv(csv_file).columns) - 17 # Nombre de colonnes - targets
+    dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    L.seed_everything(42)
+
+    run_optimization(csv_file,
+                    study_name=f"mlp_interpolation_sliding_windows",
+                    input_size=input_size,
+                    dataset_name=dataset_name,
+                    trials=trials,
+                    trial_epoch=trial_epoch)
+    
+    run_trainings(csv_file,
+                log_dir=f"MLP_regression/tb_logs/mlp_interpolation_sliding_windows/",
+                study_name=f"mlp_interpolation_sliding_windows",
                 input_size=input_size,
                 dataset_name=dataset_name,
                 max_epoch=max_epoch,
