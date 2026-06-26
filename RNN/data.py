@@ -88,3 +88,59 @@ class DataModule(LightningDataModule):
 
     def test_dataloader(self):
         return DataLoader(self.test_dataset, batch_size=self.batch_size)
+    
+class AutoregressiveALSFRSDataset(Dataset):
+    def __init__(self, dataframe, feature_cols=None, target_cols='Target'):
+        self.dataframe = dataframe # DataFrame source
+        self.feature_cols = feature_cols # Features définis comme tout ce qui n'est pas target
+        self.target_cols = target_cols # Colonne à prédire
+
+        self.months = get_months(self.dataframe)
+        # self.dataframe = sort_df(self.dataframe, self.intervals)
+
+    # Retourne la taille du dataset
+    def __len__(self):
+        return len(self.dataframe)
+
+    # Retourne une ligne du dataset
+    def __getitem__(self, idx):
+        row = self.dataframe.iloc[idx] 
+        
+        feature_list = []
+        
+        for month in self.months:
+            feature_slice = row[self.feature_cols[self.feature_cols.str.contains(rf'_M{month}$', na=False)]]
+            feature_list.append(feature_slice.reset_index(drop=True))
+
+        features_numpy = pd.concat(feature_list, axis=1).values.astype('float32') 
+
+        features = torch.from_numpy(features_numpy).float().T # Use .float() to ensure float32 is used
+        target = torch.tensor(row[self.target_cols], dtype=torch.float32) # Conversion de la target en tensor
+        return features, target
+
+# Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
+class AutoregressiveDataModule(LightningDataModule):
+    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', test_size=0.2, random_state=42):
+        super().__init__()
+        self.csv_path = csv_path # Fichier csv contenant les données
+        self.batch_size = batch_size # Taille de batch
+        self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
+        self.target_cols = target_cols # Target
+        self.test_size = test_size # Fraction du dataset pour le test
+        self.random_state = random_state # Seed
+    # Lecture du csv
+    def prepare_data(self):
+        self.dataframe = pd.read_csv(self.csv_path)
+
+    # Découpage du dataset en train, val, test et normalisation des features
+    def setup(self, stage=None):
+        _, test_df = train_test_split(self.dataframe, test_size=self.test_size, random_state=self.random_state) # Découpage du df en train+Val et test
+
+        self.feature_cols = self.dataframe.columns[~self.dataframe.columns.str.contains(r'Target')] # Features si précisé, sinon toutes sauf target
+        self.target_cols = self.dataframe.columns[self.dataframe.columns.str.contains(r'Target')]
+    
+
+        self.test_dataset = AutoregressiveALSFRSDataset(test_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
+
+    def test_dataloader(self):
+        return DataLoader(self.test_dataset, batch_size=self.batch_size)
