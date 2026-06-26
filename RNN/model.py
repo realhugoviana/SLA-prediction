@@ -78,17 +78,17 @@ class RNNmodel(L.LightningModule):
         self.test_r2 = torchmetrics.R2Score()
         
     # Fonction de passe dans le NN
-    def forward(self, x):
-        rnn_out, _ = self.rnn(x) # Sortie du RNN
+    def forward(self, x, hx=None):
+        rnn_out, out_hx = self.rnn(x, hx) # Sortie du RNN
         last_time_step = rnn_out[:, -1, :] # On prend la sortie du dernier time step
         out = self.out(last_time_step) # Passage dans la couche de sortie
-        return out
+        return out, out_hx
     
     # Fonction d'entrainement pour une batch
     def training_step(self, batch, batch_idx):
         x, y = batch
         # y = y.view(-1, 1)
-        y_hat = self.forward(x) # Prédiction
+        y_hat, _ = self.forward(x) # Prédiction
         loss = self.criterion(y_hat, y) # Perte
         if len(y) > 1: # Log
             self.log_dict({'train_loss': loss,
@@ -101,7 +101,7 @@ class RNNmodel(L.LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
         # y = y.view(-1, 1)
-        y_hat = self.forward(x)
+        y_hat, _ = self.forward(x)
         loss = self.criterion(y_hat, y)
         if len(y) > 1:
             self.log_dict({'val_loss': loss,
@@ -114,7 +114,7 @@ class RNNmodel(L.LightningModule):
     def test_step(self, batch, batch_idx):
         x, y = batch
         # y = y.view(-1, 1)
-        y_hat = self.forward(x)
+        y_hat, _ = self.forward(x)
         loss = self.criterion(y_hat, y)
         if len(y) > 1:
             self.log_dict({'test_loss': loss,
@@ -131,3 +131,37 @@ class RNNmodel(L.LightningModule):
     def on_train_epoch_end(self):
         if self.device.type == 'mps':
             torch.mps.empty_cache()
+
+class AutoregressiveRNN(L.LightningModule):
+    def __init__(self, model):
+        super().__init__()
+
+        self.model = model
+
+        self.mae = torchmetrics.MeanAbsoluteError()
+        self.rmse = torchmetrics.MeanSquaredError(squared=False)
+        self.r2 = torchmetrics.R2Score()
+    
+    def forward(self, x, hx=None):
+        out, out_hx = self.model(x, hx)
+
+        return out, out_hx
+    
+    def test_step(self, batch, batch_idx):
+        x, y = batch
+
+        y_hat, hx = self.forward(x)
+
+        self.log_dict({'test_loss_1': self.mae(y_hat, y[:,0]),
+                    'test_mae_1': self.mae(y_hat, y[:,0]),
+                    'test_rmse_1': self.rmse(y_hat, y[:,0]),
+                    'test_r2_1': self.r2(y_hat, y[:,0])})
+        
+        for i in range(len(y)-1):
+            y_hat, hx = self.forward(y_hat, hx)
+            self.log_dict({f'test_loss_{i+2}': self.mae(y_hat, y[:,i+1]),
+                        f'test_mae_{i+2}': self.mae(y_hat, y[:,i+1]),
+                        f'test_rmse_{i+2}': self.rmse(y_hat, y[:,i+1]),
+                        f'test_r2_{i+2}': self.r2(y_hat, y[:,i+1])})
+
+        return self.mae(y_hat, y)
