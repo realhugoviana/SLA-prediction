@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 import os
+from sklearn.model_selection import train_test_split
 
 def drop_unused_cols(df):
     df = df.drop(columns=df.columns[df.columns.str.contains('ALSFRS_Total') |
@@ -51,12 +52,10 @@ def align_patients_rnn(df):
 
     return aligned_df
 
-def make_target(df):
-    df = df.rename(columns={"ALSFRS_R_Total_M0": "Target"})
-    df = df.drop(columns=df.columns[df.columns.str.contains(r'_M0$', regex=True)])
+def split_train_test(df, test_size=0.2, random_state=42):
+    train_df, test_df = train_test_split(df, test_size=test_size, random_state=random_state)
 
-    return df
-
+    return train_df, test_df
 
 def sliding_windows_rnn(df):
     feature_names = df.columns[~(df.columns.str.contains('subject_id'))].str.replace(r'_M\-?\d+$', '', regex=True).unique()
@@ -90,20 +89,41 @@ def sliding_windows_rnn(df):
 
     return sliding_windows_df
 
+
+def split_test_sets(df):
+    df_test = df
+
+    dataframes = dict()
+    for t in range(1, 14):
+        dataframes[f'df_test_{t}'] = df_test[df_test[f'ALSFRS_R_Total_M{-t-2}'].notna()].copy()
+        for t_target in range(-t+1, 1):
+            dataframes[f'df_test_{t}'] = dataframes[f'df_test_{t}'].rename(columns={f'ALSFRS_R_Total_M{t_target}': f'Target_M{t_target}'})
+            dataframes[f'df_test_{t}'] = dataframes[f'df_test_{t}'].drop(columns=dataframes[f'df_test_{t}'].columns[dataframes[f'df_test_{t}'].columns.str.contains(rf'_M{t_target}$') & 
+                                                                                                                    ~(dataframes[f'df_test_{t}'].columns.str.contains(rf'Target_M{t_target}$'))])
+    
+    return dataframes
+
 if __name__ == '__main__':
     df = pd.read_csv('../../data/PROACT_INTERPOLATION.csv')
 
     df = drop_unused_cols(df)
 
     df_rnn = align_patients_rnn(df)
-    df_sliding_rnn = sliding_windows_rnn(df_rnn)
-    # df_rnn = make_target(df_rnn)
-    # df_sliding_rnn = make_target(df_sliding_rnn)
-    df_rnn = df_rnn.drop(columns='subject_id')
-    df_sliding_rnn = df_sliding_rnn.drop(columns='subject_id')
-    df_rnn = df_rnn.fillna(0.0)
-    df_sliding_rnn = df_sliding_rnn.fillna(0.0)
 
-    os.makedirs('datasets/interpolation', exist_ok=True)
-    df_rnn.to_csv("datasets/interpolation/fixed.csv", index=False)
+    df_rnn_train, df_rnn_test = split_train_test(df_rnn)
+
+    df_sliding_rnn = sliding_windows_rnn(df_rnn_train)
+
+    df_rnn_test = df_rnn_test.drop(columns='subject_id')
+    df_sliding_rnn = df_sliding_rnn.drop(columns='subject_id')
+
+    dfs_rnn_test = split_test_sets(df_rnn_test)
+
+    os.makedirs('datasets/interpolation/test/', exist_ok=True)
+    
+    for name, df_test in dfs_rnn_test.items():
+        df_test = df_test.fillna(0.0)
+        df_test.to_csv(f'datasets/interpolation/test/{name}.csv', index=False)
+        
+    df_sliding_rnn = df_sliding_rnn.fillna(0.0)
     df_sliding_rnn.to_csv("datasets/interpolation/sliding_windows.csv", index=False)

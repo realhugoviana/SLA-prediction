@@ -9,8 +9,8 @@ import os
 import glob
 import time
 
-from model import RNNmodel
-from data import DataModule
+from model import RNNmodel, AutoregressiveRNN
+from data import DataModule, AutoregressiveDataModule
 from utils import get_input_size
 
 # Permets d'utiliser le GPU
@@ -102,12 +102,12 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
     print("Best trial:")
     trial = study.best_trial
 
-    print(f"  Value: {trial.value}")
-    print("  Params: ")
+    print(f"Value: {trial.value}")
+    print("Params: ")
     for key, value in trial.params.items():
-        print(f"    {key}: {value}")
+        print(f"{key}: {value}")
 
-def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_regression", architecture="RNN", input_size=None, dataset_name=None, max_epoch=300, n_folds=10):
+def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study_name="mlp_regression", architecture="RNN", input_size=None, dataset_name=None, max_epoch=300, n_folds=10):
 
     study = optuna.load_study(
         storage=f"sqlite:///optuna.db",
@@ -159,94 +159,36 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
         )
 
         trainer.fit(best_model, dm) # Entrainement
-        trainer.test(best_model, datamodule=dm) # Test
+        # trainer.test(best_model, datamodule=dm) # Test
+
+        autoregressive_model = AutoregressiveRNN(best_model) # Création du modèle autoregressif pour le test
+
+        for test_set in test_sets:
+            print(f"Testing on {test_set}...")
+            test_dm = AutoregressiveDataModule(csv_path=test_set, batch_size=best_params['batch_size'])
+            trainer.test(autoregressive_model, datamodule=test_dm) # Test sur le dataset de test
 
 if __name__ == '__main__':
 
-    trials = 100
-    trial_epoch = 30
-    max_epoch = 300
-    n_folds = 10
-
-    csv_file = "datasets/interpolation/fixed.csv"
-
-    input_size = get_input_size(pd.read_csv(csv_file))
-    dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+    trials = 1
+    trial_epoch = 1
+    max_epoch = 1
+    n_folds = 1
     
-    architecture = "LSTM"
+    training_file = "datasets/interpolation/sliding_windows.csv"
 
-    L.seed_everything(42)
+    test_folder = "datasets/interpolation/test/"
+    test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
 
-    run_optimization(csv_file,
-                    study_name=f"lstm_interpolation_fixed",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/lstm_interpolation_fixed/",
-                study_name=f"lstm_interpolation_fixed",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
-    
-    architecture = "GRU"
-
-    L.seed_everything(42)
-
-    run_optimization(csv_file,
-                    study_name=f"gru_interpolation_fixed",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/gru_interpolation_fixed/",
-                study_name=f"gru_interpolation_fixed",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
-    
-    architecture = "RNN"
-
-    L.seed_everything(42)
-
-    run_optimization(csv_file,
-                    study_name=f"rnn_interpolation_fixed",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    run_trainings(csv_file,
-                log_dir=f"RNN/tb_logs/rnn_interpolation_fixed/",
-                study_name=f"rnn_interpolation_fixed",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
-    
-    csv_file = "datasets/interpolation/sliding_windows.csv"
-
-    input_size = get_input_size(pd.read_csv(csv_file))
+    input_size = get_input_size(pd.read_csv(training_file))
     print(input_size)
-    dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+    dataset_name = os.path.splitext(os.path.basename(training_file))[0]
     
     architecture = "LSTM"
 
     L.seed_everything(42)
 
-    run_optimization(csv_file,
+    run_optimization(training_file,
                     study_name=f"lstm_interpolation_sliding_windows",
                     architecture=architecture,
                     input_size=input_size,
@@ -254,7 +196,8 @@ if __name__ == '__main__':
                     trials=trials,
                     trial_epoch=trial_epoch)
     
-    run_trainings(csv_file,
+    run_trainings(training_file,
+                test_sets=test_sets,
                 log_dir=f"RNN/tb_logs/lstm_interpolation_sliding_windows/",
                 study_name=f"lstm_interpolation_sliding_windows",
                 architecture=architecture,
@@ -267,7 +210,7 @@ if __name__ == '__main__':
 
     L.seed_everything(42)
 
-    run_optimization(csv_file,
+    run_optimization(training_file,
                     study_name=f"gru_interpolation_sliding_windows",
                     architecture=architecture,
                     input_size=input_size,
@@ -275,7 +218,8 @@ if __name__ == '__main__':
                     trials=trials,
                     trial_epoch=trial_epoch)
     
-    run_trainings(csv_file,
+    run_trainings(training_file,
+                test_sets=test_sets,
                 log_dir=f"RNN/tb_logs/gru_interpolation_sliding_windows/",
                 study_name=f"gru_interpolation_sliding_windows",
                 architecture=architecture,
@@ -288,7 +232,7 @@ if __name__ == '__main__':
 
     L.seed_everything(42)
 
-    run_optimization(csv_file,
+    run_optimization(training_file,
                     study_name=f"rnn_interpolation_sliding_windows",
                     architecture=architecture,
                     input_size=input_size,
@@ -296,7 +240,8 @@ if __name__ == '__main__':
                     trials=trials,
                     trial_epoch=trial_epoch)
     
-    run_trainings(csv_file,
+    run_trainings(training_file,
+                test_sets=test_sets,
                 log_dir=f"RNN/tb_logs/rnn_interpolation_sliding_windows/",
                 study_name=f"rnn_interpolation_sliding_windows",
                 architecture=architecture,

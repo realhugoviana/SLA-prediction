@@ -40,13 +40,12 @@ class ALSFRSDataset(Dataset):
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class DataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', test_size=0.2, n_folds=10, random_state=42, fold_index=0):
+    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', n_folds=10, random_state=42, fold_index=0):
         super().__init__()
         self.csv_path = csv_path # Fichier csv contenant les données
         self.batch_size = batch_size # Taille de batch
         self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
         self.target_cols = target_cols # Target
-        self.test_size = test_size # Fraction du dataset pour le test
         self.n_folds = n_folds # Nombre de folds pour le cross-validation
         self.random_state = random_state # Seed
         self.fold_index = fold_index # Index de la fold pour le cross-validation
@@ -58,26 +57,21 @@ class DataModule(LightningDataModule):
 
     # Découpage du dataset en train, val, test et normalisation des features
     def setup(self, stage=None):
-        train_val_df, test_df = train_test_split(self.dataframe, test_size=self.test_size, random_state=self.random_state) # Découpage du df en train+Val et test
 
         if self.n_folds > 1:
             kf = KFold(n_splits=self.n_folds, shuffle=True, random_state=self.random_state) # KFold pour le cross-validation
-            folds = list(kf.split(train_val_df)) # Création des folds
+            folds = list(kf.split(self.dataframe)) # Création des folds
             train_indices, val_indices = folds[self.fold_index] # Récupération des indices de la fold courante
-            train_df = train_val_df.iloc[train_indices] # Création du df de train
-            val_df = train_val_df.iloc[val_indices] # Création du df de validation
+            train_df = self.dataframe.iloc[train_indices] # Création du df de train
+            val_df = self.dataframe.iloc[val_indices] # Création du df de validation
         else:
-            train_df, val_df = train_test_split(train_val_df, test_size=0.1, random_state=self.random_state) # Découpage de train+val en train et val
+            train_df, val_df = train_test_split(self.dataframe, test_size=0.1, random_state=self.random_state) # Découpage de train+val en train et val
 
-        self.feature_cols = self.dataframe.columns[~self.dataframe.columns.str.contains(r'_M0')] # Features si précisé, sinon toutes sauf target
+        self.feature_cols = self.dataframe.columns[~self.dataframe.columns.str.contains(r'_M0')] # toutes sauf target
         self.target_cols = self.dataframe.columns[self.dataframe.columns.str.contains(r'_M0')]
-        # train_df[self.feature_cols] = self.scaler.fit_transform(train_df[self.feature_cols]) # Normalisation des features sur le train
-        # val_df[self.feature_cols] = self.scaler.transform(val_df[self.feature_cols]) # Normalisation de val en utilisant le scaler de train
-        # test_df[self.feature_cols] = self.scaler.transform(test_df[self.feature_cols]) # Même chose pour le test
 
         self.train_dataset = ALSFRSDataset(train_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # Création du dataset de train
         self.val_dataset = ALSFRSDataset(val_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # val
-        self.test_dataset = ALSFRSDataset(test_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
 
     # Charge les données en batch pour le train, val et test
     def train_dataloader(self):
@@ -85,9 +79,6 @@ class DataModule(LightningDataModule):
 
     def val_dataloader(self):
         return DataLoader(self.val_dataset, batch_size=self.batch_size)
-
-    def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size)
     
 class AutoregressiveALSFRSDataset(Dataset):
     def __init__(self, dataframe, feature_cols=None, target_cols='Target'):
@@ -120,27 +111,24 @@ class AutoregressiveALSFRSDataset(Dataset):
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class AutoregressiveDataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', test_size=0.2, random_state=42):
+    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target'):
         super().__init__()
         self.csv_path = csv_path # Fichier csv contenant les données
         self.batch_size = batch_size # Taille de batch
         self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
         self.target_cols = target_cols # Target
-        self.test_size = test_size # Fraction du dataset pour le test
-        self.random_state = random_state # Seed
     # Lecture du csv
     def prepare_data(self):
         self.dataframe = pd.read_csv(self.csv_path)
 
     # Découpage du dataset en train, val, test et normalisation des features
     def setup(self, stage=None):
-        _, test_df = train_test_split(self.dataframe, test_size=self.test_size, random_state=self.random_state) # Découpage du df en train+Val et test
 
         self.feature_cols = self.dataframe.columns[~self.dataframe.columns.str.contains(r'Target')] # Features si précisé, sinon toutes sauf target
         self.target_cols = self.dataframe.columns[self.dataframe.columns.str.contains(r'Target')]
     
 
-        self.test_dataset = AutoregressiveALSFRSDataset(test_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
+        self.test_dataset = AutoregressiveALSFRSDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
 
     def test_dataloader(self):
         return DataLoader(self.test_dataset, batch_size=self.batch_size)

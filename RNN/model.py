@@ -144,24 +144,26 @@ class AutoregressiveRNN(L.LightningModule):
     
     def forward(self, x, hx=None):
         out, out_hx = self.model(x, hx)
+        
+        score_out = out[:, 0]
 
-        return out, out_hx
+        return out, out_hx, score_out
     
     def test_step(self, batch, batch_idx):
         x, y = batch
 
-        y_hat, hx = self.forward(x)
+        y_hat, hx, score_hat = self.forward(x)
 
-        self.log_dict({'test_loss_1': self.mae(y_hat, y[:,0]),
-                    'test_mae_1': self.mae(y_hat, y[:,0]),
-                    'test_rmse_1': self.rmse(y_hat, y[:,0]),
-                    'test_r2_1': self.r2(y_hat, y[:,0])})
+        self.log_dict({'test_loss_1': self.mae(score_hat, y[:,0]),
+                    'test_mae_1': self.mae(score_hat, y[:,0]),
+                    'test_rmse_1': self.rmse(score_hat, y[:,0]),
+                    'test_r2_1': self.r2(score_hat, y[:,0])})
         
         for i in range(len(y)-1):
-            y_hat, hx = self.forward(y_hat, hx)
-            self.log_dict({f'test_loss_{i+2}': self.mae(y_hat, y[:,i+1]),
-                        f'test_mae_{i+2}': self.mae(y_hat, y[:,i+1]),
-                        f'test_rmse_{i+2}': self.rmse(y_hat, y[:,i+1]),
-                        f'test_r2_{i+2}': self.r2(y_hat, y[:,i+1])})
+            y_hat, hx, score_hat = self.forward(y_hat, hx)
+            self.log_dict({f'test_loss_{i+2}': self.mae(score_hat, y[:,i+1]),
+                        f'test_mae_{i+2}': self.mae(score_hat, y[:,i+1]),
+                        f'test_rmse_{i+2}': self.rmse(score_hat, y[:,i+1]),
+                        f'test_r2_{i+2}': self.r2(score_hat, y[:,i+1])})
 
-        return self.mae(y_hat, y)
+        return self.mae(score_hat, y)
