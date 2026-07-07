@@ -170,10 +170,10 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
 
 if __name__ == '__main__':
 
-    trials = 1
-    trial_epoch = 1
-    max_epoch = 1
-    n_folds = 1
+    trials = 100
+    trial_epoch = 30
+    max_epoch = 300
+    n_folds = 10
     
     training_file = "datasets/interpolation/sliding_windows.csv"
 
