@@ -157,13 +157,14 @@ class AutoregressiveRNN(L.LightningModule):
         self.log_dict({'test_loss_1': self.mae(score_hat, y[:,0]),
                     'test_mae_1': self.mae(score_hat, y[:,0]),
                     'test_rmse_1': self.rmse(score_hat, y[:,0]),
-                    'test_r2_1': self.r2(score_hat, y[:,0])})
+                    **({'test_r2_1': self.r2(score_hat, y[:, 0])} if x.size(0) >= 2 else {})})
         
-        for i in range(len(y)-1):
-            y_hat, hx, score_hat = self.forward(y_hat, hx)
-            self.log_dict({f'test_loss_{i+2}': self.mae(score_hat, y[:,i+1]),
-                        f'test_mae_{i+2}': self.mae(score_hat, y[:,i+1]),
-                        f'test_rmse_{i+2}': self.rmse(score_hat, y[:,i+1]),
-                        f'test_r2_{i+2}': self.r2(score_hat, y[:,i+1])})
+        if y.shape[1] > 1:
+            for i in range(1, y.shape[1]):
+                y_hat, hx, score_hat = self.forward(y_hat.unsqueeze(1), hx)
+                self.log_dict({f'test_loss_{i+1}': self.mae(score_hat, y[:,i]),
+                            f'test_mae_{i+1}': self.mae(score_hat, y[:,i]),
+                            f'test_rmse_{i+1}': self.rmse(score_hat, y[:,i]),
+                            **({f'test_r2_{i+1}': self.r2(score_hat, y[:, i])} if x.size(0) >= 2 else {})})
 
-        return self.mae(score_hat, y)
+        return self.mae(score_hat, y[:,0])

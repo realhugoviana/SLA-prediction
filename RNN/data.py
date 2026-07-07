@@ -98,10 +98,10 @@ class AutoregressiveALSFRSDataset(Dataset):
         row = self.dataframe.iloc[idx] 
         
         feature_list = []
-        
         for month in self.months:
             feature_slice = row[self.feature_cols[self.feature_cols.str.contains(rf'_M{month}$', na=False)]]
-            feature_list.append(feature_slice.reset_index(drop=True))
+            if not feature_slice.empty:
+                feature_list.append(feature_slice.reset_index(drop=True))
 
         features_numpy = pd.concat(feature_list, axis=1).values.astype('float32') 
 
