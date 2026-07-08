@@ -109,7 +109,7 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
         print(f"{key}: {value}")
 
 def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study_name="mlp_regression", architecture="RNN", input_size=None, dataset_name=None, max_epoch=300, n_folds=10):
-
+    os.makedirs(log_dir, exist_ok=True) # Création du dossier de log si il n'existe pas
     study = optuna.load_study(
         storage=f"sqlite:///optuna.db",
         study_name=f"{study_name}_{dataset_name}"
