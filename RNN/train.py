@@ -71,6 +71,7 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
         trainer = L.Trainer(
             max_epochs=trial_epoch, # Nombre d'epoch maximum
             accelerator=accelerator, # GPU si possible
+            devices=4, # Nombre de GPU à utiliser
             callbacks=[EarlyStopping(monitor='val_loss', patience=5), # Early stopping 
                        pruning_callback], # Prunning
             enable_checkpointing=False,
@@ -153,6 +154,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
         trainer = L.Trainer(
             max_epochs=max_epoch, # Nombre d'epoch maximum
             accelerator=accelerator, # GPU si possible
+            devices=4, # Nombre de GPU à utiliser
             callbacks=[EarlyStopping(monitor='val_loss', patience=5)], # Early stopping 
             logger=TensorBoardLogger(f"{log_dir}{dataset_name}", name=f"{training+1}"), # Log
             enable_checkpointing=False
