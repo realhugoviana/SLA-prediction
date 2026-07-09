@@ -73,9 +73,9 @@ class RNNmodel(L.LightningModule):
         self.val_rmse = torchmetrics.MeanSquaredError(squared=False)
         self.test_rmse = torchmetrics.MeanSquaredError(squared=False)
 
-        self.train_r2 = torchmetrics.R2Score()
-        self.val_r2 = torchmetrics.R2Score()
-        self.test_r2 = torchmetrics.R2Score()
+        self.train_r2 = torchmetrics.R2Score(num_outputs=output_dim)
+        self.val_r2 = torchmetrics.R2Score(num_outputs=output_dim)
+        self.test_r2 = torchmetrics.R2Score(num_outputs=output_dim)
         
     # Fonction de passe dans le NN
     def forward(self, x, hx=None):
@@ -90,11 +90,12 @@ class RNNmodel(L.LightningModule):
         # y = y.view(-1, 1)
         y_hat, _ = self.forward(x) # Prédiction
         loss = self.criterion(y_hat, y) # Perte
-        if len(y) > 1: # Log
-            self.log_dict({'train_loss': loss,
-                        'train_mae': self.train_mae(y_hat, y),
-                        'train_rmse': self.train_rmse(y_hat, y),
-                        'train_r2': self.train_r2(y_hat, y)})
+        y_hat = y_hat.view(-1, 17)  # 17 = ton nombre de sorties
+        y = y.view(-1, 17)
+        self.log_dict({'train_loss': loss,
+                    'train_mae': self.train_mae(y_hat, y),
+                    'train_rmse': self.train_rmse(y_hat, y),
+                    'train_r2': self.train_r2(y_hat, y)})
         return loss # Retourne la perte
     
     # Validation, pas de retro propagation
@@ -103,11 +104,26 @@ class RNNmodel(L.LightningModule):
         # y = y.view(-1, 1)
         y_hat, _ = self.forward(x)
         loss = self.criterion(y_hat, y)
-        if len(y) > 1:
-            self.log_dict({'val_loss': loss,
-                        'val_mae': self.val_mae(y_hat, y),
-                        'val_rmse': self.val_rmse(y_hat, y),
-                        'val_r2': self.val_r2(y_hat, y)})
+        y_hat = y_hat.view(-1, 17)  # 17 = ton nombre de sorties
+        y = y.view(-1, 17)
+        # if len(y) > 1:
+        #     # Assurez-vous que les dimensions sont compatibles
+        #     if y_hat.dim() == 2 and y.dim() == 2:
+        #         self.log_dict({'val_loss': loss,
+        #                     'val_mae': self.val_mae(y_hat, y),
+        #                     'val_rmse': self.val_rmse(y_hat, y),
+        #                     'val_r2': self.val_r2(y_hat, y)})
+        #     else:
+        #         # Si les dimensions ne correspondent pas, reshapez
+        #         if y_hat.dim() == 1 and y.dim() == 1:
+        #             y_hat = y_hat.unsqueeze(0)
+        #             y = y.unsqueeze(0)
+        #         elif y_hat.dim() == 2 and y.dim() == 1:
+        #             y = y.unsqueeze(1)
+        self.log_dict({'val_loss': loss,
+                    'val_mae': self.val_mae(y_hat, y),
+                    'val_rmse': self.val_rmse(y_hat, y),
+                    'val_r2': self.val_r2(y_hat, y)})
         return loss
     
     # Test
@@ -116,11 +132,12 @@ class RNNmodel(L.LightningModule):
         # y = y.view(-1, 1)
         y_hat, _ = self.forward(x)
         loss = self.criterion(y_hat, y)
-        if len(y) > 1:
-            self.log_dict({'test_loss': loss,
-                        'test_mae': self.test_mae(y_hat, y),
-                        'test_rmse': self.test_rmse(y_hat, y),
-                        'test_r2': self.test_r2(y_hat, y)})
+        y_hat = y_hat.view(-1, 17)  # 17 = ton nombre de sorties
+        y = y.view(-1, 17)
+        self.log_dict({'test_loss': loss,
+                    'test_mae': self.test_mae(y_hat, y),
+                    'test_rmse': self.test_rmse(y_hat, y),
+                    'test_r2': self.test_r2(y_hat, y)})
         return loss
 
     # Configuration de l'optimizer

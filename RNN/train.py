@@ -9,18 +9,19 @@ import os
 import glob
 import time
 
+
 from model import RNNmodel, AutoregressiveRNN
 from data import DataModule, AutoregressiveDataModule
 from utils import get_input_size
 
 # Permets d'utiliser le GPU
-if torch.backends.mps.is_available(): # MPS pour mac
-    accelerator = "mps"
-elif torch.cuda.is_available(): # Cuda sinon
-    accelerator = "gpu"
-else:
-    accelerator = "cpu" # CPU si Cuda pas supporté
-
+# if torch.backends.mps.is_available(): # MPS pour mac
+#     accelerator = "mps"
+# elif torch.cuda.is_available(): # Cuda sinon
+#     accelerator = "gpu"
+# else:
+#     accelerator = "cpu" # CPU si Cuda pas supporté
+accelerator = "gpu"
 # Fonction d'optimisation des paramètres et d'entrainement
 # Entrée : 
 # - Chemin d'accès au csv
@@ -71,7 +72,7 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
         trainer = L.Trainer(
             max_epochs=trial_epoch, # Nombre d'epoch maximum
             accelerator=accelerator, # GPU si possible
-            devices=4, # Nombre de GPU à utiliser
+            devices=4, # Utilisation de tous les GPU si disponible
             callbacks=[EarlyStopping(monitor='val_loss', patience=5), # Early stopping 
                        pruning_callback], # Prunning
             enable_checkpointing=False,
@@ -154,7 +155,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
         trainer = L.Trainer(
             max_epochs=max_epoch, # Nombre d'epoch maximum
             accelerator=accelerator, # GPU si possible
-            devices=4, # Nombre de GPU à utiliser
+            devices=4, # Utilisation de tous les GPU si disponible
             callbacks=[EarlyStopping(monitor='val_loss', patience=5)], # Early stopping 
             logger=TensorBoardLogger(f"{log_dir}{dataset_name}", name=f"{training+1}"), # Log
             enable_checkpointing=False
@@ -197,6 +198,7 @@ if __name__ == '__main__':
                     dataset_name=dataset_name,
                     trials=trials,
                     trial_epoch=trial_epoch)
+    
     
     run_trainings(training_file,
                 test_sets=test_sets,

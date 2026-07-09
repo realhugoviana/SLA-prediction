@@ -6,6 +6,7 @@ from torch.utils.data import Dataset, DataLoader
 import torch
 from lightning import LightningDataModule
 
+
 from utils import get_intervals, get_months, sort_df
 
 # Conversion du dataframe pandas en dataset PyTorch
@@ -40,7 +41,7 @@ class ALSFRSDataset(Dataset):
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class DataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', n_folds=10, random_state=42, fold_index=0):
+    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', n_folds=10, random_state=42, fold_index=0, num_workers=4):
         super().__init__()
         self.csv_path = csv_path # Fichier csv contenant les données
         self.batch_size = batch_size # Taille de batch
@@ -50,6 +51,7 @@ class DataModule(LightningDataModule):
         self.random_state = random_state # Seed
         self.fold_index = fold_index # Index de la fold pour le cross-validation
         self.scaler = StandardScaler() # Normalisation
+        self.num_workers = num_workers # Nombre de workers pour le DataLoader
 
     # Lecture du csv
     def prepare_data(self):
@@ -75,11 +77,11 @@ class DataModule(LightningDataModule):
 
     # Charge les données en batch pour le train, val et test
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.batch_size)
-    
+        return DataLoader(self.val_dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)
+
 class AutoregressiveALSFRSDataset(Dataset):
     def __init__(self, dataframe, feature_cols=None, target_cols='Target'):
         self.dataframe = dataframe # DataFrame source
@@ -111,12 +113,13 @@ class AutoregressiveALSFRSDataset(Dataset):
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class AutoregressiveDataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target'):
+    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', num_workers=4):
         super().__init__()
         self.csv_path = csv_path # Fichier csv contenant les données
         self.batch_size = batch_size # Taille de batch
         self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
         self.target_cols = target_cols # Target
+        self.num_workers = num_workers # Nombre de workers pour le DataLoader
     # Lecture du csv
     def prepare_data(self):
         self.dataframe = pd.read_csv(self.csv_path)
@@ -131,4 +134,4 @@ class AutoregressiveDataModule(LightningDataModule):
         self.test_dataset = AutoregressiveALSFRSDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size)
+        return DataLoader(self.test_dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)
