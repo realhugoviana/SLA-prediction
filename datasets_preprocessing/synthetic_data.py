@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import random
 import os
+from sklearn.model_selection import train_test_split
 
 def noisy_sigmoid(x):
   return (1 / (1 + np.exp(0.7*x-5)))*40+5 + np.random.normal(0, 7, 1) + np.random.normal(0, 1, len(x))
@@ -17,7 +18,7 @@ def noisy_dataset():
     data.append(row)
   
   df = pd.DataFrame(data)
-  columns = ['alsfrs_r_0_30', 'alsfrs_r_30_60', 'alsfrs_r_60_90', 'alsfrs_r_90_120', 'alsfrs_r_120_150', 'alsfrs_r_150_180', 'alsfrs_r_180_210', 'alsfrs_r_210_240', 'alsfrs_r_240_270', 'alsfrs_r_270_300', 'alsfrs_r_300_330', 'alsfrs_r_330_360', 'alsfrs_r_360_390', 'alsfrs_r_390_420', 'Target']
+  columns = ['alsfrs_r_M-14', 'alsfrs_r_M-13', 'alsfrs_r_M-12', 'alsfrs_r_M-11', 'alsfrs_r_M-10', 'alsfrs_r_M-9', 'alsfrs_r_M-8', 'alsfrs_r_M-7', 'alsfrs_r_M-6', 'alsfrs_r_M-5', 'alsfrs_r_M-4', 'alsfrs_r_M-3', 'alsfrs_r_M-2', 'alsfrs_r_M-1', 'Target_M0']
   df.columns = columns
   return df
 
@@ -41,17 +42,21 @@ def noisy_dataset_interpolation(df):
 # 1. Generate the data
 print("--- Generating Dataset (3000 curves) ---")
 df_noisy = noisy_dataset()
-df_noisy_missing_data = noisy_dataset_interpolation(df_noisy.copy())
-print(f"Dataset generated successfully: Shape {df_noisy_missing_data.shape}")
-print(df_noisy_missing_data.isna().sum())
+
+df_noisy_train, df_noisy_test = train_test_split(df_noisy, test_size=0.2, random_state=42)
+
+test_columns = ['alsfrs_r_M-14', 'alsfrs_r_M-13', 'alsfrs_r_M-12', 'Target_M-11', 'Target_M-10', 'Target_M-9', 'Target_M-8', 'Target_M-7', 'Target_M-6', 'Target_M-5', 'Target_M-4', 'Target_M-3', 'Target_M-2', 'Target_M-1', 'Target_M0']
+df_noisy_test.columns = test_columns
+# df_noisy_missing_data = noisy_dataset_interpolation(df_noisy.copy())
 os.makedirs("datasets/synthetic_data/", exist_ok=True)
-df_noisy.to_csv('datasets/synthetic_data/synthetic_data_0_15M.csv', index=False)
-df_noisy_missing_data.to_csv('datasets/synthetic_data/synthetic_data_interpolate_0_15M.csv', index=False)
+df_noisy_train.to_csv('datasets/synthetic_data/synthetic_noisy_sigmoid_train_0_15M.csv', index=False)
+df_noisy_test.to_csv('datasets/synthetic_data/synthetic_noisy_sigmoid_test_0_15M.csv', index=False)
+# df_noisy_missing_data.to_csv('datasets/synthetic_data/synthetic_data_interpolate_0_15M.csv', index=False)
 
 
 # 2. Calculate the Mean Curve (The underlying signal)
 # The mean of all 3000 rows should approximate the original clean sigmoid shape.
-mean_curve = df_noisy_missing_data.mean(axis=0)
+mean_curve = df_noisy_test.mean(axis=0)
 
 plt.figure(figsize=(15, 7))
 
@@ -60,13 +65,13 @@ plt.plot(mean_curve, label='Mean Curve (Approximate True Signal)', linewidth=3, 
 
 
 # Plot 2: Sample Individual Curves to show variability and noise
-N_SAMPLES = 500 # How many random curves we want to plot for visualization
+N_SAMPLES = 100 # How many random curves we want to plot for visualization
 
 # Select N_SAMPLES unique indices from the DataFrame rows
-sample_indices = random.sample(range(df_noisy_missing_data.shape[0]), N_SAMPLES)
+sample_indices = random.sample(range(df_noisy_test.shape[0]), N_SAMPLES)
 
 for i in sample_indices:
-    row = df_noisy_missing_data.iloc[i]
+    row = df_noisy_test.iloc[i]
     plt.plot(row, alpha=0.1, color='skyblue', linewidth=1) # Use low opacity (alpha)
 
 # --- Finishing the Plot ---

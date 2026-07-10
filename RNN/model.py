@@ -73,9 +73,9 @@ class RNNmodel(L.LightningModule):
         self.val_rmse = torchmetrics.MeanSquaredError(squared=False)
         self.test_rmse = torchmetrics.MeanSquaredError(squared=False)
 
-        self.train_r2 = torchmetrics.R2Score(num_outputs=output_dim)
-        self.val_r2 = torchmetrics.R2Score(num_outputs=output_dim)
-        self.test_r2 = torchmetrics.R2Score(num_outputs=output_dim)
+        self.train_r2 = torchmetrics.R2Score()
+        self.val_r2 = torchmetrics.R2Score()
+        self.test_r2 = torchmetrics.R2Score()
         
     # Fonction de passe dans le NN
     def forward(self, x, hx=None):
@@ -90,8 +90,8 @@ class RNNmodel(L.LightningModule):
         # y = y.view(-1, 1)
         y_hat, _ = self.forward(x) # Prédiction
         loss = self.criterion(y_hat, y) # Perte
-        y_hat = y_hat.view(-1, 17)  # 17 = ton nombre de sorties
-        y = y.view(-1, 17)
+        y_hat = y_hat.view(-1, self.output_dim)  # 17 = ton nombre de sorties
+        y = y.view(-1, self.output_dim)
         self.log_dict({'train_loss': loss,
                     'train_mae': self.train_mae(y_hat, y),
                     'train_rmse': self.train_rmse(y_hat, y),
@@ -104,8 +104,8 @@ class RNNmodel(L.LightningModule):
         # y = y.view(-1, 1)
         y_hat, _ = self.forward(x)
         loss = self.criterion(y_hat, y)
-        y_hat = y_hat.view(-1, 17)  # 17 = ton nombre de sorties
-        y = y.view(-1, 17)
+        y_hat = y_hat.view(-1, self.output_dim)  # 17 = ton nombre de sorties
+        y = y.view(-1, self.output_dim)
         # if len(y) > 1:
         #     # Assurez-vous que les dimensions sont compatibles
         #     if y_hat.dim() == 2 and y.dim() == 2:
@@ -132,8 +132,8 @@ class RNNmodel(L.LightningModule):
         # y = y.view(-1, 1)
         y_hat, _ = self.forward(x)
         loss = self.criterion(y_hat, y)
-        y_hat = y_hat.view(-1, 17)  # 17 = ton nombre de sorties
-        y = y.view(-1, 17)
+        y_hat = y_hat.view(-1, self.output_dim)  # 17 = ton nombre de sorties
+        y = y.view(-1, self.output_dim)
         self.log_dict({'test_loss': loss,
                     'test_mae': self.test_mae(y_hat, y),
                     'test_rmse': self.test_rmse(y_hat, y),

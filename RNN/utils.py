@@ -31,7 +31,7 @@ def get_months(df):
     # return pd.Series(sorted(extracted_ints))
 
 def get_features(df):
-    columns = df.columns
+    columns = df.columns[~df.columns.str.contains('Target', na=False)]
     return list(sorted(columns.str.replace(r'_M-?\d+$', '', regex=True).unique()))
 
 def sort_df(df, intervals):

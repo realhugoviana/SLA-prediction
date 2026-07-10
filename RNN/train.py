@@ -15,13 +15,13 @@ from data import DataModule, AutoregressiveDataModule
 from utils import get_input_size
 
 # Permets d'utiliser le GPU
-# if torch.backends.mps.is_available(): # MPS pour mac
-#     accelerator = "mps"
-# elif torch.cuda.is_available(): # Cuda sinon
-#     accelerator = "gpu"
-# else:
-#     accelerator = "cpu" # CPU si Cuda pas supporté
-accelerator = "gpu"
+if torch.backends.mps.is_available(): # MPS pour mac
+    accelerator = "mps"
+elif torch.cuda.is_available(): # Cuda sinon
+    accelerator = "gpu"
+else:
+    accelerator = "cpu" # CPU si Cuda pas supporté
+
 # Fonction d'optimisation des paramètres et d'entrainement
 # Entrée : 
 # - Chemin d'accès au csv
@@ -48,7 +48,7 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
 
         # Initialisation du modèle avec les paramètres choisis (voir model.py)
         model = RNNmodel(input_size, 
-                         output_dim=17, 
+                         output_dim=input_size, 
                          architecture=architecture,
                          n_layer=n_layer, 
                          n_units=n_units, 
@@ -72,7 +72,7 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
         trainer = L.Trainer(
             max_epochs=trial_epoch, # Nombre d'epoch maximum
             accelerator=accelerator, # GPU si possible
-            devices=4, # Utilisation de tous les GPU si disponible
+            # devices=4, # Utilisation de tous les GPU si disponible
             callbacks=[EarlyStopping(monitor='val_loss', patience=5), # Early stopping 
                        pruning_callback], # Prunning
             enable_checkpointing=False,
@@ -122,7 +122,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
     best_params = trial.params
     if architecture == "RNN":
         best_model = RNNmodel(input_size, 
-                            output_dim=17, 
+                            output_dim=input_size, 
                             architecture=architecture,
                             n_layer=best_params['n_layer'], 
                             n_units=best_params['n_units'], 
@@ -135,7 +135,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
                             bidirectional=best_params['bidirectional'])
     else:
         best_model = RNNmodel(input_size, 
-                            output_dim=17, 
+                            output_dim=input_size, 
                             architecture=architecture,
                             n_layer=best_params['n_layer'], 
                             n_units=best_params['n_units'], 
@@ -155,7 +155,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
         trainer = L.Trainer(
             max_epochs=max_epoch, # Nombre d'epoch maximum
             accelerator=accelerator, # GPU si possible
-            devices=4, # Utilisation de tous les GPU si disponible
+            # devices=4, # Utilisation de tous les GPU si disponible
             callbacks=[EarlyStopping(monitor='val_loss', patience=5)], # Early stopping 
             logger=TensorBoardLogger(f"{log_dir}{dataset_name}", name=f"{training+1}"), # Log
             enable_checkpointing=False
@@ -178,9 +178,9 @@ if __name__ == '__main__':
     max_epoch = 300
     n_folds = 10
     
-    training_file = "datasets/interpolation/sliding_windows.csv"
+    training_file = "datasets/synthetic_data/synthetic_noisy_sigmoid_train_0_15M.csv"
 
-    test_folder = "datasets/interpolation/test/"
+    test_folder = "datasets/synthetic_data/test"
     test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
 
     input_size = get_input_size(pd.read_csv(training_file))
@@ -192,7 +192,7 @@ if __name__ == '__main__':
     L.seed_everything(42)
 
     run_optimization(training_file,
-                    study_name=f"lstm_interpolation_sliding_windows",
+                    study_name=f"lstm_synthetic_noisy_sigmoid",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -202,8 +202,8 @@ if __name__ == '__main__':
     
     run_trainings(training_file,
                 test_sets=test_sets,
-                log_dir=f"RNN/tb_logs/lstm_interpolation_sliding_windows/",
-                study_name=f"lstm_interpolation_sliding_windows",
+                log_dir=f"RNN/tb_logs/lstm_synthetic_noisy_sigmoid/",
+                study_name=f"lstm_synthetic_noisy_sigmoid",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
@@ -215,7 +215,7 @@ if __name__ == '__main__':
     L.seed_everything(42)
 
     run_optimization(training_file,
-                    study_name=f"gru_interpolation_sliding_windows",
+                    study_name=f"gru_synthetic_noisy_sigmoid",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -224,8 +224,8 @@ if __name__ == '__main__':
     
     run_trainings(training_file,
                 test_sets=test_sets,
-                log_dir=f"RNN/tb_logs/gru_interpolation_sliding_windows/",
-                study_name=f"gru_interpolation_sliding_windows",
+                log_dir=f"RNN/tb_logs/gru_synthetic_noisy_sigmoid/",
+                study_name=f"gru_synthetic_noisy_sigmoid",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
@@ -237,7 +237,7 @@ if __name__ == '__main__':
     L.seed_everything(42)
 
     run_optimization(training_file,
-                    study_name=f"rnn_interpolation_sliding_windows",
+                    study_name=f"rnn_synthetic_noisy_sigmoid",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -246,8 +246,8 @@ if __name__ == '__main__':
     
     run_trainings(training_file,
                 test_sets=test_sets,
-                log_dir=f"RNN/tb_logs/rnn_interpolation_sliding_windows/",
-                study_name=f"rnn_interpolation_sliding_windows",
+                log_dir=f"RNN/tb_logs/rnn_synthetic_noisy_sigmoid/",
+                study_name=f"rnn_synthetic_noisy_sigmoid",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
