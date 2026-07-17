@@ -72,7 +72,6 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
         trainer = L.Trainer(
             max_epochs=trial_epoch, # Nombre d'epoch maximum
             accelerator=accelerator, # GPU si possible
-            # devices=4, # Utilisation de tous les GPU si disponible
             callbacks=[EarlyStopping(monitor='val_loss', patience=5), # Early stopping 
                        pruning_callback], # Prunning
             enable_checkpointing=False,
@@ -155,7 +154,6 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
         trainer = L.Trainer(
             max_epochs=max_epoch, # Nombre d'epoch maximum
             accelerator=accelerator, # GPU si possible
-            # devices=4, # Utilisation de tous les GPU si disponible
             callbacks=[EarlyStopping(monitor='val_loss', patience=5)], # Early stopping 
             logger=TensorBoardLogger(f"{log_dir}{dataset_name}", name=f"{training+1}"), # Log
             enable_checkpointing=False
@@ -178,78 +176,79 @@ if __name__ == '__main__':
     max_epoch = 300
     n_folds = 10
     
-    training_file = "datasets/synthetic_data/synthetic_noisy_sigmoid_train_0_15M.csv"
+    for i in range(1, 4):
+        training_file = f"datasets/synthetic_data/exp0{i}/train.csv"
 
-    test_folder = "datasets/synthetic_data/test"
-    test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
+        test_file = f"datasets/synthetic_data/exp0{i}/test.csv"
+        test_sets = [test_file]
 
-    input_size = get_input_size(pd.read_csv(training_file))
-    print(input_size)
-    dataset_name = os.path.splitext(os.path.basename(training_file))[0]
-    
-    architecture = "LSTM"
+        input_size = get_input_size(pd.read_csv(training_file))
+        print(input_size)
+        dataset_name = os.path.splitext(os.path.basename(training_file))[0]
+        
+        architecture = "LSTM"
 
-    L.seed_everything(42)
+        L.seed_everything(42)
 
-    run_optimization(training_file,
-                    study_name=f"lstm_synthetic_noisy_sigmoid",
+        run_optimization(training_file,
+                        study_name=f"lstm_synthetic_exp0{i}",
+                        architecture=architecture,
+                        input_size=input_size,
+                        dataset_name=dataset_name,
+                        trials=trials,
+                        trial_epoch=trial_epoch)
+        
+        
+        run_trainings(training_file,
+                    test_sets=test_sets,
+                    log_dir=f"RNN/tb_logs/lstm_synthetic/exp0{i}/",
+                    study_name=f"lstm_synthetic_exp0{i}",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir=f"RNN/tb_logs/lstm_synthetic_noisy_sigmoid/",
-                study_name=f"lstm_synthetic_noisy_sigmoid",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
-    
-    architecture = "GRU"
+                    max_epoch=max_epoch,
+                    n_folds=n_folds)
+        
+        architecture = "GRU"
 
-    L.seed_everything(42)
+        L.seed_everything(42)
 
-    run_optimization(training_file,
-                    study_name=f"gru_synthetic_noisy_sigmoid",
+        run_optimization(training_file,
+                        study_name=f"gru_synthetic_exp0{i}",
+                        architecture=architecture,
+                        input_size=input_size,
+                        dataset_name=dataset_name,
+                        trials=trials,
+                        trial_epoch=trial_epoch)
+        
+        run_trainings(training_file,
+                    test_sets=test_sets,
+                    log_dir=f"RNN/tb_logs/gru_synthetic/exp0{i}/",
+                    study_name=f"gru_synthetic_exp0{i}",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir=f"RNN/tb_logs/gru_synthetic_noisy_sigmoid/",
-                study_name=f"gru_synthetic_noisy_sigmoid",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
-    
-    architecture = "RNN"
+                    max_epoch=max_epoch,
+                    n_folds=n_folds)
+        
+        architecture = "RNN"
 
-    L.seed_everything(42)
+        L.seed_everything(42)
 
-    run_optimization(training_file,
-                    study_name=f"rnn_synthetic_noisy_sigmoid",
+        run_optimization(training_file,
+                        study_name=f"rnn_synthetic_exp0{i}",
+                        architecture=architecture,
+                        input_size=input_size,
+                        dataset_name=dataset_name,
+                        trials=trials,
+                        trial_epoch=trial_epoch)
+        
+        run_trainings(training_file,
+                    test_sets=test_sets,
+                    log_dir=f"RNN/tb_logs/rnn_synthetic/exp0{i}/",
+                    study_name=f"rnn_synthetic_exp0{i}",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir=f"RNN/tb_logs/rnn_synthetic_noisy_sigmoid/",
-                study_name=f"rnn_synthetic_noisy_sigmoid",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
+                    max_epoch=max_epoch,
+                    n_folds=n_folds)
