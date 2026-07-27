@@ -35,7 +35,7 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
         # Paramètres optimisés
         n_layer = trial.suggest_int('n_layer', 1, 5)
         n_units = trial.suggest_categorical('n_units', [32, 64, 128, 256, 512, 1024])
-        learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-3, log=True)
+        learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)
         if architecture == "RNN":
             activation = trial.suggest_categorical('activation', ['relu', 'tanh'])
         else:
@@ -61,7 +61,7 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
                          bidirectional=bidirectional)
 
         # Dataset et dataloader (voir data.py)
-        dm = DataModule(csv_path=data_path, batch_size=batch_size, n_folds=-1) # n_folds=-1 pour ne pas faire de cross-validation pendant l'optimisation
+        dm = DataModule(data=data_path, batch_size=batch_size, n_folds=-1) # n_folds=-1 pour ne pas faire de cross-validation pendant l'optimisation
 
         # Prunning des trials qui convergent trop lentement par rapport aux autres
         pruning_callback = PyTorchLightningPruningCallback(
@@ -93,6 +93,17 @@ def run_optimization(data_path, study_name="rnn", architecture="RNN", input_size
         study_name=f"{study_name}_{dataset_name}", # Nom de l'étude
         load_if_exists=True, # Si l'étude crash elle peut reprendre là où elle s'était arrêtée
         direction='minimize') # On cherche à minimiser la sortie de objective donc la perte de la validation
+
+    study.enqueue_trial({"n_layer": 1,
+                         "n_units": 64,
+                         "learning_rate": 1e-2,
+                         "activation": 'tanh',
+                         "criterion": "MSE",
+                         "batch_size": 32,
+                         "weight_decay": 1e-8,
+                         "dropout": 0.0,
+                         "bidirectional": False})
+    
     study.optimize(objective, n_trials=trials) # trials
 
     end_time = time.time()
@@ -149,7 +160,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
     for training in range(n_folds):
         print(f"Training {training+1}/{n_folds} for dataset {dataset_name} with best parameters...")
 
-        dm = DataModule(csv_path=data_path, batch_size=best_params['batch_size'], fold_index=training)
+        dm = DataModule(data=data_path, batch_size=best_params['batch_size'], fold_index=training)
 
         trainer = L.Trainer(
             max_epochs=max_epoch, # Nombre d'epoch maximum
@@ -166,7 +177,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
 
         for test_set in test_sets:
             print(f"Testing on {test_set}...")
-            test_dm = AutoregressiveDataModule(csv_path=test_set, batch_size=best_params['batch_size'])
+            test_dm = AutoregressiveDataModule(data=test_set, batch_size=best_params['batch_size'])
             trainer.test(autoregressive_model, datamodule=test_dm) # Test sur le dataset de test
 
 if __name__ == '__main__':
@@ -175,80 +186,111 @@ if __name__ == '__main__':
     trial_epoch = 30
     max_epoch = 300
     n_folds = 10
+
+    training_file = "datasets/interpolation/sliding_windows.csv"
     
-    for i in range(1, 4):
-        training_file = f"datasets/synthetic_data/exp0{i}/train.csv"
+    test_folder = "datasets/interpolation/test"
+    test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
 
-        test_file = f"datasets/synthetic_data/exp0{i}/test.csv"
-        test_sets = [test_file]
+    input_size = get_input_size(pd.read_csv(training_file))
+    print(input_size)
+    dataset_name = os.path.splitext(os.path.basename(training_file))[0]
+    
+    architecture = "LSTM"
 
-        input_size = get_input_size(pd.read_csv(training_file))
-        print(input_size)
-        dataset_name = os.path.splitext(os.path.basename(training_file))[0]
-        
-        architecture = "LSTM"
+    L.seed_everything(42)
 
-        L.seed_everything(42)
-
-        run_optimization(training_file,
-                        study_name=f"lstm_synthetic_exp0{i}",
-                        architecture=architecture,
-                        input_size=input_size,
-                        dataset_name=dataset_name,
-                        trials=trials,
-                        trial_epoch=trial_epoch)
-        
-        
-        run_trainings(training_file,
-                    test_sets=test_sets,
-                    log_dir=f"RNN/tb_logs/lstm_synthetic/exp0{i}/",
-                    study_name=f"lstm_synthetic_exp0{i}",
+    run_optimization(training_file,
+                    study_name="lstm_interpolation",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
-                    max_epoch=max_epoch,
-                    n_folds=n_folds)
-        
-        architecture = "GRU"
+                    trials=trials,
+                    trial_epoch=trial_epoch)
+    
+    
+    run_trainings(training_file,
+                test_sets=test_sets,
+                log_dir="RNN/tb_logs/lstm_interpolation/",
+                study_name="lstm_interpolation",
+                architecture=architecture,
+                input_size=input_size,
+                dataset_name=dataset_name,
+                max_epoch=max_epoch,
+                n_folds=n_folds)
+    
+    training_file = "datasets/interpolation_baseline/sliding_windows.csv"
 
-        L.seed_everything(42)
+    test_folder = "datasets/interpolation_baseline/test"
+    test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
 
-        run_optimization(training_file,
-                        study_name=f"gru_synthetic_exp0{i}",
-                        architecture=architecture,
-                        input_size=input_size,
-                        dataset_name=dataset_name,
-                        trials=trials,
-                        trial_epoch=trial_epoch)
-        
-        run_trainings(training_file,
-                    test_sets=test_sets,
-                    log_dir=f"RNN/tb_logs/gru_synthetic/exp0{i}/",
-                    study_name=f"gru_synthetic_exp0{i}",
+    input_size = get_input_size(pd.read_csv(training_file))
+    print(input_size)
+    dataset_name = os.path.splitext(os.path.basename(training_file))[0]
+    
+    architecture = "LSTM"
+
+    L.seed_everything(42)
+
+    run_optimization(training_file,
+                    study_name="lstm_interpolation_baseline",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
-                    max_epoch=max_epoch,
-                    n_folds=n_folds)
-        
-        architecture = "RNN"
+                    trials=trials,
+                    trial_epoch=trial_epoch)
+    
+    
+    run_trainings(training_file,
+                test_sets=test_sets,
+                log_dir="RNN/tb_logs/lstm_interpolation_baseline/",
+                study_name="lstm_interpolation_baseline",
+                architecture=architecture,
+                input_size=input_size,
+                dataset_name=dataset_name,
+                max_epoch=max_epoch,
+                n_folds=n_folds)
+    
+    architecture = "GRU"
 
-        L.seed_everything(42)
+    L.seed_everything(42)
 
-        run_optimization(training_file,
-                        study_name=f"rnn_synthetic_exp0{i}",
-                        architecture=architecture,
-                        input_size=input_size,
-                        dataset_name=dataset_name,
-                        trials=trials,
-                        trial_epoch=trial_epoch)
-        
-        run_trainings(training_file,
-                    test_sets=test_sets,
-                    log_dir=f"RNN/tb_logs/rnn_synthetic/exp0{i}/",
-                    study_name=f"rnn_synthetic_exp0{i}",
+    run_optimization(training_file,
+                    study_name="gru_interpolation_baseline",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
-                    max_epoch=max_epoch,
-                    n_folds=n_folds)
+                    trials=trials,
+                    trial_epoch=trial_epoch)
+    
+    run_trainings(training_file,
+                test_sets=test_sets,
+                log_dir="RNN/tb_logs/gru_interpolation_baseline/",
+                study_name="gru_interpolation_baseline",
+                architecture=architecture,
+                input_size=input_size,
+                dataset_name=dataset_name,
+                max_epoch=max_epoch,
+                n_folds=n_folds)
+    
+    architecture = "RNN"
+
+    L.seed_everything(42)
+
+    run_optimization(training_file,
+                    study_name="rnn_interpolation_baseline",
+                    architecture=architecture,
+                    input_size=input_size,
+                    dataset_name=dataset_name,
+                    trials=trials,
+                    trial_epoch=trial_epoch)
+    
+    run_trainings(training_file,
+                test_sets=test_sets,
+                log_dir="RNN/tb_logs/rnn_interpolation_baseline/",
+                study_name="rnn_interpolation_baseline",
+                architecture=architecture,
+                input_size=input_size,
+                dataset_name=dataset_name,
+                max_epoch=max_epoch,
+                n_folds=n_folds)

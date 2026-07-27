@@ -6,14 +6,14 @@ import os
 from sklearn.model_selection import train_test_split
 
 def noisy_sigmoid(x):
-  return (1 / (1 + np.exp(x-7.5)))*30+10 + np.random.normal(0, 3, 1) + np.random.normal(0, 0.5, len(x))
+  return (1 / (1 + np.exp(x-7.5)))*30+10 + np.random.normal(0, 3, 1) #+ np.random.normal(0, 0.5, len(x))
 
 def noisy_dataset():
   x = np.linspace(0, 15, 15)
 
   data = []
   for i in range(3000):
-    random_offset = np.random.normal(0, 1, 1)
+    random_offset = 0#np.random.normal(0, 3, 1)
     row = noisy_sigmoid(x+random_offset)
     data.append(row)
   
@@ -80,7 +80,7 @@ def plot_noisy_dataset(df):
 
   for i in sample_indices:
       row = df.iloc[i]
-      plt.plot(row, alpha=0.1, color='skyblue', linewidth=1) # Use low opacity (alpha)
+      plt.plot(row, alpha=0.5, color='skyblue', linewidth=1) # Use low opacity (alpha)
 
   # --- Finishing the Plot ---
 
@@ -105,8 +105,8 @@ if __name__ == "__main__":
 
   os.makedirs("datasets/synthetic_data/exp03", exist_ok=True)
 
-  df_noisy_train.to_csv('datasets/synthetic_data/exp03/train.csv', index=False)
-  df_noisy_test.to_csv('datasets/synthetic_data/exp03/test.csv', index=False)
+  # df_noisy_train.to_csv('datasets/synthetic_data/exp03/train.csv', index=False)
+  # df_noisy_test.to_csv('datasets/synthetic_data/exp03/test.csv', index=False)
 
   plot_noisy_dataset(df_noisy_test)
 

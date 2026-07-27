@@ -40,9 +40,15 @@ class ALSFRSDataset(Dataset):
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class DataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', n_folds=10, random_state=42, fold_index=0, num_workers=4):
+    def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', n_folds=10, random_state=42, fold_index=0, num_workers=4):
         super().__init__()
-        self.csv_path = csv_path # Fichier csv contenant les données
+        if isinstance(data, pd.DataFrame):
+            self.dataframe = data
+        elif isinstance(data, str):
+            self.csv_path = data # Fichier csv contenant les données
+        else:
+            raise ValueError("data must be a pandas DataFrame or a string path to a CSV file.")
+        
         self.batch_size = batch_size # Taille de batch
         self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
         self.target_cols = target_cols # Target
@@ -54,7 +60,8 @@ class DataModule(LightningDataModule):
 
     # Lecture du csv
     def prepare_data(self):
-        self.dataframe = pd.read_csv(self.csv_path)
+        if hasattr(self, 'csv_path'):
+            self.dataframe = pd.read_csv(self.csv_path)
 
     # Découpage du dataset en train, val, test et normalisation des features
     def setup(self, stage=None):
@@ -112,16 +119,22 @@ class AutoregressiveALSFRSDataset(Dataset):
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class AutoregressiveDataModule(LightningDataModule):
-    def __init__(self, csv_path, batch_size=32, feature_cols=None, target_cols='Target', num_workers=4):
+    def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', num_workers=4):
         super().__init__()
-        self.csv_path = csv_path # Fichier csv contenant les données
+        if isinstance(data, pd.DataFrame):
+            self.dataframe = data
+        elif isinstance(data, str):
+            self.csv_path = data # Fichier csv contenant les données
+        else:
+            raise ValueError("data must be a pandas DataFrame or a string path to a CSV file.")
         self.batch_size = batch_size # Taille de batch
         self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
         self.target_cols = target_cols # Target
         self.num_workers = num_workers # Nombre de workers pour le DataLoader
     # Lecture du csv
     def prepare_data(self):
-        self.dataframe = pd.read_csv(self.csv_path)
+        if hasattr(self, 'csv_path'):
+            self.dataframe = pd.read_csv(self.csv_path)
 
     # Découpage du dataset en train, val, test et normalisation des features
     def setup(self, stage=None):

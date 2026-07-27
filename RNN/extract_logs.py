@@ -31,13 +31,14 @@ def log_to_csv(log_dir, output_dir):
                     r = {"dataset": [dataset_name], 
                         "fold": [fold_index]}
 
-                    for i in range(1, 14):
+                    for i in range(1, 13):
                         r[f"mae_{i}"] = [event_acc.Scalars(f"test_mae_{i}")[-1].value]
                         r[f"rmse_{i}"] = [event_acc.Scalars(f"test_rmse_{i}")[-1].value]
                         r[f"r2_{i}"] = [event_acc.Scalars(f"test_r2_{i}")[-1].value]
 
                     r = pd.DataFrame(r)
                     runlog_data = pd.concat([runlog_data, r])
+                    print(r)
                 # Dirty catch of DataLossError
                 except Exception:
                     print("Event file possibly corrupt: {}".format(version_path))
@@ -77,17 +78,17 @@ def log_to_csv(log_dir, output_dir):
     # Sauvegarde des statistiques agrégées
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
-log_dir = "RNN/tb_logs/gru_synthetic_noisy_sigmoid/"
-output_dir = "RNN/stats_entrainement/gru_synthetic_noisy_sigmoid/"
+log_dir = "RNN/tb_logs/gru_synthetic/exp01/"
+output_dir = "RNN/stats_entrainement/gru_synthetic/exp01/"
 
 log_to_csv(log_dir, output_dir)
 
-log_dir = "RNN/tb_logs/rnn_synthetic_noisy_sigmoid/"
-output_dir = "RNN/stats_entrainement/rnn_synthetic_noisy_sigmoid/"
+log_dir = "RNN/tb_logs/rnn_synthetic/exp01/"
+output_dir = "RNN/stats_entrainement/rnn_synthetic/exp01/"
 
 log_to_csv(log_dir, output_dir)
 
-log_dir = "RNN/tb_logs/lstm_synthetic_noisy_sigmoid/"
-output_dir = "RNN/stats_entrainement/lstm_synthetic_noisy_sigmoid/"
+log_dir = "RNN/tb_logs/lstm_synthetic/exp01/"
+output_dir = "RNN/stats_entrainement/lstm_synthetic/exp01/"
 
 log_to_csv(log_dir, output_dir)

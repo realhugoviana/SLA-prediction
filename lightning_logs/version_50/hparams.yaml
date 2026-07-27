@@ -1,0 +1,12 @@
+activation: relu
+architecture: RNN
+bidirectional: true
+criterion: Huber
+dropout: 0.2515994917329459
+input_dim: 17
+learning_rate: 0.00014384187931213124
+n_layer: 1
+n_units: 1024
+optimizer: Adam
+output_dim: 17
+weight_decay: 2.283222686536965e-07

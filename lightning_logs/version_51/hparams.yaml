@@ -1,0 +1,12 @@
+activation: relu
+architecture: LSTM
+bidirectional: true
+criterion: Huber
+dropout: 0.189307690155472
+input_dim: 17
+learning_rate: 2.3251376337991425e-05
+n_layer: 2
+n_units: 1024
+optimizer: Adam
+output_dim: 17
+weight_decay: 3.130535924273386e-08

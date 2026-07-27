@@ -1,0 +1,12 @@
+activation: tanh
+architecture: LSTM
+bidirectional: true
+criterion: Huber
+dropout: 0.4710093735394908
+input_dim: 1
+learning_rate: 0.00048002866179022203
+n_layer: 1
+n_units: 128
+optimizer: Adam
+output_dim: 1
+weight_decay: 1.377975583007713e-05

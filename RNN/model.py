@@ -106,20 +106,6 @@ class RNNmodel(L.LightningModule):
         loss = self.criterion(y_hat, y)
         y_hat = y_hat.view(-1, self.output_dim)  # 17 = ton nombre de sorties
         y = y.view(-1, self.output_dim)
-        # if len(y) > 1:
-        #     # Assurez-vous que les dimensions sont compatibles
-        #     if y_hat.dim() == 2 and y.dim() == 2:
-        #         self.log_dict({'val_loss': loss,
-        #                     'val_mae': self.val_mae(y_hat, y),
-        #                     'val_rmse': self.val_rmse(y_hat, y),
-        #                     'val_r2': self.val_r2(y_hat, y)})
-        #     else:
-        #         # Si les dimensions ne correspondent pas, reshapez
-        #         if y_hat.dim() == 1 and y.dim() == 1:
-        #             y_hat = y_hat.unsqueeze(0)
-        #             y = y.unsqueeze(0)
-        #         elif y_hat.dim() == 2 and y.dim() == 1:
-        #             y = y.unsqueeze(1)
         self.log_dict({'val_loss': loss,
                     'val_mae': self.val_mae(y_hat, y),
                     'val_rmse': self.val_rmse(y_hat, y),
@@ -175,6 +161,7 @@ class AutoregressiveRNN(L.LightningModule):
                     'test_mae_1': self.mae(score_hat, y[:,0]),
                     'test_rmse_1': self.rmse(score_hat, y[:,0]),
                     **({'test_r2_1': self.r2(score_hat, y[:, 0])} if x.size(0) >= 2 else {})})
+        print(y.shape)
         
         if y.shape[1] > 1:
             for i in range(1, y.shape[1]):
