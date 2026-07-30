@@ -141,9 +141,14 @@ class AutoregressiveRNN(L.LightningModule):
 
         self.model = model
 
-        self.mae = torchmetrics.MeanAbsoluteError()
-        self.rmse = torchmetrics.MeanSquaredError(squared=False)
-        self.r2 = torchmetrics.R2Score()
+        self.test_mae = torchmetrics.MeanAbsoluteError()
+        self.val_mae = torchmetrics.MeanAbsoluteError()
+
+        self.test_rmse = torchmetrics.MeanSquaredError(squared=False)
+        self.val_rmse = torchmetrics.MeanSquaredError(squared=False)
+
+        self.test_r2 = torchmetrics.R2Score()
+        self.val_r2 = torchmetrics.R2Score()
     
     def forward(self, x, hx=None):
         out, out_hx = self.model(x, hx)
@@ -151,24 +156,45 @@ class AutoregressiveRNN(L.LightningModule):
         score_out = out[:, 0]
 
         return out, out_hx, score_out
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        
+        y_hat, hx, score_hat = self.forward(x)
+
+        self.log_dict({'val_loss_1': self.val_mae(score_hat, y[:,0]),
+                    'val_mae_1': self.val_mae(score_hat, y[:,0]),
+                    'val_rmse_1': self.val_rmse(score_hat, y[:,0]),
+                    **({'val_r2_1': self.val_r2(score_hat, y[:, 0])} if x.size(0) >= 2 else {})})
+        print(y.shape)
+        
+        if y.shape[1] > 1:
+            for i in range(1, y.shape[1]):
+                y_hat, hx, score_hat = self.forward(y_hat.unsqueeze(1), hx)
+                self.log_dict({f'val_loss_{i+1}': self.val_mae(score_hat, y[:,i]),
+                            f'val_mae_{i+1}': self.val_mae(score_hat, y[:,i]),
+                            f'val_rmse_{i+1}': self.val_rmse(score_hat, y[:,i]),
+                            **({f'val_r2_{i+1}': self.val_r2(score_hat, y[:, i])} if x.size(0) >= 2 else {})})
+
+        return nn.MSELoss(score_hat, y[:,0])
     
     def test_step(self, batch, batch_idx):
         x, y = batch
 
         y_hat, hx, score_hat = self.forward(x)
 
-        self.log_dict({'test_loss_1': self.mae(score_hat, y[:,0]),
-                    'test_mae_1': self.mae(score_hat, y[:,0]),
-                    'test_rmse_1': self.rmse(score_hat, y[:,0]),
-                    **({'test_r2_1': self.r2(score_hat, y[:, 0])} if x.size(0) >= 2 else {})})
+        self.log_dict({'test_loss_1': self.test_mae(score_hat, y[:,0]),
+                    'test_mae_1': self.test_mae(score_hat, y[:,0]),
+                    'test_rmse_1': self.test_rmse(score_hat, y[:,0]),
+                    **({'test_r2_1': self.test_r2(score_hat, y[:, 0])} if x.size(0) >= 2 else {})})
         print(y.shape)
         
         if y.shape[1] > 1:
             for i in range(1, y.shape[1]):
                 y_hat, hx, score_hat = self.forward(y_hat.unsqueeze(1), hx)
-                self.log_dict({f'test_loss_{i+1}': self.mae(score_hat, y[:,i]),
-                            f'test_mae_{i+1}': self.mae(score_hat, y[:,i]),
-                            f'test_rmse_{i+1}': self.rmse(score_hat, y[:,i]),
-                            **({f'test_r2_{i+1}': self.r2(score_hat, y[:, i])} if x.size(0) >= 2 else {})})
+                self.log_dict({f'test_loss_{i+1}': self.test_mae(score_hat, y[:,i]),
+                            f'test_mae_{i+1}': self.test_mae(score_hat, y[:,i]),
+                            f'test_rmse_{i+1}': self.test_rmse(score_hat, y[:,i]),
+                            **({f'test_r2_{i+1}': self.test_r2(score_hat, y[:, i])} if x.size(0) >= 2 else {})})
 
-        return self.mae(score_hat, y[:,0])
+        return self.test_mae(score_hat, y[:,0])

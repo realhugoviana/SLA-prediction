@@ -40,7 +40,7 @@ class ALSFRSDataset(Dataset):
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class DataModule(LightningDataModule):
-    def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', n_folds=10, random_state=42, fold_index=0, num_workers=4):
+    def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', n_folds=10, random_state=42, fold_index=0, num_workers=2):
         super().__init__()
         if isinstance(data, pd.DataFrame):
             self.dataframe = data
@@ -119,7 +119,7 @@ class AutoregressiveALSFRSDataset(Dataset):
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class AutoregressiveDataModule(LightningDataModule):
-    def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', num_workers=4):
+    def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', num_workers=2):
         super().__init__()
         if isinstance(data, pd.DataFrame):
             self.dataframe = data

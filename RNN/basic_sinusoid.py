@@ -54,19 +54,19 @@ if __name__ == "__main__":
 
     # df_train, df_test = train_test_split(df_sequences, test_size=0.2, shuffle=False) # Split the data into training and testing sets
 
-    dm = DataModule(data="datasets/interpolation/sliding_windows.csv", batch_size=64, n_folds=-1)
+    dm = DataModule(data="datasets/interpolation_baseline/sliding_windows.csv", batch_size=32, n_folds=-1)
 
-    model = RNNmodel(17, 
-                    output_dim=17, 
+    model = RNNmodel(1, 
+                    output_dim=1, 
                     architecture="RNN",
-                    n_layer=1, 
-                    n_units=1024, 
-                    learning_rate=0.00014384187931213124, 
+                    n_layer=3, 
+                    n_units=64, 
+                    learning_rate=0.0012405199434288984, 
                     activation='relu', 
                     optimizer='Adam', 
                     criterion='Huber', 
-                    weight_decay=2.283222686536965e-07, 
-                    dropout=0.2515994917329459, 
+                    weight_decay=2.126140471991739e-06, 
+                    dropout=2.535060493253868e-05, 
                     bidirectional=True)
 
     trainer = L.Trainer(
@@ -115,6 +115,6 @@ if __name__ == "__main__":
     #     plt.legend()  
     #     plt.show() 
 
-    autoregressivedm = AutoregressiveDataModule(data="datasets/interpolation/test/df_test_13.csv", batch_size=64)
+    autoregressivedm = AutoregressiveDataModule(data="datasets/interpolation_baseline/test/df_test_6.csv", batch_size=32)
 
     trainer.test(autoregressive_model, datamodule=autoregressivedm)  # Test on the test dataset

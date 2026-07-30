@@ -187,37 +187,37 @@ if __name__ == '__main__':
     max_epoch = 300
     n_folds = 10
 
-    training_file = "datasets/interpolation/sliding_windows.csv"
+    # training_file = "datasets/interpolation/sliding_windows.csv"
     
-    test_folder = "datasets/interpolation/test"
-    test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
+    # test_folder = "datasets/interpolation/test"
+    # test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
 
-    input_size = get_input_size(pd.read_csv(training_file))
-    print(input_size)
-    dataset_name = os.path.splitext(os.path.basename(training_file))[0]
+    # input_size = get_input_size(pd.read_csv(training_file))
+    # print(input_size)
+    # dataset_name = os.path.splitext(os.path.basename(training_file))[0]
     
-    architecture = "LSTM"
+    # architecture = "LSTM"
 
-    L.seed_everything(42)
+    # L.seed_everything(42)
 
-    run_optimization(training_file,
-                    study_name="lstm_interpolation",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
+    # run_optimization(training_file,
+    #                 study_name="lstm_interpolation",
+    #                 architecture=architecture,
+    #                 input_size=input_size,
+    #                 dataset_name=dataset_name,
+    #                 trials=trials,
+    #                 trial_epoch=trial_epoch)
     
     
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_interpolation/",
-                study_name="lstm_interpolation",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
+    # run_trainings(training_file,
+    #             test_sets=test_sets,
+    #             log_dir="RNN/tb_logs/lstm_interpolation/",
+    #             study_name="lstm_interpolation",
+    #             architecture=architecture,
+    #             input_size=input_size,
+    #             dataset_name=dataset_name,
+    #             max_epoch=max_epoch,
+    #             n_folds=n_folds)
     
     training_file = "datasets/interpolation_baseline/sliding_windows.csv"
 
@@ -228,50 +228,50 @@ if __name__ == '__main__':
     print(input_size)
     dataset_name = os.path.splitext(os.path.basename(training_file))[0]
     
-    architecture = "LSTM"
+    # architecture = "LSTM"
 
-    L.seed_everything(42)
+    # L.seed_everything(42)
 
-    run_optimization(training_file,
-                    study_name="lstm_interpolation_baseline",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
+    # run_optimization(training_file,
+    #                 study_name="lstm_interpolation_baseline",
+    #                 architecture=architecture,
+    #                 input_size=input_size,
+    #                 dataset_name=dataset_name,
+    #                 trials=trials,
+    #                 trial_epoch=trial_epoch)
     
     
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_interpolation_baseline/",
-                study_name="lstm_interpolation_baseline",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
+    # run_trainings(training_file,
+    #             test_sets=test_sets,
+    #             log_dir="RNN/tb_logs/lstm_interpolation_baseline/",
+    #             study_name="lstm_interpolation_baseline",
+    #             architecture=architecture,
+    #             input_size=input_size,
+    #             dataset_name=dataset_name,
+    #             max_epoch=max_epoch,
+    #             n_folds=n_folds)
     
-    architecture = "GRU"
+    # architecture = "GRU"
 
-    L.seed_everything(42)
+    # L.seed_everything(42)
 
-    run_optimization(training_file,
-                    study_name="gru_interpolation_baseline",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
+    # run_optimization(training_file,
+    #                 study_name="gru_interpolation_baseline",
+    #                 architecture=architecture,
+    #                 input_size=input_size,
+    #                 dataset_name=dataset_name,
+    #                 trials=trials,
+    #                 trial_epoch=trial_epoch)
     
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir="RNN/tb_logs/gru_interpolation_baseline/",
-                study_name="gru_interpolation_baseline",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
+    # run_trainings(training_file,
+    #             test_sets=test_sets,
+    #             log_dir="RNN/tb_logs/gru_interpolation_baseline/",
+    #             study_name="gru_interpolation_baseline",
+    #             architecture=architecture,
+    #             input_size=input_size,
+    #             dataset_name=dataset_name,
+    #             max_epoch=max_epoch,
+    #             n_folds=n_folds)
     
     architecture = "RNN"
 

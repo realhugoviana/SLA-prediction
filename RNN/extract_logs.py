@@ -9,7 +9,7 @@ def log_to_csv(log_dir, output_dir):
     runlog_data = pd.DataFrame({"dataset": [], 
                                 "fold": []})
     
-    for i in range(1, 13):
+    for i in range(1, 14):
         runlog_data[f"mae_{i}"] = []
         runlog_data[f"rmse_{i}"] = []
         runlog_data[f"r2_{i}"] = []
@@ -31,7 +31,7 @@ def log_to_csv(log_dir, output_dir):
                     r = {"dataset": [dataset_name], 
                         "fold": [fold_index]}
 
-                    for i in range(1, 13):
+                    for i in range(1, 14):
                         r[f"mae_{i}"] = [event_acc.Scalars(f"test_mae_{i}")[-1].value]
                         r[f"rmse_{i}"] = [event_acc.Scalars(f"test_rmse_{i}")[-1].value]
                         r[f"r2_{i}"] = [event_acc.Scalars(f"test_r2_{i}")[-1].value]
@@ -59,7 +59,7 @@ def log_to_csv(log_dir, output_dir):
         return mean - margin_of_error, mean + margin_of_error
 
     summary_stats = pd.DataFrame()
-    for i in range(1, 13):
+    for i in range(1, 14):
         # Calcul des statistiques pour chaque dataset
         summary_stats[f'mae_mean_{i}'] = runlog_data.groupby('dataset').agg(mae_mean=(f'mae_{i}', 'mean'))
         summary_stats[f'mae_IC_95_low_{i}'] = runlog_data.groupby('dataset').agg(mae_IC_95_low=(f'mae_{i}', lambda x: calculate_ci(x)[0]))
@@ -78,17 +78,17 @@ def log_to_csv(log_dir, output_dir):
     # Sauvegarde des statistiques agrégées
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
-log_dir = "RNN/tb_logs/gru_synthetic/exp01/"
-output_dir = "RNN/stats_entrainement/gru_synthetic/exp01/"
+log_dir = "RNN/tb_logs/gru_interpolation_baseline/sliding_windows/"
+output_dir = "RNN/stats_entrainement/gru__interpolation_baseline/"
 
 log_to_csv(log_dir, output_dir)
 
-log_dir = "RNN/tb_logs/rnn_synthetic/exp01/"
-output_dir = "RNN/stats_entrainement/rnn_synthetic/exp01/"
+log_dir = "RNN/tb_logs/rnn_interpolation_baseline/sliding_windows/"
+output_dir = "RNN/stats_entrainement/rnn_interpolation_baseline/"
 
 log_to_csv(log_dir, output_dir)
 
-log_dir = "RNN/tb_logs/lstm_synthetic/exp01/"
-output_dir = "RNN/stats_entrainement/lstm_synthetic/exp01/"
+log_dir = "RNN/tb_logs/lstm_interpolation_baseline/sliding_windows/"
+output_dir = "RNN/stats_entrainement/lstm_interpolation_baseline/"
 
 log_to_csv(log_dir, output_dir)
