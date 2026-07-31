@@ -143,7 +143,10 @@ class AutoregressiveDataModule(LightningDataModule):
         self.target_cols = self.dataframe.columns[self.dataframe.columns.str.contains(r'Target')]
     
 
-        self.test_dataset = AutoregressiveALSFRSDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
+        self.dataset = AutoregressiveALSFRSDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
+
+    def val_dataloader(self):
+        return DataLoader(self.dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)
+        return DataLoader(self.dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)

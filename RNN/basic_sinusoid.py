@@ -54,19 +54,19 @@ if __name__ == "__main__":
 
     # df_train, df_test = train_test_split(df_sequences, test_size=0.2, shuffle=False) # Split the data into training and testing sets
 
-    dm = DataModule(data="datasets/interpolation_baseline/sliding_windows.csv", batch_size=32, n_folds=-1)
+    dm = DataModule(data="datasets/interpolation/sliding_windows.csv", batch_size=32, n_folds=-1)
 
-    model = RNNmodel(1, 
-                    output_dim=1, 
+    model = RNNmodel(17, 
+                    output_dim=17, 
                     architecture="RNN",
-                    n_layer=3, 
-                    n_units=64, 
-                    learning_rate=0.0012405199434288984, 
+                    n_layer=1, 
+                    n_units=1024, 
+                    learning_rate=0.00022143420062579588, 
                     activation='relu', 
                     optimizer='Adam', 
                     criterion='Huber', 
-                    weight_decay=2.126140471991739e-06, 
-                    dropout=2.535060493253868e-05, 
+                    weight_decay=2.305525154228812e-07, 
+                    dropout=0.23771255702174143, 
                     bidirectional=True)
 
     trainer = L.Trainer(
@@ -79,6 +79,10 @@ if __name__ == "__main__":
     trainer.validate(model, dm)
 
     autoregressive_model = AutoregressiveRNN(model)
+
+    objective_dm = AutoregressiveDataModule(data="datasets/interpolation/optimization.csv", batch_size=32)
+
+    trainer.validate(autoregressive_model, objective_dm)
 
     df_test = pd.read_csv("datasets/interpolation/test/df_test_13.csv")  # Load the test dataset
     df_test = df_test
@@ -115,6 +119,6 @@ if __name__ == "__main__":
     #     plt.legend()  
     #     plt.show() 
 
-    autoregressivedm = AutoregressiveDataModule(data="datasets/interpolation_baseline/test/df_test_6.csv", batch_size=32)
+    autoregressivedm = AutoregressiveDataModule(data="datasets/interpolation/test/df_test_13.csv", batch_size=32)
 
     trainer.test(autoregressive_model, datamodule=autoregressivedm)  # Test on the test dataset

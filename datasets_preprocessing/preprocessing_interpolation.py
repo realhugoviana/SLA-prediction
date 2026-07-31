@@ -103,6 +103,12 @@ def split_test_sets(df):
     
     return dataframes
 
+def split_optimization(df, random_state=42):
+
+    test_df, opti_df = train_test_split(df, test_size=0.5, random_state=random_state)
+
+    return test_df, opti_df
+
 def drop_all_but_baseline(df):
 
     cols_to_keep = df.columns[df.columns.str.contains('ALSFRS_R_Total') |
@@ -128,17 +134,23 @@ if __name__ == '__main__':
 
     dfs_rnn_test = split_test_sets(df_rnn_test)
 
-    os.makedirs('datasets/interpolation_baseline/test/', exist_ok=True)
+    dfs_rnn_test['df_test_13'], df_optimization = split_optimization(dfs_rnn_test['df_test_13'])
+
+    os.makedirs('datasets/interpolation/test/', exist_ok=True)
     
     for name, df_test in dfs_rnn_test.items():
         df_test = df_test.fillna(0.0)
 
-        df_test_baseline = drop_all_but_baseline(df_test)
+        # df_test_baseline = drop_all_but_baseline(df_test)
         
-        df_test_baseline.to_csv(f'datasets/interpolation_baseline/test/{name}.csv', index=False)
+        df_test.to_csv(f'datasets/interpolation/test/{name}.csv', index=False)
         
     df_sliding_rnn = df_sliding_rnn.fillna(0.0)
 
-    df_sliding_rnn_baseline = drop_all_but_baseline(df_sliding_rnn)
+    # df_sliding_rnn_baseline = drop_all_but_baseline(df_sliding_rnn)
 
-    df_sliding_rnn_baseline.to_csv("datasets/interpolation_baseline/sliding_windows.csv", index=False)
+    df_sliding_rnn.to_csv("datasets/interpolation/sliding_windows.csv", index=False)
+
+    # df_optimization = drop_all_but_baseline(df_optimization)
+    
+    df_optimization.to_csv("datasets/interpolation/optimization.csv", index=False)

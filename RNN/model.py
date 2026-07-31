@@ -161,22 +161,18 @@ class AutoregressiveRNN(L.LightningModule):
         x, y = batch
         
         y_hat, hx, score_hat = self.forward(x)
-
-        self.log_dict({'val_loss_1': self.val_mae(score_hat, y[:,0]),
-                    'val_mae_1': self.val_mae(score_hat, y[:,0]),
-                    'val_rmse_1': self.val_rmse(score_hat, y[:,0]),
-                    **({'val_r2_1': self.val_r2(score_hat, y[:, 0])} if x.size(0) >= 2 else {})})
-        print(y.shape)
         
+        objective_metrics = []
         if y.shape[1] > 1:
             for i in range(1, y.shape[1]):
                 y_hat, hx, score_hat = self.forward(y_hat.unsqueeze(1), hx)
-                self.log_dict({f'val_loss_{i+1}': self.val_mae(score_hat, y[:,i]),
-                            f'val_mae_{i+1}': self.val_mae(score_hat, y[:,i]),
-                            f'val_rmse_{i+1}': self.val_rmse(score_hat, y[:,i]),
-                            **({f'val_r2_{i+1}': self.val_r2(score_hat, y[:, i])} if x.size(0) >= 2 else {})})
 
-        return nn.MSELoss(score_hat, y[:,0])
+                if (i+1)%3 == 0:
+                    objective_metrics.append(self.val_mae(score_hat, y[:,i]))
+
+        self.log_dict({'objective_value': torch.mean(torch.stack(objective_metrics))} if objective_metrics else {})
+
+        return None
     
     def test_step(self, batch, batch_idx):
         x, y = batch
