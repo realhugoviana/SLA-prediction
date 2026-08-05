@@ -5,7 +5,7 @@ import torchmetrics
 
 # Module lighting : pratique car pas besoin de coder à la main les boucles d'entrainement
 class RNNmodel(L.LightningModule):
-    def __init__(self, input_dim, output_dim, architecture, n_layer=2, n_units=16, learning_rate=1e-3, activation='relu', optimizer='Adam', criterion='MSE', weight_decay=0.0, dropout=0.0, bidirectional=False):
+    def __init__(self, input_dim, output_dim, architecture, n_layer=2, n_units=16, learning_rate=1e-3, activation='relu', optimizer='Adam', criterion='MSE', loss_coef=0.5, weight_decay=0.0, dropout=0.0, bidirectional=False):
         super().__init__()
 
         # Sauvegarde des paramètres
@@ -20,6 +20,7 @@ class RNNmodel(L.LightningModule):
         self.dropout = dropout # Taux de dropout
         self.bidirectional = bidirectional # RNN bidirectionnelle ou non
         self.activation = activation # Fonction d'activation
+        self.loss_coef = loss_coef # Coefficient de la perte
 
         # Architecture
         if self.architecture == "RNN":
@@ -87,43 +88,79 @@ class RNNmodel(L.LightningModule):
     # Fonction d'entrainement pour une batch
     def training_step(self, batch, batch_idx):
         x, y = batch
-        # y = y.view(-1, 1)
+        y_score = y[:, 0]  # On prend la première colonne comme score
+        y_features = y[:, 1:]  # On prend les autres colonnes comme features
+        
         y_hat, _ = self.forward(x) # Prédiction
-        loss = self.criterion(y_hat, y) # Perte
-        y_hat = y_hat.view(-1, self.output_dim)  # 17 = ton nombre de sorties
+
+        score_hat = y_hat[:, 0] # On prend la première sortie comme score
+        features_hat = y_hat[:, 1:] # On prend les autres sorties comme features
+
+        if y_features.shape[1] == 0:
+            loss = self.criterion(score_hat, y_score) # Perte uniquement sur le score
+        else:
+            loss = self.loss_coef * self.criterion(score_hat, y_score) + (1 - self.loss_coef) * self.criterion(features_hat, y_features) # Perte
+
+        y_hat = y_hat.view(-1, self.output_dim)
         y = y.view(-1, self.output_dim)
+
         self.log_dict({'train_loss': loss,
                     'train_mae': self.train_mae(y_hat, y),
                     'train_rmse': self.train_rmse(y_hat, y),
                     'train_r2': self.train_r2(y_hat, y)})
+        
         return loss # Retourne la perte
     
     # Validation, pas de retro propagation
     def validation_step(self, batch, batch_idx):
         x, y = batch
-        # y = y.view(-1, 1)
+        y_score = y[:, 0]  # On prend la première colonne comme score
+        y_features = y[:, 1:]  # On prend les autres colonnes comme features
+        
         y_hat, _ = self.forward(x)
-        loss = self.criterion(y_hat, y)
-        y_hat = y_hat.view(-1, self.output_dim)  # 17 = ton nombre de sorties
+
+        score_hat = y_hat[:, 0] # On prend la première sortie comme score
+        features_hat = y_hat[:, 1:] # On prend les autres sorties comme features
+
+        if y_features.shape[1] == 0:
+            loss = self.criterion(score_hat, y_score)
+        else:
+            loss = self.loss_coef * self.criterion(score_hat, y_score) + (1 - self.loss_coef) * self.criterion(features_hat, y_features)
+
+        y_hat = y_hat.view(-1, self.output_dim)  
         y = y.view(-1, self.output_dim)
+
         self.log_dict({'val_loss': loss,
                     'val_mae': self.val_mae(y_hat, y),
                     'val_rmse': self.val_rmse(y_hat, y),
                     'val_r2': self.val_r2(y_hat, y)})
+        
         return loss
     
     # Test
     def test_step(self, batch, batch_idx):
         x, y = batch
-        # y = y.view(-1, 1)
+        y_score = y[:, 0]  # On prend la première colonne comme score
+        y_features = y[:, 1:]  # On prend les autres colonnes comme features
+        
         y_hat, _ = self.forward(x)
-        loss = self.criterion(y_hat, y)
-        y_hat = y_hat.view(-1, self.output_dim)  # 17 = ton nombre de sorties
+
+        score_hat = y_hat[:, 0] # On prend la première sortie comme score
+        features_hat = y_hat[:, 1:] # On prend les autres sorties comme features
+
+        if y_features.shape[1] == 0:
+            loss = self.criterion(score_hat, y_score)
+        else:
+            loss = self.loss_coef * self.criterion(score_hat, y_score) + (1 - self.loss_coef) * self.criterion(features_hat, y_features)
+
+        y_hat = y_hat.view(-1, self.output_dim)
         y = y.view(-1, self.output_dim)
+
         self.log_dict({'test_loss': loss,
                     'test_mae': self.test_mae(y_hat, y),
                     'test_rmse': self.test_rmse(y_hat, y),
                     'test_r2': self.test_r2(y_hat, y)})
+        
         return loss
 
     # Configuration de l'optimizer
@@ -171,6 +208,7 @@ class AutoregressiveRNN(L.LightningModule):
                     objective_metrics.append(self.val_mae(score_hat, y[:,i]))
 
         self.log_dict({'objective_value': torch.mean(torch.stack(objective_metrics))} if objective_metrics else {})
+        print(objective_metrics)
 
         return None
     

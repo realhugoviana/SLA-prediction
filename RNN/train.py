@@ -41,6 +41,7 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
         else:
             activation = None
         criterion = trial.suggest_categorical('criterion', ['MSE', 'MAE', 'Huber'])
+        loss_coef = trial.suggest_float('loss_coef', 0.0, 1.0)
         batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128, 256, 512])
         weight_decay = trial.suggest_float('weight_decay', 1e-8, 1e-4, log=True)
         dropout = trial.suggest_float('dropout', 0.0, 0.5)
@@ -56,6 +57,7 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
                          activation=activation, 
                          optimizer='Adam', 
                          criterion=criterion, 
+                         loss_coef=loss_coef,
                          weight_decay=weight_decay, 
                          dropout=dropout, 
                          bidirectional=bidirectional)
@@ -108,6 +110,7 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
                          "learning_rate": 1e-2,
                          "activation": 'tanh',
                          "criterion": "MSE",
+                         "loss_coef": 0.5,
                          "batch_size": 32,
                          "weight_decay": 1e-8,
                          "dropout": 0.0,
@@ -149,6 +152,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
                             activation= best_params['activation'], 
                             optimizer='Adam', 
                             criterion=best_params['criterion'],
+                            loss_coef=best_params['loss_coef'],
                             weight_decay=best_params['weight_decay'],
                             dropout=best_params['dropout'],
                             bidirectional=best_params['bidirectional'])
@@ -162,6 +166,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
                             activation= None, 
                             optimizer='Adam', 
                             criterion=best_params['criterion'],
+                            loss_coef=best_params['loss_coef'],
                             weight_decay=best_params['weight_decay'],
                             dropout=best_params['dropout'],
                             bidirectional=best_params['bidirectional'])
@@ -213,7 +218,7 @@ if __name__ == '__main__':
 
     run_optimization(training_file,
                     optimization_file,
-                    study_name="lstm_interpolation",
+                    study_name="lstm_interpolation_coef",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -223,8 +228,8 @@ if __name__ == '__main__':
     
     run_trainings(training_file,
                 test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_interpolation/",
-                study_name="lstm_interpolation",
+                log_dir="RNN/tb_logs/lstm_interpolation_coef/",
+                study_name="lstm_interpolation_coef",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
@@ -237,7 +242,7 @@ if __name__ == '__main__':
 
     run_optimization(training_file,
                     optimization_file,
-                    study_name="rnn_interpolation",
+                    study_name="rnn_interpolation_coef",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -247,66 +252,8 @@ if __name__ == '__main__':
     
     run_trainings(training_file,
                 test_sets=test_sets,
-                log_dir="RNN/tb_logs/rnn_interpolation/",
-                study_name="rnn_interpolation",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
-    
-    training_file = "datasets/interpolation_baseline/sliding_windows.csv"
-
-    optimization_file = "datasets/interpolation_baseline/optimization.csv"
-
-    test_folder = "datasets/interpolation_baseline/test"
-    test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
-
-    input_size = get_input_size(pd.read_csv(training_file))
-    print(input_size)
-    dataset_name = os.path.splitext(os.path.basename(training_file))[0]
-    
-    architecture = "LSTM"
-
-    L.seed_everything(42)
-
-    run_optimization(training_file,
-                    optimization_file,
-                    study_name="lstm_interpolation_baseline",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_interpolation_baseline/",
-                study_name="lstm_interpolation_baseline",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
-    
-    architecture = "RNN"
-
-    L.seed_everything(42)
-
-    run_optimization(training_file,
-                    optimization_file,
-                    study_name="rnn_interpolation_baseline",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir="RNN/tb_logs/rnn_interpolation_baseline/",
-                study_name="rnn_interpolation_baseline",
+                log_dir="RNN/tb_logs/rnn_interpolation_coef/",
+                study_name="rnn_interpolation_coef",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
