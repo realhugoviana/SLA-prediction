@@ -5,7 +5,7 @@ import torchmetrics
 
 # Module lighting : pratique car pas besoin de coder à la main les boucles d'entrainement
 class RNNmodel(L.LightningModule):
-    def __init__(self, input_dim, output_dim, architecture, n_layer=2, n_units=16, learning_rate=1e-3, activation='relu', optimizer='Adam', criterion='MSE', loss_coef=0.5, weight_decay=0.0, dropout=0.0, bidirectional=False):
+    def __init__(self, input_dim, output_dim, architecture, n_layer=2, n_units=16, learning_rate=1e-3, activation='relu', optimizer='Adam', criterion='MSE', loss_coef=None, weight_decay=0.0, dropout=0.0, bidirectional=False):
         super().__init__()
 
         # Sauvegarde des paramètres
@@ -98,6 +98,8 @@ class RNNmodel(L.LightningModule):
 
         if y_features.shape[1] == 0:
             loss = self.criterion(score_hat, y_score) # Perte uniquement sur le score
+        elif self.loss_coef is None:
+            loss = self.criterion(y_hat, y) # Perte sur le score et les features
         else:
             loss = self.loss_coef * self.criterion(score_hat, y_score) + (1 - self.loss_coef) * self.criterion(features_hat, y_features) # Perte
 
@@ -124,6 +126,8 @@ class RNNmodel(L.LightningModule):
 
         if y_features.shape[1] == 0:
             loss = self.criterion(score_hat, y_score)
+        elif self.loss_coef is None:
+            loss = self.criterion(y_hat, y)
         else:
             loss = self.loss_coef * self.criterion(score_hat, y_score) + (1 - self.loss_coef) * self.criterion(features_hat, y_features)
 
@@ -150,6 +154,8 @@ class RNNmodel(L.LightningModule):
 
         if y_features.shape[1] == 0:
             loss = self.criterion(score_hat, y_score)
+        elif self.loss_coef is None:
+            loss = self.criterion(y_hat, y)
         else:
             loss = self.loss_coef * self.criterion(score_hat, y_score) + (1 - self.loss_coef) * self.criterion(features_hat, y_features)
 
