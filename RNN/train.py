@@ -27,14 +27,14 @@ else:
 # - Chemin d'accès au csv
 # - Dossier où mettre les logs
 # - Nom de l'étude Optuna
-def run_optimization(training_path, optimization_path, study_name="rnn", architecture="RNN", input_size=None, dataset_name=None, trials=100, trial_epoch=30):
+def run_optimization(training_path, optimization_path, study_name="rnn", architecture="RNN", input_size=None, dataset_name=None, trials=100, trial_epoch=30, n_folds=5):
 
     # Fonction d'optimisation Optuna
     def objective(trial):
 
         # Paramètres optimisés
         n_layer = trial.suggest_int('n_layer', 1, 5)
-        n_units = trial.suggest_categorical('n_units', [32, 64, 128, 256, 512, 1024])
+        n_units = trial.suggest_categorical('n_units', [32, 64, 128, 256, 512, 1024, 2048])
         learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)
         if architecture == "RNN":
             activation = trial.suggest_categorical('activation', ['relu', 'tanh'])
@@ -62,39 +62,42 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
                          dropout=dropout, 
                          bidirectional=bidirectional)
 
-        # Dataset et dataloader (voir data.py)
-        dm = DataModule(data=training_path, batch_size=batch_size, n_folds=-1) # n_folds=-1 pour ne pas faire de cross-validation pendant l'optimisation
+        # Initialisation du DataModule avec 5-fold CV pour l'optimisation
+        objective_values = []
+        for training in range(n_folds):
+            print(f"--- Optimization Fold {training+1}/{n_folds} ---")
+            dm = DataModule(data=training_path, batch_size=batch_size, fold_index=training)
 
-        # Prunning des trials qui convergent trop lentement par rapport aux autres
-        pruning_callback = PyTorchLightningPruningCallback(
-            trial, monitor="val_loss"
-        )
+            # Pruning des trials qui convergent trop lentement par rapport aux autres
+            pruning_callback = PyTorchLightningPruningCallback(
+                trial, monitor="val_loss"
+            )
 
-        # Fonction qui execute la boucle d'entrainement
-        trainer = L.Trainer(
-            max_epochs=trial_epoch, # Nombre d'epoch maximum
-            accelerator=accelerator, # GPU si possible
-            callbacks=[EarlyStopping(monitor='val_loss', patience=5), # Early stopping 
-                       pruning_callback], # Prunning
-            enable_checkpointing=False,
-            logger=False # Pas de log pour les trials, déjà dans optuna.db
-        )
+            # Fonction qui execute la boucle d'entrainement pour ce fold
+            trainer = L.Trainer(
+                max_epochs=trial_epoch, # Nombre d'epoch maximum
+                accelerator=accelerator, # GPU si possible
+                callbacks=[EarlyStopping(monitor='val_loss', patience=5), # Early stopping 
+                           pruning_callback], # Pruning
+                enable_checkpointing=False,
+                logger=False # Pas de log pour les trials, déjà dans optuna.db
+            )
 
-        # Entrainement du trial
-        trainer.fit(model, dm)
+            # Entrainement du trial
+            trainer.fit(model, dm)
 
-        # Calcule de la fonction d'optimisation
-        autoregressive_model = AutoregressiveRNN(model)
-        optimization_dm = AutoregressiveDataModule(data=optimization_path, batch_size=batch_size)
+            # Calcule de la fonction d'optimisation (Validation sur le fold actuel)
+            autoregressive_model = AutoregressiveRNN(model)
+            opt_result = trainer.validate(autoregressive_model, datamodule=dm) 
+            print("--- Structure of opt_result ---")
+            # print(opt_result) # Commented out to keep logs clean during optimization run
+            print(type(opt_result))
 
-        opt_result = trainer.validate(autoregressive_model, datamodule=optimization_dm) 
-        print("--- Structure of opt_result ---")
-        print(opt_result) # Print the whole object!
-        print(type(opt_result))
+            objective_value = opt_result[0]['objective_value'] # Récupère la fonction objectif
+            objective_values.append(objective_value)
 
-        objective_value = opt_result[0]['objective_value'] # Récupère la fonction objectif
-        
-        return objective_value # Retourne la fonction objectif
+        average_objective_value = sum(objective_values) / len(objective_values)
+        return average_objective_value # Retourne la moyenne des fonctions objectifs
     
     start_time = time.time() # Chronomètre
 
@@ -185,10 +188,10 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
 
 if __name__ == '__main__':
 
-    trials = 100
+    trials = 20
     trial_epoch = 30
     max_epoch = 300
-    n_folds = 10
+    n_folds = 5
 
     training_file = "datasets/papaiz_autoregresssive/sliding_windows.csv"
 
@@ -207,42 +210,19 @@ if __name__ == '__main__':
 
     run_optimization(training_file,
                     optimization_file,
-                    study_name="lstm_papaiz_autoregressive",
+                    study_name="lstm_papaiz_autoregressive_5_folds",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
                     trials=trials,
-                    trial_epoch=trial_epoch)
+                    trial_epoch=trial_epoch, 
+                    n_folds=5)
     
     
     run_trainings(training_file,
                 test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_papaiz_autoregressive/",
-                study_name="lstm_papaiz_autoregressive",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
-
-    architecture = "RNN"
-    
-    L.seed_everything(42)
-
-    run_optimization(training_file,
-                    optimization_file,
-                    study_name="rnn_papaiz_autoregressive",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir="RNN/tb_logs/rnn_papaiz_autoregressive/",
-                study_name="rnn_papaiz_autoregressive",
+                log_dir="RNN/tb_logs/lstm_papaiz_autoregressive_5_folds/",
+                study_name="lstm_papaiz_autoregressive_5_folds",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
