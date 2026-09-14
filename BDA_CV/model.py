@@ -122,6 +122,6 @@ class MLP_regressor(L.LightningModule):
         optimizer =  self.optimizer(self.parameters(), lr=self.lr, weight_decay=self.weight_decay) # Prend en entrée les paramètres et le learning rate
         return optimizer
     
-    # def on_train_epoch_end(self):
-    #     if self.device.type == 'mps':
-    #         torch.mps.empty_cache()
+    def on_train_epoch_end(self):
+        if self.device.type == 'mps':
+            torch.mps.empty_cache()
