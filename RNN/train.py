@@ -47,24 +47,25 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
         dropout = trial.suggest_float('dropout', 0.0, 0.5)
         bidirectional = trial.suggest_categorical('bidirectional', [True, False])
 
-        # Initialisation du modèle avec les paramètres choisis (voir model.py)
-        model = RNNmodel(input_size, 
-                         output_dim=input_size, 
-                         architecture=architecture,
-                         n_layer=n_layer, 
-                         n_units=n_units, 
-                         learning_rate=learning_rate, 
-                         activation=activation, 
-                         optimizer='Adam', 
-                         criterion=criterion, 
-                         #loss_coef=loss_coef,
-                         weight_decay=weight_decay, 
-                         dropout=dropout, 
-                         bidirectional=bidirectional)
 
         # Initialisation du DataModule avec 5-fold CV pour l'optimisation
         objective_values = []
         for training in range(n_folds):
+            # Initialisation du modèle avec les paramètres choisis (voir model.py)
+            model = RNNmodel(input_size, 
+                            output_dim=input_size, 
+                            architecture=architecture,
+                            n_layer=n_layer, 
+                            n_units=n_units, 
+                            learning_rate=learning_rate, 
+                            activation=activation, 
+                            optimizer='Adam', 
+                            criterion=criterion, 
+                            #loss_coef=loss_coef,
+                            weight_decay=weight_decay, 
+                            dropout=dropout, 
+                            bidirectional=bidirectional)
+            
             print(f"--- Optimization Fold {training+1}/{n_folds} ---")
             dm = DataModule(data=training_path, batch_size=batch_size, fold_index=training)
 
@@ -134,36 +135,37 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
 
     # Entrainement du modèle avec les meilleurs paramètres sur le nombre d'epoch maximum
     best_params = trial.params
-    if architecture == "RNN":
-        best_model = RNNmodel(input_size, 
-                            output_dim=input_size, 
-                            architecture=architecture,
-                            n_layer=best_params['n_layer'], 
-                            n_units=best_params['n_units'], 
-                            learning_rate=best_params['learning_rate'],
-                            activation= best_params['activation'], 
-                            optimizer='Adam', 
-                            criterion=best_params['criterion'],
-                            #loss_coef=best_params['loss_coef'],
-                            weight_decay=best_params['weight_decay'],
-                            dropout=best_params['dropout'],
-                            bidirectional=best_params['bidirectional'])
-    else:
-        best_model = RNNmodel(input_size, 
-                            output_dim=input_size, 
-                            architecture=architecture,
-                            n_layer=best_params['n_layer'], 
-                            n_units=best_params['n_units'], 
-                            learning_rate=best_params['learning_rate'],
-                            activation= None, 
-                            optimizer='Adam', 
-                            criterion=best_params['criterion'],
-                            #loss_coef=best_params['loss_coef'],
-                            weight_decay=best_params['weight_decay'],
-                            dropout=best_params['dropout'],
-                            bidirectional=best_params['bidirectional'])
     
     for training in range(n_folds):
+        if architecture == "RNN":
+            best_model = RNNmodel(input_size, 
+                                output_dim=input_size, 
+                                architecture=architecture,
+                                n_layer=best_params['n_layer'], 
+                                n_units=best_params['n_units'], 
+                                learning_rate=best_params['learning_rate'],
+                                activation= best_params['activation'], 
+                                optimizer='Adam', 
+                                criterion=best_params['criterion'],
+                                #loss_coef=best_params['loss_coef'],
+                                weight_decay=best_params['weight_decay'],
+                                dropout=best_params['dropout'],
+                                bidirectional=best_params['bidirectional'])
+        else:
+            best_model = RNNmodel(input_size, 
+                                output_dim=input_size, 
+                                architecture=architecture,
+                                n_layer=best_params['n_layer'], 
+                                n_units=best_params['n_units'], 
+                                learning_rate=best_params['learning_rate'],
+                                activation= None, 
+                                optimizer='Adam', 
+                                criterion=best_params['criterion'],
+                                #loss_coef=best_params['loss_coef'],
+                                weight_decay=best_params['weight_decay'],
+                                dropout=best_params['dropout'],
+                                bidirectional=best_params['bidirectional'])
+            
         print(f"Training {training+1}/{n_folds} for dataset {dataset_name} with best parameters...")
 
         dm = DataModule(data=data_path, batch_size=best_params['batch_size'], fold_index=training)
