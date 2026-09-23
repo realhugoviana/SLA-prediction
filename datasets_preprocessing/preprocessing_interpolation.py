@@ -136,21 +136,21 @@ if __name__ == '__main__':
 
     dfs_rnn_test['df_test_13'], df_optimization = split_optimization(dfs_rnn_test['df_test_13'])
 
-    os.makedirs('datasets/papaiz_autoregresssive/test/', exist_ok=True)
+    os.makedirs('datasets/papaiz_autoregressive_not_padded/test/', exist_ok=True)
     
     for name, df_test in dfs_rnn_test.items():
-        df_test = df_test.fillna(0.0)
+        # df_test = df_test.fillna(0.0)
 
         # df_test_baseline = drop_all_but_baseline(df_test)
         
-        df_test.to_csv(f'datasets/papaiz_autoregresssive/test/{name}.csv', index=False)
+        df_test.to_csv(f'datasets/papaiz_autoregressive_not_padded/test/{name}.csv', index=False)
         
-    df_sliding_rnn = df_sliding_rnn.fillna(0.0)
+    # df_sliding_rnn = df_sliding_rnn.fillna(0.0)
 
     # df_sliding_rnn_baseline = drop_all_but_baseline(df_sliding_rnn)
 
-    df_sliding_rnn.to_csv("datasets/papaiz_autoregresssive/sliding_windows.csv", index=False)
+    df_sliding_rnn.to_csv("datasets/papaiz_autoregressive_not_padded/sliding_windows.csv", index=False)
 
     # df_optimization = drop_all_but_baseline(df_optimization)
     
-    df_optimization.to_csv("datasets/papaiz_autoregresssive/optimization.csv", index=False)
+    df_optimization.to_csv("datasets/papaiz_autoregressive_not_padded/optimization.csv", index=False)

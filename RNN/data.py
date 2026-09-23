@@ -7,7 +7,7 @@ import torch
 from lightning import LightningDataModule
 
 
-from utils import get_intervals, get_months, sort_df
+from utils import get_months
 
 # Conversion du dataframe pandas en dataset PyTorch
 class ALSFRSDataset(Dataset):
@@ -55,13 +55,14 @@ class DataModule(LightningDataModule):
         self.n_folds = n_folds # Nombre de folds pour le cross-validation
         self.random_state = random_state # Seed
         self.fold_index = fold_index # Index de la fold pour le cross-validation
-        self.scaler = StandardScaler() # Normalisation
+        self.X_scalers = {} # Normalisation
+        self.Y_scalers = {}
         self.num_workers = num_workers # Nombre de workers pour le DataLoader
 
     # Lecture du csv
     def prepare_data(self):
         if hasattr(self, 'csv_path'):
-            self.dataframe = pd.read_csv(self.csv_path)
+            self.dataframe = pd.read_csv(self.csv_path, low_memory=False)
 
     # Découpage du dataset en train, val, test et normalisation des features
     def setup(self, stage=None):
@@ -77,6 +78,26 @@ class DataModule(LightningDataModule):
 
         self.feature_cols = self.dataframe.columns[~self.dataframe.columns.str.contains(r'_M0')] # toutes sauf target
         self.target_cols = self.dataframe.columns[self.dataframe.columns.str.contains(r'_M0')]
+
+        for col in self.feature_cols:
+            scaler = StandardScaler()
+            self.X_scalers[col] = scaler
+
+            train_df[col] = self.X_scalers[col].fit_transform(train_df[[col]])
+
+            val_df[col] = self.X_scalers[col].transform(val_df[[col]])
+
+
+        for col in self.target_cols:
+            scaler = StandardScaler()
+            self.Y_scalers[col] = scaler
+
+            train_df[col] = self.Y_scalers[col].fit_transform(train_df[[col]])
+            
+            val_df[col] = self.Y_scalers[col].transform(val_df[[col]])
+
+        train_df = train_df.fillna(0.0)
+        val_df = val_df.fillna(0.0)
 
         self.train_dataset = ALSFRSDataset(train_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # Création du dataset de train
         self.val_dataset = ALSFRSDataset(val_df, feature_cols=self.feature_cols, target_cols=self.target_cols) # val
@@ -119,7 +140,7 @@ class AutoregressiveALSFRSDataset(Dataset):
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
 class AutoregressiveDataModule(LightningDataModule):
-    def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', num_workers=2):
+    def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', num_workers=2, X_scalers=None):
         super().__init__()
         if isinstance(data, pd.DataFrame):
             self.dataframe = data
@@ -131,17 +152,23 @@ class AutoregressiveDataModule(LightningDataModule):
         self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
         self.target_cols = target_cols # Target
         self.num_workers = num_workers # Nombre de workers pour le DataLoader
+        self.X_scalers = X_scalers
+        
     # Lecture du csv
     def prepare_data(self):
         if hasattr(self, 'csv_path'):
-            self.dataframe = pd.read_csv(self.csv_path)
+            self.dataframe = pd.read_csv(self.csv_path, low_memory=False)
 
     # Découpage du dataset en train, val, test et normalisation des features
     def setup(self, stage=None):
 
         self.feature_cols = self.dataframe.columns[~self.dataframe.columns.str.contains(r'Target')] # Features si précisé, sinon toutes sauf target
         self.target_cols = self.dataframe.columns[self.dataframe.columns.str.contains(r'Target')]
-    
+
+        for col in self.feature_cols:
+            self.dataframe[col] = self.X_scalers[col].transform(self.dataframe[[col]])
+
+        self.dataframe = self.dataframe.fillna(0.0)
 
         self.dataset = AutoregressiveALSFRSDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
 

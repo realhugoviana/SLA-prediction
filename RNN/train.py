@@ -51,6 +51,11 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
         # Initialisation du DataModule avec 5-fold CV pour l'optimisation
         objective_values = []
         for training in range(n_folds):
+            print(f"--- Optimization Fold {training+1}/{n_folds} ---")
+
+            dm = DataModule(data=training_path, batch_size=batch_size, fold_index=training)
+            X_scalers = dm.X_scalers
+            Y_scalers = dm.Y_scalers
             # Initialisation du modèle avec les paramètres choisis (voir model.py)
             model = RNNmodel(input_size, 
                             output_dim=input_size, 
@@ -65,9 +70,6 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
                             weight_decay=weight_decay, 
                             dropout=dropout, 
                             bidirectional=bidirectional)
-            
-            print(f"--- Optimization Fold {training+1}/{n_folds} ---")
-            dm = DataModule(data=training_path, batch_size=batch_size, fold_index=training)
 
             # Pruning des trials qui convergent trop lentement par rapport aux autres
             pruning_callback = PyTorchLightningPruningCallback(
@@ -88,8 +90,10 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
             trainer.fit(model, dm)
 
             # Calcule de la fonction d'optimisation (Validation sur le fold actuel)
-            autoregressive_model = AutoregressiveRNN(model)
-            opt_result = trainer.validate(autoregressive_model, datamodule=dm) 
+            autoregressive_model = AutoregressiveRNN(model, Y_scalers=Y_scalers)
+            optimization_dm = AutoregressiveDataModule(data=optimization_path, batch_size=batch_size, X_scalers=X_scalers)
+
+            opt_result = trainer.validate(autoregressive_model, datamodule=optimization_dm) 
             print("--- Structure of opt_result ---")
             # print(opt_result) # Commented out to keep logs clean during optimization run
             print(type(opt_result))
@@ -137,6 +141,12 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
     best_params = trial.params
     
     for training in range(n_folds):
+        print(f"Training {training+1}/{n_folds} for dataset {dataset_name} with best parameters...")
+
+        dm = DataModule(data=data_path, batch_size=best_params['batch_size'], fold_index=training)
+        X_scalers = dm.X_scalers
+        Y_scalers = dm.Y_scalers
+
         if architecture == "RNN":
             best_model = RNNmodel(input_size, 
                                 output_dim=input_size, 
@@ -166,9 +176,6 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
                                 dropout=best_params['dropout'],
                                 bidirectional=best_params['bidirectional'])
             
-        print(f"Training {training+1}/{n_folds} for dataset {dataset_name} with best parameters...")
-
-        dm = DataModule(data=data_path, batch_size=best_params['batch_size'], fold_index=training)
 
         trainer = L.Trainer(
             max_epochs=max_epoch, # Nombre d'epoch maximum
@@ -181,11 +188,11 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
         trainer.fit(best_model, dm) # Entrainement
         # trainer.test(best_model, datamodule=dm) # Test
 
-        autoregressive_model = AutoregressiveRNN(best_model) # Création du modèle autoregressif pour le test
+        autoregressive_model = AutoregressiveRNN(best_model, Y_scalers=Y_scalers) # Création du modèle autoregressif pour le test
 
         for test_set in test_sets:
             print(f"Testing on {test_set}...")
-            test_dm = AutoregressiveDataModule(data=test_set, batch_size=best_params['batch_size'])
+            test_dm = AutoregressiveDataModule(data=test_set, batch_size=best_params['batch_size'], X_scalers=X_scalers)
             trainer.test(autoregressive_model, datamodule=test_dm) # Test sur le dataset de test
 
 if __name__ == '__main__':
@@ -195,11 +202,11 @@ if __name__ == '__main__':
     max_epoch = 300
     n_folds = 5
 
-    training_file = "datasets/papaiz_autoregresssive/sliding_windows.csv"
+    training_file = "datasets/papaiz_autoregressive_not_padded/sliding_windows.csv"
 
-    optimization_file = "datasets/papaiz_autoregresssive/optimization.csv"
+    optimization_file = "datasets/papaiz_autoregressive_not_padded/optimization.csv"
     
-    test_folder = "datasets/papaiz_autoregresssive/test"
+    test_folder = "datasets/papaiz_autoregressive_not_padded/test"
     test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
 
     input_size = get_input_size(pd.read_csv(training_file))
@@ -212,19 +219,19 @@ if __name__ == '__main__':
 
     run_optimization(training_file,
                     optimization_file,
-                    study_name="lstm_papaiz_autoregressive_5_folds",
+                    study_name="lstm_papaiz_autoregressive_scaled",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
                     trials=trials,
                     trial_epoch=trial_epoch, 
-                    n_folds=5)
+                    n_folds=n_folds)
     
     
     run_trainings(training_file,
                 test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_papaiz_autoregressive_5_folds/",
-                study_name="lstm_papaiz_autoregressive_5_folds",
+                log_dir="RNN/tb_logs/lstm_papaiz_autoregressive_scaled/",
+                study_name="lstm_papaiz_autoregressive_scaled",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,

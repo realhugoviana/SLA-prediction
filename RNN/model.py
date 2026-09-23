@@ -179,10 +179,11 @@ class RNNmodel(L.LightningModule):
             torch.mps.empty_cache()
 
 class AutoregressiveRNN(L.LightningModule):
-    def __init__(self, model):
+    def __init__(self, model, Y_scalers):
         super().__init__()
 
         self.model = model
+        self.Y_scalers = Y_scalers
 
         self.test_mae = torchmetrics.MeanAbsoluteError()
         self.val_mae = torchmetrics.MeanAbsoluteError()
@@ -195,8 +196,18 @@ class AutoregressiveRNN(L.LightningModule):
     
     def forward(self, x, hx=None):
         out, out_hx = self.model(x, hx)
-        
+
         score_out = out[:, 0]
+
+        numpy_array_input = score_out.detach().cpu().numpy()
+
+        numpy_array_input = numpy_array_input.reshape(-1, 1)
+
+        score_out_np = self.Y_scalers["ALSFRS_Total_M0"].inverse_transform(numpy_array_input)
+
+        score_out_np = score_out_np.flatten()
+
+        score_out = torch.from_numpy(score_out_np).to(self.device) 
 
         return out, out_hx, score_out
 
