@@ -219,7 +219,7 @@ if __name__ == '__main__':
 
     run_optimization(training_file,
                     optimization_file,
-                    study_name="lstm_papaiz_autoregressive_scaled",
+                    study_name="lstm_papaiz_autoregressive_rmse_scaled",
                     architecture=architecture,
                     input_size=input_size,
                     dataset_name=dataset_name,
@@ -230,8 +230,8 @@ if __name__ == '__main__':
     
     run_trainings(training_file,
                 test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_papaiz_autoregressive_scaled/",
-                study_name="lstm_papaiz_autoregressive_scaled",
+                log_dir="RNN/tb_logs/lstm_papaiz_autoregressive_rmse_scaled/",
+                study_name="lstm_papaiz_autoregressive_rmse_scaled",
                 architecture=architecture,
                 input_size=input_size,
                 dataset_name=dataset_name,
