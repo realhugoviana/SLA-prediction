@@ -203,7 +203,7 @@ class AutoregressiveRNN(L.LightningModule):
 
         numpy_array_input = numpy_array_input.reshape(-1, 1)
 
-        score_out_np = self.Y_scalers["ALSFRS_Total_M0"].inverse_transform(numpy_array_input)
+        score_out_np = self.Y_scalers["ALSFRS_R_Total_M0"].inverse_transform(numpy_array_input)
 
         score_out_np = score_out_np.flatten()
 
@@ -222,7 +222,7 @@ class AutoregressiveRNN(L.LightningModule):
                 y_hat, hx, score_hat = self.forward(y_hat.unsqueeze(1), hx)
 
                 if (i+1)%3 == 0:
-                    objective_metrics.append(self.val_rmse(score_hat, y[:,i]))
+                    objective_metrics.append(self.val_mae(score_hat, y[:,i]))
 
         self.log_dict({'objective_value': torch.mean(torch.stack(objective_metrics))} if objective_metrics else {})
         print(objective_metrics)
