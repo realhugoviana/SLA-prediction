@@ -40,7 +40,7 @@ def align_patients_rnn(df):
                 len_sequence = 16
 
                 for month in reversed(range(16)):
-                    if np.isnan(row[f'ALSFRS_R_Total_M{month}']):
+                    if np.isnan(row[f'ALSFRS_Total_M{month}']):
                         len_sequence = month
 
                 if len_sequence - 1 + t < 0:
@@ -68,10 +68,10 @@ def sliding_windows_rnn(df):
 
         len_sequence = 16
         for month in range(-15, 1, 1):
-            if np.isnan(row[f'ALSFRS_R_Total_M{month}']):
+            if np.isnan(row[f'ALSFRS_Total_M{month}']):
                 len_sequence = -month
 
-        while len_sequence > 2:
+        while len_sequence > 4:
             sequences['subject_id'].append(row['subject_id'])
 
             for month in range(-16, 0, 1):
@@ -87,6 +87,13 @@ def sliding_windows_rnn(df):
 
     sliding_windows_df = pd.concat(df.apply(make_windows, axis=1).tolist(), ignore_index=True)
 
+    sliding_windows_df = sliding_windows_df[sliding_windows_df.columns[sliding_windows_df.columns.contains(rf'_M-4$') |
+                                                                       sliding_windows_df.columns.contains(rf'_M-3$') |
+                                                                       sliding_windows_df.columns.contains(rf'_M-2$') |
+                                                                       sliding_windows_df.columns.contains(rf'_M-1$') |
+                                                                       sliding_windows_df.columns.contains(rf'_M0$') |
+                                                                       sliding_windows_df.columns.contains('subject_id')]]
+
     return sliding_windows_df
 
 
@@ -95,9 +102,9 @@ def split_test_sets(df):
 
     dataframes = dict()
     for t in range(1, 14):
-        dataframes[f'df_test_{t}'] = df_test[df_test[f'ALSFRS_R_Total_M{-t-2}'].notna()].copy()
+        dataframes[f'df_test_{t}'] = df_test[df_test[f'ALSFRS_Total_M{-t-2}'].notna()].copy()
         for t_target in range(-t+1, 1):
-            dataframes[f'df_test_{t}'] = dataframes[f'df_test_{t}'].rename(columns={f'ALSFRS_R_Total_M{t_target}': f'Target_M{t_target}'})
+            dataframes[f'df_test_{t}'] = dataframes[f'df_test_{t}'].rename(columns={f'ALSFRS_Total_M{t_target}': f'Target_M{t_target}'})
             dataframes[f'df_test_{t}'] = dataframes[f'df_test_{t}'].drop(columns=dataframes[f'df_test_{t}'].columns[dataframes[f'df_test_{t}'].columns.str.contains(rf'_M{t_target}$') & 
                                                                                                                     ~(dataframes[f'df_test_{t}'].columns.str.contains(rf'Target_M{t_target}$'))])
     
@@ -111,7 +118,7 @@ def split_optimization(df, random_state=42):
 
 def drop_all_but_baseline(df):
 
-    cols_to_keep = df.columns[df.columns.str.contains('ALSFRS_R_Total') |
+    cols_to_keep = df.columns[df.columns.str.contains('ALSFRS_Total') |
                               df.columns.str.contains('Target')]
 
     df_baseline = df[cols_to_keep]
@@ -119,9 +126,9 @@ def drop_all_but_baseline(df):
     return df_baseline
 
 if __name__ == '__main__':
-    df = pd.read_csv('../../data/PROACT_INTERPOLATION.csv')
+    df = pd.read_csv('datasets/papaiz/papaiz_15M.csv')
 
-    df = drop_unused_cols(df)
+    # df = drop_unused_cols(df)
 
     df_rnn = align_patients_rnn(df)
 
@@ -136,21 +143,22 @@ if __name__ == '__main__':
 
     dfs_rnn_test['df_test_13'], df_optimization = split_optimization(dfs_rnn_test['df_test_13'])
 
-    os.makedirs('datasets/interpolation_not_padded/test/', exist_ok=True)
-    
+    os.makedirs('datasets/protocol_papaiz/test/', exist_ok=True)
+
+    df_rnn_test.to_csv("datasets/protocol_papaiz/test.csv")
     for name, df_test in dfs_rnn_test.items():
         # df_test = df_test.fillna(0.0)
 
         # df_test_baseline = drop_all_but_baseline(df_test)
         
-        df_test.to_csv(f'datasets/interpolation_not_padded/test/{name}.csv', index=False)
+        df_test.to_csv(f'datasets/protocol_papaiz/test/{name}.csv', index=False)
         
     # df_sliding_rnn = df_sliding_rnn.fillna(0.0)
 
     # df_sliding_rnn_baseline = drop_all_but_baseline(df_sliding_rnn)
 
-    df_sliding_rnn.to_csv("datasets/interpolation_not_padded/sliding_windows.csv", index=False)
+    df_sliding_rnn.to_csv("datasets/protocol_papaiz/sliding_windows.csv", index=False)
 
     # df_optimization = drop_all_but_baseline(df_optimization)
     
-    df_optimization.to_csv("datasets/interpolation_not_padded/optimization.csv", index=False)
+    df_optimization.to_csv("datasets/protocol_papaiz/optimization.csv", index=False)
