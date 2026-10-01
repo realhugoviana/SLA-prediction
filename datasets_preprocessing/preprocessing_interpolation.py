@@ -71,7 +71,7 @@ def sliding_windows_rnn(df):
             if np.isnan(row[f'ALSFRS_Total_M{month}']):
                 len_sequence = -month
 
-        while len_sequence > 4:
+        while len_sequence > 5:
             sequences['subject_id'].append(row['subject_id'])
 
             for month in range(-16, 0, 1):
@@ -87,12 +87,12 @@ def sliding_windows_rnn(df):
 
     sliding_windows_df = pd.concat(df.apply(make_windows, axis=1).tolist(), ignore_index=True)
 
-    sliding_windows_df = sliding_windows_df[sliding_windows_df.columns[sliding_windows_df.columns.contains(rf'_M-4$') |
-                                                                       sliding_windows_df.columns.contains(rf'_M-3$') |
-                                                                       sliding_windows_df.columns.contains(rf'_M-2$') |
-                                                                       sliding_windows_df.columns.contains(rf'_M-1$') |
-                                                                       sliding_windows_df.columns.contains(rf'_M0$') |
-                                                                       sliding_windows_df.columns.contains('subject_id')]]
+    sliding_windows_df = sliding_windows_df[sliding_windows_df.columns[sliding_windows_df.columns.str.contains(rf'_M-4$') |
+                                                                       sliding_windows_df.columns.str.contains(rf'_M-3$') |
+                                                                       sliding_windows_df.columns.str.contains(rf'_M-2$') |
+                                                                       sliding_windows_df.columns.str.contains(rf'_M-1$') |
+                                                                       sliding_windows_df.columns.str.contains(rf'_M0$') |
+                                                                       sliding_windows_df.columns.str.contains('subject_id')]]
 
     return sliding_windows_df
 
@@ -146,12 +146,12 @@ if __name__ == '__main__':
     os.makedirs('datasets/protocol_papaiz/test/', exist_ok=True)
 
     df_rnn_test.to_csv("datasets/protocol_papaiz/test.csv")
-    for name, df_test in dfs_rnn_test.items():
+    # for name, df_test in dfs_rnn_test.items():
         # df_test = df_test.fillna(0.0)
 
         # df_test_baseline = drop_all_but_baseline(df_test)
         
-        df_test.to_csv(f'datasets/protocol_papaiz/test/{name}.csv', index=False)
+        # df_test.to_csv(f'datasets/protocol_papaiz/test/{name}.csv', index=False)
         
     # df_sliding_rnn = df_sliding_rnn.fillna(0.0)
 
@@ -161,4 +161,4 @@ if __name__ == '__main__':
 
     # df_optimization = drop_all_but_baseline(df_optimization)
     
-    df_optimization.to_csv("datasets/protocol_papaiz/optimization.csv", index=False)
+    # df_optimization.to_csv("datasets/protocol_papaiz/optimization.csv", index=False)

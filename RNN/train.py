@@ -10,8 +10,8 @@ import glob
 import time
 
 
-from model import RNNmodel, AutoregressiveRNN
-from data import DataModule, AutoregressiveDataModule
+from model import RNNmodel, AutoregressiveRNN, PapaizARNN
+from data import DataModule, AutoregressiveDataModule, PapaizDataModule
 from utils import get_input_size
 
 # Permets d'utiliser le GPU
@@ -33,18 +33,19 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
     def objective(trial):
 
         # Paramètres optimisés
-        n_layer = trial.suggest_int('n_layer', 1, 5)
-        n_units = trial.suggest_categorical('n_units', [32, 64, 128, 256, 512, 1024, 2048])
-        learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True)
+        n_layer = trial.suggest_int('n_layer', 1, 3)
+        n_units = trial.suggest_categorical('n_units', [64, 128, 256, 512, 1024, 2048])
+        learning_rate = 1e-7
         if architecture == "RNN":
             activation = trial.suggest_categorical('activation', ['relu', 'tanh'])
         else:
             activation = None
         criterion = trial.suggest_categorical('criterion', ['MSE', 'MAE', 'Huber'])
         loss_coef =  trial.suggest_float('loss_coef', 0.0, 1.0) if multitask else None
-        batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128, 256, 512])
-        weight_decay = trial.suggest_float('weight_decay', 1e-8, 1e-4, log=True)
-        dropout = trial.suggest_float('dropout', 0.0, 0.5)
+        batch_size = 128
+        regularizer = trial.suggest_categorical('regularizer', ['Lasso', 'Ridge', 'ElasticNet'])
+        regularization_parameter = trial.suggest_categorical('regularization_parameter', [0.1, 0.01, 0.001])
+        dropout = trial.suggest_categorical('dropout', [0.1, 0.2, 0.3, 0.35, 0.4, 0.45, 0.5])
         bidirectional = trial.suggest_categorical('bidirectional', [True, False])
 
 
@@ -55,7 +56,6 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
 
             dm = DataModule(data=training_path, batch_size=batch_size, fold_index=training)
             X_scalers = dm.X_scalers
-            Y_scalers = dm.Y_scalers
             # Initialisation du modèle avec les paramètres choisis (voir model.py)
             model = RNNmodel(input_size, 
                             output_dim=input_size, 
@@ -67,7 +67,8 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
                             optimizer='Adam', 
                             criterion=criterion, 
                             loss_coef=loss_coef,
-                            weight_decay=weight_decay, 
+                            regularizer=regularizer,
+                            regularization_parameter=regularization_parameter,
                             dropout=dropout, 
                             bidirectional=bidirectional)
 
@@ -90,10 +91,10 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
             trainer.fit(model, dm)
 
             # Calcule de la fonction d'optimisation (Validation sur le fold actuel)
-            autoregressive_model = AutoregressiveRNN(model, Y_scalers=Y_scalers)
-            optimization_dm = AutoregressiveDataModule(data=optimization_path, batch_size=batch_size, X_scalers=X_scalers)
+            autoregressive_model = PapaizARNN(model, X_scalers=X_scalers)
+            optimization_dm = PapaizDataModule(data=optimization_path, batch_size=batch_size, X_scalers=X_scalers)
 
-            opt_result = trainer.validate(autoregressive_model, datamodule=optimization_dm) 
+            opt_result = trainer.test(autoregressive_model, datamodule=optimization_dm) 
             print("--- Structure of opt_result ---")
             # print(opt_result) # Commented out to keep logs clean during optimization run
             print(type(opt_result))
@@ -108,12 +109,13 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
 
     # Optimisation
     study = optuna.create_study(
+        sampler=optuna.samplers.BruteForceSampler(avoid_premature_stop=True),
         storage=f"sqlite:///optuna.db", # Stockage de l'étude dans une base de données pour visualisation
         study_name=f"{study_name}_{dataset_name}", # Nom de l'étude
         load_if_exists=True, # Si l'étude crash elle peut reprendre là où elle s'était arrêtée
         direction='minimize') # On cherche à minimiser la sortie de objective donc la perte de la validation
 
-    study.optimize(objective, n_trials=trials) # trials
+    study.optimize(objective) # trials
 
     end_time = time.time()
     elapsed_time = end_time - start_time

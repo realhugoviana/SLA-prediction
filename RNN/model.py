@@ -5,7 +5,7 @@ import torchmetrics
 
 # Module lighting : pratique car pas besoin de coder à la main les boucles d'entrainement
 class RNNmodel(L.LightningModule):
-    def __init__(self, input_dim, output_dim, architecture, n_layer=2, n_units=16, learning_rate=1e-3, activation='relu', optimizer='Adam', criterion='MSE', loss_coef=None, weight_decay=0.0, dropout=0.0, bidirectional=False):
+    def __init__(self, input_dim, output_dim, architecture, n_layer=2, n_units=16, learning_rate=1e-3, activation='relu', optimizer='Adam', criterion='MSE', loss_coef=None, regularizer="Ridge", regularization_parameter=0.0, dropout=0.0, bidirectional=False):
         super().__init__()
 
         # Sauvegarde des paramètres
@@ -16,11 +16,12 @@ class RNNmodel(L.LightningModule):
         self.n_layer = n_layer # Nombre de couches cachées
         self.n_units = n_units # Nombre de neurones par couche cachée
         self.lr = learning_rate # Learning rate
-        self.weight_decay = weight_decay # Poids de régularisation L2
         self.dropout = dropout # Taux de dropout
         self.bidirectional = bidirectional # RNN bidirectionnelle ou non
         self.activation = activation # Fonction d'activation
         self.loss_coef = loss_coef # Coefficient de la perte
+        self.regularizer = regularizer
+        self.regularization_parameter = regularization_parameter
 
         # Architecture
         if self.architecture == "RNN":
@@ -84,6 +85,18 @@ class RNNmodel(L.LightningModule):
         last_time_step = rnn_out[:, -1, :] # On prend la sortie du dernier time step
         out = self.out(last_time_step) # Passage dans la couche de sortie
         return out, out_hx
+
+    def regularization(self):
+        if self.regularizer == "Lasso":
+            return self.regularization_parameter * sum(p.abs().mean() for p in self.parameters())
+
+        if self.regularizer == "Ridge":
+            return self.regularization_parameter * sum(p.pow(2).mean() for p in self.parameters())
+
+        if self.regularizer == "ElasticNet":
+            return self.regularization_parameter * (sum(p.abs().mean() for p in self.parameters()) + sum(p.pow(2).mean() for p in self.parameters()))
+
+        return 0
     
     # Fonction d'entrainement pour une batch
     def training_step(self, batch, batch_idx):
@@ -111,7 +124,7 @@ class RNNmodel(L.LightningModule):
                     'train_rmse': self.train_rmse(y_hat, y),
                     'train_r2': self.train_r2(y_hat, y)})
         
-        return loss # Retourne la perte
+        return loss + self.regularization() # Retourne la perte
     
     # Validation, pas de retro propagation
     def validation_step(self, batch, batch_idx):
@@ -139,7 +152,7 @@ class RNNmodel(L.LightningModule):
                     'val_rmse': self.val_rmse(y_hat, y),
                     'val_r2': self.val_r2(y_hat, y)})
         
-        return loss
+        return loss + self.regularization()
     
     # Test
     def test_step(self, batch, batch_idx):
@@ -167,11 +180,11 @@ class RNNmodel(L.LightningModule):
                     'test_rmse': self.test_rmse(y_hat, y),
                     'test_r2': self.test_r2(y_hat, y)})
         
-        return loss
+        return loss + self.regularization()
 
     # Configuration de l'optimizer
     def configure_optimizers(self):
-        optimizer =  self.optimizer(self.parameters(), lr=self.lr, weight_decay=self.weight_decay) # Prend en entrée les paramètres et le learning rate
+        optimizer =  self.optimizer(self.parameters(), lr=self.lr) # Prend en entrée les paramètres et le learning rate
         return optimizer
     
     def on_train_epoch_end(self):
@@ -249,3 +262,48 @@ class AutoregressiveRNN(L.LightningModule):
                             **({f'test_r2_{i+1}': self.test_r2(score_hat, y[:, i])} if x.size(0) >= 2 else {})})
 
         return self.test_mae(score_hat, y[:,0])
+
+class PapaizARNN(L.LightningModule):
+    def __init__(self, model, X_scalers):
+        super().__init__()
+
+        self.model = model
+        self.X_scalers = X_scalers
+
+        self.test_mae = torchmetrics.MeanAbsoluteError()
+        self.val_mae = torchmetrics.MeanAbsoluteError()
+
+        self.test_rmse = torchmetrics.MeanSquaredError(squared=False)
+        self.val_rmse = torchmetrics.MeanSquaredError(squared=False)
+
+        self.test_r2 = torchmetrics.R2Score()
+        self.val_r2 = torchmetrics.R2Score()
+    
+    def forward(self, x):
+        return self.model(x)
+    
+    def test_step(self, batch, batch_idx):
+        x, y = batch
+
+        features = ["ALSFRS_Total", "Age_at_Onset", "Disease_Duration", "Patient_with_Gastrostomy", "Q10_Respiratory", "Q1_Speech", "Q2_Salivation", "Q3_Swallowing", "Q4_Handwriting", "Q5_Cutting", "Q6_Dressing_and_Hygiene", 
+                    "Q7_Turning_in_Bed", "Q8_Walking", "Q9_Climbing_Stairs", "Qty_Regions_Involved", "Region_Involved_Bulbar", "Region_Involved_Lower_Limb", "Region_Involved_Respiratory", "Region_Involved_Upper_Limb",
+                    "Riluzole", "Sex_Male", "Site_Onset"]
+        
+        objective_metrics = []
+        for i in range(y.shape[1]):
+            y_hat = self.forward(x)
+
+            for j in range(len(features)):
+                self.log_dict({f'test_mae_{features[j]}_{i+1}': self.test_mae(torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1])), y[:,i, j:j+1]),
+                               f'test_rmse_{features[j]}_{i+1}': self.test_rmse(torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1])), y[:,i, j:j+1]),
+                               **({f'test_r2_{features[j]}_{i+1}': self.test_mae(torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1])), y[:,i, j:j+1])}if x.size(0) >= 2 else {})})
+
+            objective_metrics.append(self.test_rmse(torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1])), y[:,i, j:j+1]))
+
+            y_hat = torch.unsqueeze(y_hat, dim=1)
+
+            x = torch.cat([x[:, 1:, :], y_hat], dim=1)
+
+        self.log_dict({'objective_value': torch.mean(torch.stack(objective_metrics))} if objective_metrics else {})
+
+        return objective_metrics
