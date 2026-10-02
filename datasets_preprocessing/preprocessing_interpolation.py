@@ -145,7 +145,7 @@ if __name__ == '__main__':
 
     os.makedirs('datasets/protocol_papaiz/test/', exist_ok=True)
 
-    df_rnn_test.to_csv("datasets/protocol_papaiz/test.csv")
+    df_rnn_test.to_csv("datasets/protocol_papaiz/test.csv", index=False)
     # for name, df_test in dfs_rnn_test.items():
         # df_test = df_test.fillna(0.0)
 

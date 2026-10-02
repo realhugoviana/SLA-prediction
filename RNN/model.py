@@ -280,7 +280,9 @@ class PapaizARNN(L.LightningModule):
         self.val_r2 = torchmetrics.R2Score()
     
     def forward(self, x):
-        return self.model(x)
+        pred, _ = self.model(x)
+
+        return pred
     
     def test_step(self, batch, batch_idx):
         x, y = batch
@@ -294,11 +296,14 @@ class PapaizARNN(L.LightningModule):
             y_hat = self.forward(x)
 
             for j in range(len(features)):
-                self.log_dict({f'test_mae_{features[j]}_{i+1}': self.test_mae(torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1])), y[:,i, j:j+1]),
-                               f'test_rmse_{features[j]}_{i+1}': self.test_rmse(torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1])), y[:,i, j:j+1]),
-                               **({f'test_r2_{features[j]}_{i+1}': self.test_mae(torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1])), y[:,i, j:j+1])}if x.size(0) >= 2 else {})})
+                y_hat_unscaled = torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1].detach().cpu().numpy())).to(self.device)
 
-            objective_metrics.append(self.test_rmse(torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1])), y[:,i, j:j+1]))
+                self.log_dict({f'test_mae_{features[j]}_{i+1}': self.test_mae(y_hat_unscaled, y[:,i, j:j+1]),
+                               f'test_rmse_{features[j]}_{i+1}': self.test_rmse(y_hat_unscaled, y[:,i, j:j+1]),
+                               **({f'test_r2_{features[j]}_{i+1}': self.test_mae(y_hat_unscaled, y[:,i, j:j+1])}if x.size(0) >= 2 else {})})
+
+                if j == 0:
+                    objective_metrics.append(self.test_rmse(y_hat_unscaled, y[:,i, j:j+1]))
 
             y_hat = torch.unsqueeze(y_hat, dim=1)
 

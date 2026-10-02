@@ -130,7 +130,7 @@ def run_optimization(training_path, optimization_path, study_name="rnn", archite
     for key, value in trial.params.items():
         print(f"{key}: {value}")
 
-def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study_name="mlp_regression", architecture="RNN", input_size=None, dataset_name=None, max_epoch=300, n_folds=10, multitask=True):
+def run_trainings(data_path, test_set, log_dir="MLP_regression/tb_logs/", study_name="mlp_regression", architecture="RNN", input_size=None, dataset_name=None, max_epoch=300, n_folds=10, multitask=True):
     os.makedirs(log_dir, exist_ok=True) # Création du dossier de log si il n'existe pas
     study = optuna.load_study(
         storage=f"sqlite:///optuna.db",
@@ -147,7 +147,6 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
 
         dm = DataModule(data=data_path, batch_size=best_params['batch_size'], fold_index=training)
         X_scalers = dm.X_scalers
-        Y_scalers = dm.Y_scalers
 
         if architecture == "RNN":
             best_model = RNNmodel(input_size, 
@@ -160,7 +159,8 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
                                 optimizer='Adam', 
                                 criterion=best_params['criterion'],
                                 loss_coef=best_params['loss_coef'] if multitask else None,
-                                weight_decay=best_params['weight_decay'],
+                                regularizer=best_params['regularizer'],
+                                regularization_parameter=best_params['regularization_parameter'],
                                 dropout=best_params['dropout'],
                                 bidirectional=best_params['bidirectional'])
         else:
@@ -174,7 +174,8 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
                                 optimizer='Adam', 
                                 criterion=best_params['criterion'],
                                 loss_coef=best_params['loss_coef'] if multitask else None,
-                                weight_decay=best_params['weight_decay'],
+                                regularizer=best_params['regularizer'],
+                                regularization_parameter=best_params['regularization_parameter'],
                                 dropout=best_params['dropout'],
                                 bidirectional=best_params['bidirectional'])
             
@@ -190,23 +191,65 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
         trainer.fit(best_model, dm) # Entrainement
         # trainer.test(best_model, datamodule=dm) # Test
 
-        autoregressive_model = AutoregressiveRNN(best_model, Y_scalers=Y_scalers) # Création du modèle autoregressif pour le test
+        autoregressive_model = PapaizARNN(best_model, X_scalers=X_scalers) # Création du modèle autoregressif pour le test
 
-        for test_set in test_sets:
-            print(f"Testing on {test_set}...")
-            test_dm = AutoregressiveDataModule(data=test_set, batch_size=best_params['batch_size'], X_scalers=X_scalers)
-            trainer.test(autoregressive_model, datamodule=test_dm) # Test sur le dataset de test
+        print(f"Testing on {test_set}...")
+        test_dm = PapaizDataModule(data=test_set, batch_size=best_params['batch_size'], X_scalers=X_scalers)
+        trainer.test(autoregressive_model, datamodule=test_dm) # Test sur le dataset de test
+
+def run_trainings_set_params(data_path, test_set, log_dir="MLP_regression/tb_logs/", input_size=None, architecture="GRU", n_layers=2, n_units=1024, learning_rate=1e-7, activation= None, optimizer='Adam', criterion='Huber', loss_coef=None,
+                                regularizer='Ridge', regularization_parameter=0.01, dropout=0.35, bidirectional=True, batch_size=64, max_epoch=300, n_folds=5):
+    os.makedirs(log_dir, exist_ok=True) # Création du dossier de log si il n'existe pas
+
+    for training in range(n_folds):
+        print(f"Training {training+1}/{n_folds} for dataset {dataset_name} with set parameters...")
+
+        dm = DataModule(data=data_path, batch_size=batch_size, fold_index=training)
+        X_scalers = dm.X_scalers
+
+        model = RNNmodel(input_size, 
+                            output_dim=input_size, 
+                            architecture=architecture,
+                            n_layer=n_layers, 
+                            n_units=n_units, 
+                            learning_rate=learning_rate,
+                            activation= activation, 
+                            optimizer='Adam', 
+                            criterion=criterion,
+                            loss_coef=loss_coef,
+                            regularizer=regularizer,
+                            regularization_parameter=regularization_parameter,
+                            dropout=dropout,
+                            bidirectional=bidirectional)
+            
+
+        trainer = L.Trainer(
+            max_epochs=max_epoch, # Nombre d'epoch maximum
+            accelerator=accelerator, # GPU si possible
+            callbacks=[EarlyStopping(monitor='val_loss', patience=5)], # Early stopping 
+            logger=TensorBoardLogger(f"{log_dir}{dataset_name}", name=f"{training+1}"), # Log
+            enable_checkpointing=False
+        )
+
+        trainer.fit(model, dm) # Entrainement
+        # trainer.test(best_model, datamodule=dm) # Test
+
+        autoregressive_model = PapaizARNN(model, X_scalers=X_scalers) # Création du modèle autoregressif pour le test
+
+        print(f"Testing on {test_set}...")
+        test_dm = PapaizDataModule(data=test_set, batch_size=batch_size, X_scalers=X_scalers)
+        trainer.test(autoregressive_model, datamodule=test_dm) # Test sur le dataset de test
 
 if __name__ == '__main__':
 
-    trials = 20
-    trial_epoch = 30
+    trials = 100
+    trial_epoch = 300
     max_epoch = 300
     n_folds = 5
 
-    training_file = "datasets/interpolation_not_padded/sliding_windows.csv"
+    training_file = "datasets/protocol_papaiz/sliding_windows.csv"
 
-    optimization_file = "datasets/interpolation_not_padded/optimization.csv"
+    optimization_file = "datasets/protocol_papaiz/test.csv"
     
     test_folder = "datasets/interpolation/test"
     test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
@@ -215,54 +258,63 @@ if __name__ == '__main__':
     print(input_size)
     dataset_name = os.path.splitext(os.path.basename(training_file))[0]
     
-    architecture = "LSTM"
+    architecture = "GRU"
 
     L.seed_everything(42)
 
-    run_optimization(training_file,
-                    optimization_file,
-                    study_name="lstm_interpolation_scaled",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch, 
-                    n_folds=n_folds,
-                    multitask=False)
-    
-    
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_interpolation_scaled/",
-                study_name="lstm_interpolation_scaled",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds,
-                multitask=False)
+    run_trainings_set_params(data_path=training_file,
+                             test_set=optimization_file,
+                             log_dir="RNN/tb_logs/best_model_papaiz",
+                             input_size=input_size,
+                             max_epoch=max_epoch,
+                             n_folds=n_folds)
 
-    L.seed_everything(42)
+    # L.seed_everything(42)
+
+    # run_optimization(training_file,
+    #                 optimization_file,
+    #                 study_name="lstm_interpolation_scaled",
+    #                 architecture=architecture,
+    #                 input_size=input_size,
+    #                 dataset_name=dataset_name,
+    #                 trials=trials,
+    #                 trial_epoch=trial_epoch, 
+    #                 n_folds=n_folds,
+    #                 multitask=False)
     
-    run_optimization(training_file,
-                    optimization_file,
-                    study_name="lstm_interpolation_scaled_multitask",
-                    architecture=architecture,
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch, 
-                    n_folds=n_folds,
-                    multitask=True)
+    
+    # run_trainings(training_file,
+    #             test_sets=test_sets,
+    #             log_dir="RNN/tb_logs/lstm_interpolation_scaled/",
+    #             study_name="lstm_interpolation_scaled",
+    #             architecture=architecture,
+    #             input_size=input_size,
+    #             dataset_name=dataset_name,
+    #             max_epoch=max_epoch,
+    #             n_folds=n_folds,
+    #             multitask=False)
+
+    # L.seed_everything(42)
+    
+    # run_optimization(training_file,
+    #                 optimization_file,
+    #                 study_name="lstm_interpolation_scaled_multitask",
+    #                 architecture=architecture,
+    #                 input_size=input_size,
+    #                 dataset_name=dataset_name,
+    #                 trials=trials,
+    #                 trial_epoch=trial_epoch, 
+    #                 n_folds=n_folds,
+    #                 multitask=True)
     
     
-    run_trainings(training_file,
-                test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_interpolation_scaled_multitask/",
-                study_name="lstm_interpolation_scaled_multitask",
-                architecture=architecture,
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds,
-                multitask=True)
+    # run_trainings(training_file,
+    #             test_sets=test_sets,
+    #             log_dir="RNN/tb_logs/lstm_interpolation_scaled_multitask/",
+    #             study_name="lstm_interpolation_scaled_multitask",
+    #             architecture=architecture,
+    #             input_size=input_size,
+    #             dataset_name=dataset_name,
+    #             max_epoch=max_epoch,
+    #             n_folds=n_folds,
+    #             multitask=True)

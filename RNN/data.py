@@ -204,7 +204,7 @@ class PapaizDataset(Dataset):
         features = torch.from_numpy(features_numpy).float().T # Use .float() to ensure float32 is used
 
         target_list = []
-        for month in self._target_months:
+        for month in self.target_months:
             target_slice = row[self.target_cols[self.target_cols.str.contains(rf'_M{month}$', na=False)]]
             if not target_slice.empty:
                 target_list.append(target_slice.reset_index(drop=True))
@@ -252,12 +252,12 @@ class PapaizDataModule(LightningDataModule):
         self.features = get_features(self.dataframe)
 
         for feature in self.features:
-            cols = self.dataframe.columns[self.dataframe.columns.str.contains(feature)]
+            cols = self.feature_cols[self.feature_cols.str.contains(feature)]
 
             for col in cols:
                 self.dataframe[col] = self.X_scalers[feature].transform(self.dataframe[[col]])
 
-        self.dataset = AutoregressiveALSFRSDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
+        self.dataset = PapaizDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
 
     def val_dataloader(self):
         return DataLoader(self.dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)
