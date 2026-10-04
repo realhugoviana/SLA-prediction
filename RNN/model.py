@@ -116,6 +116,8 @@ class RNNmodel(L.LightningModule):
         else:
             loss = self.loss_coef * self.criterion(score_hat, y_score) + (1 - self.loss_coef) * self.criterion(features_hat, y_features) # Perte
 
+        loss += self.regularization()
+
         y_hat = y_hat.view(-1, self.output_dim)
         y = y.view(-1, self.output_dim)
 
@@ -124,7 +126,7 @@ class RNNmodel(L.LightningModule):
                     'train_rmse': self.train_rmse(y_hat, y),
                     'train_r2': self.train_r2(y_hat, y)})
         
-        return loss + self.regularization() # Retourne la perte
+        return loss # Retourne la perte
     
     # Validation, pas de retro propagation
     def validation_step(self, batch, batch_idx):
@@ -144,6 +146,8 @@ class RNNmodel(L.LightningModule):
         else:
             loss = self.loss_coef * self.criterion(score_hat, y_score) + (1 - self.loss_coef) * self.criterion(features_hat, y_features)
 
+        loss += self.regularization()
+
         y_hat = y_hat.view(-1, self.output_dim)  
         y = y.view(-1, self.output_dim)
 
@@ -152,7 +156,7 @@ class RNNmodel(L.LightningModule):
                     'val_rmse': self.val_rmse(y_hat, y),
                     'val_r2': self.val_r2(y_hat, y)})
         
-        return loss + self.regularization()
+        return loss
     
     # Test
     def test_step(self, batch, batch_idx):
@@ -172,6 +176,8 @@ class RNNmodel(L.LightningModule):
         else:
             loss = self.loss_coef * self.criterion(score_hat, y_score) + (1 - self.loss_coef) * self.criterion(features_hat, y_features)
 
+        loss += self.regularization()
+
         y_hat = y_hat.view(-1, self.output_dim)
         y = y.view(-1, self.output_dim)
 
@@ -180,7 +186,7 @@ class RNNmodel(L.LightningModule):
                     'test_rmse': self.test_rmse(y_hat, y),
                     'test_r2': self.test_r2(y_hat, y)})
         
-        return loss + self.regularization()
+        return loss
 
     # Configuration de l'optimizer
     def configure_optimizers(self):
@@ -300,7 +306,7 @@ class PapaizARNN(L.LightningModule):
 
                 self.log_dict({f'test_mae_{features[j]}_{i+1}': self.test_mae(y_hat_unscaled, y[:,i, j:j+1]),
                                f'test_rmse_{features[j]}_{i+1}': self.test_rmse(y_hat_unscaled, y[:,i, j:j+1]),
-                               **({f'test_r2_{features[j]}_{i+1}': self.test_mae(y_hat_unscaled, y[:,i, j:j+1])}if x.size(0) >= 2 else {})})
+                               **({f'test_r2_{features[j]}_{i+1}': self.test_r2(y_hat_unscaled, y[:,i, j:j+1])}if x.size(0) >= 2 else {})})
 
                 if j == 0:
                     objective_metrics.append(self.test_rmse(y_hat_unscaled, y[:,i, j:j+1]))

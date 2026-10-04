@@ -232,7 +232,6 @@ def run_trainings_set_params(data_path, test_set, log_dir="MLP_regression/tb_log
         )
 
         trainer.fit(model, dm) # Entrainement
-        # trainer.test(best_model, datamodule=dm) # Test
 
         autoregressive_model = PapaizARNN(model, X_scalers=X_scalers) # Création du modèle autoregressif pour le test
 
@@ -244,7 +243,7 @@ if __name__ == '__main__':
 
     trials = 100
     trial_epoch = 300
-    max_epoch = 300
+    max_epoch = 500
     n_folds = 5
 
     training_file = "datasets/protocol_papaiz/sliding_windows.csv"
@@ -264,11 +263,31 @@ if __name__ == '__main__':
 
     run_trainings_set_params(data_path=training_file,
                              test_set=optimization_file,
-                             log_dir="RNN/tb_logs/best_model_papaiz",
+                             log_dir="RNN/tb_logs/best_model_papaiz/",
+                             criterion='MSE',
                              input_size=input_size,
                              max_epoch=max_epoch,
                              n_folds=n_folds)
 
+    L.seed_everything(42)
+    
+    run_trainings_set_params(data_path=training_file,
+                                test_set=optimization_file,
+                                log_dir="RNN/tb_logs/best_model_papaiz/",
+                                criterion='MAE',
+                                input_size=input_size,
+                                max_epoch=max_epoch,
+                                n_folds=n_folds)
+
+    L.seed_everything(42)
+
+    run_trainings_set_params(data_path=training_file,
+                             test_set=optimization_file,
+                             log_dir="RNN/tb_logs/best_model_papaiz/",
+                             criterion='Huber',
+                             input_size=input_size,
+                             max_epoch=max_epoch,
+                             n_folds=n_folds)
     # L.seed_everything(42)
 
     # run_optimization(training_file,

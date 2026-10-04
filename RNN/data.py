@@ -16,7 +16,7 @@ class ALSFRSDataset(Dataset):
         self.feature_cols = feature_cols # Features définis comme tout ce qui n'est pas target
         self.target_cols = target_cols # Colonne à prédire
 
-        self.months = get_months(self.dataframe)
+        self.months = get_months(self.dataframe[self.feature_cols])
         # self.dataframe = sort_df(self.dataframe, self.intervals)
 
     # Retourne la taille du dataset
@@ -111,7 +111,7 @@ class AutoregressiveALSFRSDataset(Dataset):
         self.feature_cols = feature_cols # Features définis comme tout ce qui n'est pas target
         self.target_cols = target_cols # Colonne à prédire
 
-        self.months = get_months(self.dataframe)
+        self.months = get_months(self.dataframe[self.feature_cols])
         # self.dataframe = sort_df(self.dataframe, self.intervals)
 
     # Retourne la taille du dataset
@@ -182,7 +182,7 @@ class PapaizDataset(Dataset):
         self.target_cols = target_cols # Colonne à prédire
 
         self._feature_months = get_months(self.dataframe[self.feature_cols])
-        self.target_months = get_months(self.dataframe[self.target_cols])
+        self.target_months = np.append(get_months(self.dataframe[self.target_cols]), '0')
         # self.dataframe = sort_df(self.dataframe, self.intervals)
 
     # Retourne la taille du dataset
