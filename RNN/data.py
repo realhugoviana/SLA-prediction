@@ -57,6 +57,7 @@ class DataModule(LightningDataModule):
         self.fold_index = fold_index # Index de la fold pour le cross-validation
         self.X_scalers = {} # Normalisation
         self.num_workers = num_workers # Nombre de workers pour le DataLoader
+        self.features = {}
 
     # Lecture du csv
     def prepare_data(self):
@@ -75,12 +76,12 @@ class DataModule(LightningDataModule):
         else:
             train_df, val_df = train_test_split(self.dataframe, test_size=0.1, random_state=self.random_state) # Découpage de train+val en train et val
         
-        self.features = get_features(self.dataframe)
+        self.features["feat"] = get_features(self.dataframe)
 
         self.feature_cols = self.dataframe.columns[~self.dataframe.columns.str.contains(r'_M0')] # toutes sauf target
         self.target_cols = self.dataframe.columns[self.dataframe.columns.str.contains(r'_M0')]
 
-        for feature in self.features:
+        for feature in self.features["feat"]:
             scaler = MinMaxScaler()
             self.X_scalers[feature] = scaler
             cols = self.dataframe.columns[self.dataframe.columns.str.contains(feature)]
@@ -105,77 +106,8 @@ class DataModule(LightningDataModule):
     def val_dataloader(self):
         return DataLoader(self.val_dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)
 
+
 class AutoregressiveALSFRSDataset(Dataset):
-    def __init__(self, dataframe, feature_cols=None, target_cols='Target'):
-        self.dataframe = dataframe # DataFrame source
-        self.feature_cols = feature_cols # Features définis comme tout ce qui n'est pas target
-        self.target_cols = target_cols # Colonne à prédire
-
-        self.months = get_months(self.dataframe[self.feature_cols])
-        # self.dataframe = sort_df(self.dataframe, self.intervals)
-
-    # Retourne la taille du dataset
-    def __len__(self):
-        return len(self.dataframe)
-
-    # Retourne une ligne du dataset
-    def __getitem__(self, idx):
-        row = self.dataframe.iloc[idx] 
-        
-        feature_list = []
-        for month in self.months:
-            feature_slice = row[self.feature_cols[self.feature_cols.str.contains(rf'_M{month}$', na=False)]]
-            if not feature_slice.empty:
-                feature_list.append(feature_slice.reset_index(drop=True))
-
-        features_numpy = pd.concat(feature_list, axis=1).values.astype('float32') 
-
-        features = torch.from_numpy(features_numpy).float().T # Use .float() to ensure float32 is used
-        target = torch.tensor(row[self.target_cols], dtype=torch.float32) # Conversion de la target en tensor
-        return features, target
-
-# Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
-class AutoregressiveDataModule(LightningDataModule):
-    def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', num_workers=2, X_scalers=None):
-        super().__init__()
-        if isinstance(data, pd.DataFrame):
-            self.dataframe = data
-        elif isinstance(data, str):
-            self.csv_path = data # Fichier csv contenant les données
-        else:
-            raise ValueError("data must be a pandas DataFrame or a string path to a CSV file.")
-        self.batch_size = batch_size # Taille de batch
-        self.feature_cols = feature_cols # Noms des colonnes de features si précisé, sinon toutes sauf target
-        self.target_cols = target_cols # Target
-        self.num_workers = num_workers # Nombre de workers pour le DataLoader
-        self.X_scalers = X_scalers
-        
-    # Lecture du csv
-    def prepare_data(self):
-        if hasattr(self, 'csv_path'):
-            self.dataframe = pd.read_csv(self.csv_path, low_memory=False)
-
-    # Découpage du dataset en train, val, test et normalisation des features
-    def setup(self, stage=None):
-
-        self.feature_cols = self.dataframe.columns[~self.dataframe.columns.str.contains(r'Target')] # Features si précisé, sinon toutes sauf target
-        self.target_cols = self.dataframe.columns[self.dataframe.columns.str.contains(r'Target')]
-
-        for col in self.feature_cols:
-            self.dataframe[col] = self.X_scalers[col].transform(self.dataframe[[col]])
-
-        self.dataframe = self.dataframe.fillna(0.0)
-
-        self.dataset = AutoregressiveALSFRSDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
-
-    def val_dataloader(self):
-        return DataLoader(self.dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)
-
-    def test_dataloader(self):
-        return DataLoader(self.dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)
-
-
-class PapaizDataset(Dataset):
     def __init__(self, dataframe, feature_cols=None, target_cols='Target'):
         self.dataframe = dataframe # DataFrame source
         self.feature_cols = feature_cols # Features définis comme tout ce qui n'est pas target
@@ -215,7 +147,7 @@ class PapaizDataset(Dataset):
         return features, target
 
 # Lecture du csv, découpage du dataset en train, val, test et chargement les données en batch
-class PapaizDataModule(LightningDataModule):
+class AutoregressiveDataModule(LightningDataModule):
     def __init__(self, data, batch_size=32, feature_cols=None, target_cols='Target', num_workers=2, X_scalers=None):
         super().__init__()
         if isinstance(data, pd.DataFrame):
@@ -237,16 +169,15 @@ class PapaizDataModule(LightningDataModule):
 
     # Découpage du dataset en train, val, test et normalisation des features
     def setup(self, stage=None):
+        self.months = get_months(self.dataframe)
 
-        self.feature_cols = self.dataframe.columns[self.dataframe.columns.str.contains(rf'_M-15$') |
-                                                    self.dataframe.columns.str.contains(rf'_M-14$') |
-                                                    self.dataframe.columns.str.contains(rf'_M-13$') |
-                                                    self.dataframe.columns.str.contains(rf'_M-12$')]
+        self.feature_cols = self.dataframe.columns[self.dataframe.columns.str.contains(rf'_M{self.months[0]}$') |
+                                                    self.dataframe.columns.str.contains(rf'_M{self.months[1]}$') |
+                                                    self.dataframe.columns.str.contains(rf'_M{self.months[2]}$')]
         
-        self.target_cols = self.dataframe.columns[~(self.dataframe.columns.str.contains(rf'_M-15$')) &
-                                                    ~(self.dataframe.columns.str.contains(rf'_M-14$')) &
-                                                    ~(self.dataframe.columns.str.contains(rf'_M-13$')) &
-                                                    ~(self.dataframe.columns.str.contains(rf'_M-12$'))]
+        self.target_cols = self.dataframe.columns[~(self.dataframe.columns.str.contains(rf'_M{self.months[0]}$')) &
+                                                    ~(self.dataframe.columns.str.contains(rf'_M{self.months[1]}$')) &
+                                                    ~(self.dataframe.columns.str.contains(rf'_M{self.months[2]}$'))]
 
         
         self.features = get_features(self.dataframe)
@@ -257,7 +188,7 @@ class PapaizDataModule(LightningDataModule):
             for col in cols:
                 self.dataframe[col] = self.X_scalers[feature].transform(self.dataframe[[col]])
 
-        self.dataset = PapaizDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
+        self.dataset = AutoregressiveALSFRSDataset(self.dataframe, feature_cols=self.feature_cols, target_cols=self.target_cols) # test
 
     def val_dataloader(self):
         return DataLoader(self.dataset, batch_size=self.batch_size, persistent_workers=True, num_workers=self.num_workers)

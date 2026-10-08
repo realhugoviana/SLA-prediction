@@ -198,83 +198,12 @@ class RNNmodel(L.LightningModule):
             torch.mps.empty_cache()
 
 class AutoregressiveRNN(L.LightningModule):
-    def __init__(self, model, Y_scalers):
-        super().__init__()
-
-        self.model = model
-        self.Y_scalers = Y_scalers
-
-        self.test_mae = torchmetrics.MeanAbsoluteError()
-        self.val_mae = torchmetrics.MeanAbsoluteError()
-
-        self.test_rmse = torchmetrics.MeanSquaredError(squared=False)
-        self.val_rmse = torchmetrics.MeanSquaredError(squared=False)
-
-        self.test_r2 = torchmetrics.R2Score()
-        self.val_r2 = torchmetrics.R2Score()
-    
-    def forward(self, x, hx=None):
-        out, out_hx = self.model(x, hx)
-
-        score_out = out[:, 0]
-
-        numpy_array_input = score_out.detach().cpu().numpy()
-
-        numpy_array_input = numpy_array_input.reshape(-1, 1)
-
-        score_out_np = self.Y_scalers["ALSFRS_R_Total_M0"].inverse_transform(numpy_array_input)
-
-        score_out_np = score_out_np.flatten()
-
-        score_out = torch.from_numpy(score_out_np).to(self.device) 
-
-        return out, out_hx, score_out
-
-    def validation_step(self, batch, batch_idx):
-        x, y = batch
-        
-        y_hat, hx, score_hat = self.forward(x)
-        
-        objective_metrics = []
-        if y.shape[1] > 1:
-            for i in range(1, y.shape[1]):
-                y_hat, hx, score_hat = self.forward(y_hat.unsqueeze(1), hx)
-
-                if (i+1)%3 == 0:
-                    objective_metrics.append(self.val_mae(score_hat, y[:,i]))
-
-        self.log_dict({'objective_value': torch.mean(torch.stack(objective_metrics))} if objective_metrics else {})
-        print(objective_metrics)
-
-        return None
-    
-    def test_step(self, batch, batch_idx):
-        x, y = batch
-
-        y_hat, hx, score_hat = self.forward(x)
-
-        self.log_dict({'test_loss_1': self.test_mae(score_hat, y[:,0]),
-                    'test_mae_1': self.test_mae(score_hat, y[:,0]),
-                    'test_rmse_1': self.test_rmse(score_hat, y[:,0]),
-                    **({'test_r2_1': self.test_r2(score_hat, y[:, 0])} if x.size(0) >= 2 else {})})
-        print(y.shape)
-        
-        if y.shape[1] > 1:
-            for i in range(1, y.shape[1]):
-                y_hat, hx, score_hat = self.forward(y_hat.unsqueeze(1), hx)
-                self.log_dict({f'test_loss_{i+1}': self.test_mae(score_hat, y[:,i]),
-                            f'test_mae_{i+1}': self.test_mae(score_hat, y[:,i]),
-                            f'test_rmse_{i+1}': self.test_rmse(score_hat, y[:,i]),
-                            **({f'test_r2_{i+1}': self.test_r2(score_hat, y[:, i])} if x.size(0) >= 2 else {})})
-
-        return self.test_mae(score_hat, y[:,0])
-
-class PapaizARNN(L.LightningModule):
-    def __init__(self, model, X_scalers):
+    def __init__(self, model, X_scalers, ordered_features):
         super().__init__()
 
         self.model = model
         self.X_scalers = X_scalers
+        self.features = ordered_features["feat"]
 
         self.test_mae = torchmetrics.MeanAbsoluteError()
         self.val_mae = torchmetrics.MeanAbsoluteError()
@@ -292,24 +221,20 @@ class PapaizARNN(L.LightningModule):
     
     def test_step(self, batch, batch_idx):
         x, y = batch
-
-        features = ["ALSFRS_Total", "Age_at_Onset", "Disease_Duration", "Patient_with_Gastrostomy", "Q10_Respiratory", "Q1_Speech", "Q2_Salivation", "Q3_Swallowing", "Q4_Handwriting", "Q5_Cutting", "Q6_Dressing_and_Hygiene", 
-                    "Q7_Turning_in_Bed", "Q8_Walking", "Q9_Climbing_Stairs", "Qty_Regions_Involved", "Region_Involved_Bulbar", "Region_Involved_Lower_Limb", "Region_Involved_Respiratory", "Region_Involved_Upper_Limb",
-                    "Riluzole", "Sex_Male", "Site_Onset"]
         
         objective_metrics = []
         for i in range(y.shape[1]):
             y_hat = self.forward(x)
 
-            for j in range(len(features)):
-                y_hat_unscaled = torch.from_numpy(self.X_scalers[features[j]].inverse_transform(y_hat[:, j:j+1].detach().cpu().numpy())).to(self.device)
+            for j in range(len(self.features)):
+                y_hat_unscaled = torch.from_numpy(self.X_scalers[self.features[j]].inverse_transform(y_hat[:, j:j+1].detach().cpu().numpy())).to(self.device)
 
-                self.log_dict({f'test_mae_{features[j]}_{i+1}': self.test_mae(y_hat_unscaled, y[:,i, j:j+1]),
-                               f'test_rmse_{features[j]}_{i+1}': self.test_rmse(y_hat_unscaled, y[:,i, j:j+1]),
-                               **({f'test_r2_{features[j]}_{i+1}': self.test_r2(y_hat_unscaled, y[:,i, j:j+1])}if x.size(0) >= 2 else {})})
+                self.log_dict({f'test_mae_{self.features[j]}_{i+1}': self.test_mae(y_hat_unscaled, y[:,i, j:j+1]),
+                               f'test_rmse_{self.features[j]}_{i+1}': self.test_rmse(y_hat_unscaled, y[:,i, j:j+1]),
+                               **({f'test_r2_{self.features[j]}_{i+1}': self.test_r2(y_hat_unscaled, y[:,i, j:j+1])}if x.size(0) >= 2 else {})})
 
                 if j == 0:
-                    objective_metrics.append(self.test_rmse(y_hat_unscaled, y[:,i, j:j+1]))
+                    objective_metrics.append(self.test_mae(y_hat_unscaled, y[:,i, j:j+1]))
 
             y_hat = torch.unsqueeze(y_hat, dim=1)
 

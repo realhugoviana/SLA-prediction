@@ -132,10 +132,10 @@ if __name__ == '__main__':
 
     df_rnn_train, df_rnn_test, df_rnn_opt = split_train_test_opt(df_rnn)
 
-    # df_sliding_rnn = sliding_windows_rnn(df_rnn_train)
+    df_sliding_rnn = sliding_windows_rnn(df_rnn_train)
 
     df_rnn_test = df_rnn_test.drop(columns='subject_id')
-    # df_sliding_rnn = df_sliding_rnn.drop(columns='subject_id')
+    df_sliding_rnn = df_sliding_rnn.drop(columns='subject_id')
     df_rnn_opt = df_rnn_opt.drop(columns='subject_id')
 
     dfs_rnn_test = split_by_size(df_rnn_test)
@@ -148,4 +148,4 @@ if __name__ == '__main__':
     for name, df_opt in dfs_rnn_opt.items():
         df_opt.to_csv(f'datasets/fixed_length_interpolation/optimisation/{name}.csv', index=False)
 
-    # df_sliding_rnn.to_csv("datasets/fixed_length_interpolation/sliding_windows.csv", index=False)
+    df_sliding_rnn.to_csv("datasets/fixed_length_interpolation/sliding_windows.csv", index=False)
