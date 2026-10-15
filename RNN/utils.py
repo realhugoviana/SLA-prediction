@@ -45,5 +45,4 @@ def sort_df(df, intervals):
     return df[sorted_columns]
 
 def get_input_size(df):
-    print(get_features(df))
     return len(get_features(df))

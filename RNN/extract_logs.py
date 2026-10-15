@@ -1,7 +1,7 @@
 import os
 import traceback
-import pandas as pd
-from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
+import pandas as pd # type: ignore
+from tensorboard.backend.event_processing.event_accumulator import EventAccumulator # type: ignore
 
 def log_to_csv(log_dir, output_dir):
     os.makedirs(output_dir, exist_ok=True)
@@ -22,15 +22,15 @@ def log_to_csv(log_dir, output_dir):
                 event_acc.Reload()
                 
                 tags = event_acc.Tags()["scalars"]
-                if "test_mae_ALSFRS_Total_1" not in tags:
+                if "test_mae_ALSFRS_R_Total_1" not in tags:
                     continue
 
                 r = {"fold": [fold_index]}
 
-                for i in range(1, 12):
-                    r[f"mae_{i}"] = [event_acc.Scalars(f"test_mae_ALSFRS_Total_{i}")[-1].value]
-                    r[f"rmse_{i}"] = [event_acc.Scalars(f"test_rmse_ALSFRS_Total_{i}")[-1].value]
-                    r[f"r2_{i}"] = [event_acc.Scalars(f"test_r2_ALSFRS_Total_{i}")[-1].value]
+                for i in range(1, 13):
+                    r[f"mae_{i}"] = [event_acc.Scalars(f"test_mae_ALSFRS_R_Total_{i}")[-1].value]
+                    r[f"rmse_{i}"] = [event_acc.Scalars(f"test_rmse_ALSFRS_R_Total_{i}")[-1].value]
+                    r[f"r2_{i}"] = [event_acc.Scalars(f"test_r2_ALSFRS_R_Total_{i}")[-1].value]
 
                 r = pd.DataFrame(r)
                 runlog_data = pd.concat([runlog_data, r])
@@ -54,7 +54,7 @@ def log_to_csv(log_dir, output_dir):
         margin_of_error = 1.96 * std / (n**0.5)
         return mean - margin_of_error, mean + margin_of_error
 
-    summary_stats = pd.DataFrame({"month": ["3", "6", "9", "11"]})
+    summary_stats = pd.DataFrame({"month": ["3", "6", "9", "12"]})
 
 
     # Calcul des statistiques pour chaque dataset
@@ -62,38 +62,38 @@ def log_to_csv(log_dir, output_dir):
     summary_stats['mae_mean'] = [runlog_data[f"mae_3"].mean(), 
                                  runlog_data[f"mae_6"].mean(),
                                  runlog_data[f"mae_9"].mean(),
-                                 runlog_data[f"mae_11"].mean()]
+                                 runlog_data[f"mae_12"].mean()]
     
     summary_stats['mae_std'] = [runlog_data[f"mae_3"].std(), 
                                 runlog_data[f"mae_6"].std(),
                                 runlog_data[f"mae_9"].std(),
-                                runlog_data[f"mae_11"].std()]
+                                runlog_data[f"mae_12"].std()]
     
 
     summary_stats['rmse_mean'] = [runlog_data[f"rmse_3"].mean(), 
                                 runlog_data[f"rmse_6"].mean(),
                                 runlog_data[f"rmse_9"].mean(),
-                                runlog_data[f"rmse_11"].mean()]
+                                runlog_data[f"rmse_12"].mean()]
     
     summary_stats['rmse_std'] = [runlog_data[f"rmse_3"].std(), 
                                 runlog_data[f"rmse_6"].std(),
                                 runlog_data[f"rmse_9"].std(),
-                                runlog_data[f"rmse_11"].std()]
+                                runlog_data[f"rmse_12"].std()]
 
 
     summary_stats['r2_mean'] = [runlog_data[f"r2_3"].mean(), 
                                 runlog_data[f"r2_6"].mean(),
                                 runlog_data[f"r2_9"].mean(),
-                                runlog_data[f"r2_11"].mean()]
+                                runlog_data[f"r2_12"].mean()]
         
     summary_stats['r2_std'] = [runlog_data[f"r2_3"].std(), 
                                 runlog_data[f"r2_6"].std(),
                                 runlog_data[f"r2_9"].std(),
-                                runlog_data[f"r2_11"].std()]
+                                runlog_data[f"r2_12"].std()]
     #Sauvegarde des statistiques agrégées
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
-log_dir = "RNN/tb_logs/best_model_papaiz/"
-output_dir = "RNN/stats_entrainement/best_model_papaiz/"
+log_dir = "RNN/tb_logs/lstm_fixed_length_interpolation/"
+output_dir = "RNN/stats_entrainement/011_lstm_fixed_length_interpolation/"
 
 log_to_csv(log_dir, output_dir)

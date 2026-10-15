@@ -1,10 +1,10 @@
-import torch
-import lightning as L
-from lightning.pytorch.loggers import TensorBoardLogger
-from lightning.pytorch.callbacks import EarlyStopping
-from optuna.integration import PyTorchLightningPruningCallback
-import optuna
-import pandas as pd
+import torch # type: ignore
+import lightning as L # type: ignore
+from lightning.pytorch.loggers import TensorBoardLogger # type: ignore
+from lightning.pytorch.callbacks import EarlyStopping # type: ignore
+from optuna.integration import PyTorchLightningPruningCallback # type: ignore
+import optuna # type: ignore
+import pandas as pd # type: ignore
 import os
 import glob
 import time
@@ -123,6 +123,7 @@ def run_optimization(training_path, optimization_sets, study_name="rnn", archite
         storage=f"sqlite:///optuna.db", # Stockage de l'étude dans une base de données pour visualisation
         study_name=f"{study_name}", # Nom de l'étude
         load_if_exists=True, # Si l'étude crash elle peut reprendre là où elle s'était arrêtée
+        pruner=optuna.pruners.NopPruner(), # Ne prune pas les trials jugés non prometteurs
         direction='minimize') # On cherche à minimiser la sortie de objective donc la perte de la validation
 
     study.optimize(objective, n_trials=trials) # trials
@@ -192,7 +193,7 @@ def run_trainings(data_path, test_sets, log_dir="MLP_regression/tb_logs/", study
             test_dm = AutoregressiveDataModule(data=test_set, batch_size=best_params['batch_size'], X_scalers=X_scalers)
             trainer.test(autoregressive_model, datamodule=test_dm) # Test sur le dataset de test
 
-def run_trainings_set_params(data_path, test_sets, log_dir="MLP_regression/tb_logs/", input_size=None, architecture="GRU", n_layers=2, n_units=1024, learning_rate=1e-7, activation= None, optimizer='Adam', criterion='Huber', loss_coef=None,
+def run_trainings_set_params(data_path, test_sets, log_dir="RNN/tb_logs/", input_size=None, architecture="GRU", n_layers=2, n_units=1024, learning_rate=1e-7, activation= None, optimizer='Adam', criterion='Huber', loss_coef=None,
                                 regularizer='Ridge', regularization_parameter=0.01, dropout=0.35, bidirectional=True, batch_size=64, max_epoch=300, n_folds=5):
     os.makedirs(log_dir, exist_ok=True) # Création du dossier de log si il n'existe pas
 
@@ -238,27 +239,28 @@ def run_trainings_set_params(data_path, test_sets, log_dir="MLP_regression/tb_lo
 
 if __name__ == '__main__':
 
-    trials = 100
-    trial_epoch = 50
-    max_epoch = 500
-    n_folds = 5
+    trials = 1
+    trial_epoch = 1
+    max_epoch = 1
+    n_folds = 1
 
     training_file = "datasets/fixed_length_interpolation/sliding_windows.csv"
 
     optimization_folder = "datasets/fixed_length_interpolation/optimisation"
     optimization_sets = glob.glob(os.path.join(optimization_folder, "*.csv"))
     
-    test_folder = "datasets/fixed_length_interpolation/test"
-    test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
+    # test_folder = "datasets/fixed_length_interpolation/test"
+    # test_sets = glob.glob(os.path.join(test_folder, "*.csv"))
+
+    test_sets = ["datasets/fixed_length_interpolation/test/df_13.csv"]
 
     input_size = get_input_size(pd.read_csv(training_file))
-    print(input_size)
 
     L.seed_everything(42)
 
     run_optimization(training_path=training_file,
                     optimization_sets=optimization_sets,
-                    study_name="lstm_fixed_length_interpolation",
+                    study_name="013_long_optim",
                     architecture='LSTM',
                     input_size=input_size,
                     trials=trials,
@@ -269,10 +271,25 @@ if __name__ == '__main__':
     
     run_trainings(training_file,
                 test_sets=test_sets,
-                log_dir="RNN/tb_logs/lstm_fixed_length_interpolation/",
-                study_name="lstm_fixed_length_interpolation",
+                log_dir="RNN/tb_logs/013_long_optim/",
+                study_name="013_long_optim",
                 architecture="LSTM",
                 input_size=input_size,
                 max_epoch=max_epoch,
                 n_folds=n_folds,
                 multitask=False)
+
+    # run_trainings_set_params(data_path=training_file,
+    #                          test_sets=test_sets,
+    #                          log_dir="RNN/tb_logs/interpolation_best_model_papaiz/",
+    #                          input_size=input_size,
+    #                          architecture='GRU',
+    #                          n_layers=2,
+    #                          n_units=1024,
+    #                          learning_rate=1e-7,
+    #                          regularizer='Ridge',
+    #                          regularization_parameter=0.001,
+    #                          dropout=0.35,
+    #                          bidirectional=True,
+    #                          max_epoch=max_epoch,
+    #                          n_folds=n_folds)
