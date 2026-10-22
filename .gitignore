@@ -2,4 +2,5 @@ tb_logs/
 __pycache__/
 datasets/
 optuna.db
+old_optuna.db
 weights/

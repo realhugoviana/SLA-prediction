@@ -25,7 +25,7 @@ else:
 # - Chemin d'accès au csv
 # - Dossier où mettre les logs
 # - Nom de l'étude Optuna
-def run_optimization(data_path, study_name="mlp_regression", input_size=None, dataset_name=None, trials=100, trial_epoch=30):
+def run_optimization(data_path, study_name="mlp_regression", input_size=None, dataset_name=None, trials=100, trial_epoch=30, n_folds=5):
 
     # Fonction d'optimisation Optuna
     def objective(trial):
@@ -39,33 +39,36 @@ def run_optimization(data_path, study_name="mlp_regression", input_size=None, da
         weight_decay = trial.suggest_float('weight_decay', 1e-8, 1e-4, log=True)
         dropout = trial.suggest_float('dropout', 0.0, 0.5)
 
-        # Initialisation du modèle avec les paramètres choisis (voir model.py
-        model = MLP_regressor(input_size, output_dim=17, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation='ReLU', optimizer='Adam', criterion='Huber', weight_decay=weight_decay, dropout=dropout)
+        val_mae = []
+        for fold in range(n_folds):
+            # Initialisation du modèle avec les paramètres choisis (voir model.py)
+            model = MLP_regressor(input_size, output_dim=1, n_layer=n_layer, n_units=n_units, learning_rate=learning_rate, decroissant=decroissant, activation='ReLU', optimizer='Adam', criterion='Huber', weight_decay=weight_decay, dropout=dropout)
 
-        # Dataset et dataloader (voir data.py)
-        dm = DataModule(csv_path=data_path, batch_size=batch_size, n_folds=-1) # n_folds=-1 pour ne pas faire de cross-validation pendant l'optimisation
+            # Dataset et dataloader (voir data.py)
+            dm = DataModule(csv_path=data_path, batch_size=batch_size, n_folds=fold) 
 
-        # Prunning des trials qui convergent trop lentement par rapport aux autres
-        pruning_callback = PyTorchLightningPruningCallback(
-            trial, monitor="val_loss"
-        )
+            # Prunning des trials qui convergent trop lentement par rapport aux autres
+            pruning_callback = PyTorchLightningPruningCallback(
+                trial, monitor="val_loss"
+            )
 
-        # Fonction qui execute la boucle d'entrainement
-        trainer = L.Trainer(
-            max_epochs=trial_epoch, # Nombre d'epoch maximum
-            accelerator=accelerator, # GPU si possible
-            callbacks=[EarlyStopping(monitor='val_loss', patience=5), # Early stopping 
-                       pruning_callback], # Prunning
-            enable_checkpointing=False,
-            logger=False # Pas de log pour les trials, déjà dans optuna.db
-        )
+            # Fonction qui execute la boucle d'entrainement
+            trainer = L.Trainer(
+                max_epochs=trial_epoch, # Nombre d'epoch maximum
+                accelerator=accelerator, # GPU si possible
+                callbacks=[EarlyStopping(monitor='val_loss', patience=5), # Early stopping 
+                        pruning_callback], # Prunning
+                enable_checkpointing=False,
+                logger=False # Pas de log pour les trials, déjà dans optuna.db
+            )
 
-        # Entrainement du trial et validation
-        trainer.fit(model, dm)
-        val_result = trainer.validate(model, datamodule=dm) 
-        val_mae = val_result[0]['val_mae'] # Récupère la MAE de validation
-        
-        return val_mae # Retourne la MAE du dataset de validation
+            # Entrainement du trial et validation
+            trainer.fit(model, dm)
+            val_result = trainer.validate(model, datamodule=dm) 
+            val_mae.append(val_result[0]['val_mae']) # Récupère la MAE de validation
+
+        average_mae = sum(val_mae) / len(val_mae)
+        return average_mae # Retourne la MAE du dataset de validation
     
     start_time = time.time() # Chronomètre
 
@@ -74,6 +77,7 @@ def run_optimization(data_path, study_name="mlp_regression", input_size=None, da
         storage=f"sqlite:///optuna.db", # Stockage de l'étude dans une base de données pour visualisation
         study_name=f"{study_name}_{dataset_name}", # Nom de l'étude
         load_if_exists=True, # Si l'étude crash elle peut reprendre là où elle s'était arrêtée
+        pruner=optuna.pruners.NopPruner(), # Ne prune pas les trials jugés non prometteurs
         direction='minimize') # On cherche à minimiser la sortie de objective donc la perte de la validation
     study.optimize(objective, n_trials=trials) # trials
 
@@ -101,19 +105,20 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
 
     # Entrainement du modèle avec les meilleurs paramètres sur le nombre d'epoch maximum
     best_params = trial.params
-    best_model = MLP_regressor(input_size, 
-                               output_dim=17, 
-                               n_layer=best_params['n_layer'], 
-                               n_units=best_params['n_units'], 
-                               learning_rate=best_params['learning_rate'], 
-                               decroissant=best_params['decroissant'], 
-                               activation='ReLU', 
-                               optimizer='Adam', 
-                               criterion='Huber',
-                               weight_decay=best_params['weight_decay'],
-                               dropout=best_params['dropout'])
     
     for training in range(n_folds):
+        best_model = MLP_regressor(input_size, 
+                                output_dim=1, 
+                                n_layer=best_params['n_layer'], 
+                                n_units=best_params['n_units'], 
+                                learning_rate=best_params['learning_rate'], 
+                                decroissant=best_params['decroissant'], 
+                                activation='ReLU', 
+                                optimizer='Adam', 
+                                criterion='Huber',
+                                weight_decay=best_params['weight_decay'],
+                                dropout=best_params['dropout'])
+        
         print(f"Training {training+1}/{n_folds} for dataset {dataset_name} with best parameters...")
 
         dm = DataModule(csv_path=data_path, batch_size=best_params['batch_size'], fold_index=training)
@@ -130,52 +135,300 @@ def run_trainings(data_path, log_dir="MLP_regression/tb_logs/", study_name="mlp_
         trainer.test(best_model, datamodule=dm) # Test
 
 if __name__ == '__main__':
+    csv_files = ["datasets/ALSFRS_R_COMBINED/Combined_3M.csv",
+                 "datasets/ALSFRS_R_COMBINED/Combined_6M.csv",
+                 "datasets/ALSFRS_R_COMBINED/Combined_9M.csv",
+                 "datasets/ALSFRS_R_COMBINED/Combined_12M.csv"]
 
-    trials = 100
-    trial_epoch = 30
-    max_epoch = 300
-    n_folds = 10
+    trials = 1
+    max_epoch = 1
+    n_folds = 1
 
-    csv_file = "datasets/interpolation/fixed.csv"
+    for csv_file in csv_files:
+        for trial_epoch in [50, 100, 150, 200]:
+            print(f"Training on dataset: {csv_file} for {trial_epoch} epochs")
+            trial_epoch = 1
+            input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+            dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
 
-    input_size = len(pd.read_csv(csv_file).columns) - 17 # Nombre de colonnes - targets
-    dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+            L.seed_everything(42)
 
-    L.seed_everything(42)
+            run_optimization(csv_file,
+                             study_name=f"014_optimization_epoch_{dataset_name}_{trial_epoch}",
+                             input_size=input_size,
+                             dataset_name=dataset_name,
+                             trials=trials,
+                             trial_epoch=trial_epoch)
 
-    run_optimization(csv_file,
-                    study_name=f"mlp_interpolation_fixed",
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    run_trainings(csv_file,
-                log_dir=f"MLP_regression/tb_logs/mlp_interpolation_fixed/",
-                study_name=f"mlp_interpolation_fixed",
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
-    
-    csv_file = "datasets/interpolation/sliding_windows.csv"
+            run_trainings(csv_file,
+                            log_dir=f"MLP_regression/tb_logs/014_optimization_epoch_{dataset_name}_{trial_epoch}",
+                            study_name=f"014_optimization_epoch_{dataset_name}_{trial_epoch}",
+                            input_size=input_size,
+                            dataset_name=dataset_name,
+                            max_epoch=max_epoch,
+                            n_folds=n_folds)
 
-    input_size = len(pd.read_csv(csv_file).columns) - 17 # Nombre de colonnes - targets
-    dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
 
-    L.seed_everything(42)
+    # for csv_file in csv_fixed_baseline:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
 
-    run_optimization(csv_file,
-                    study_name=f"mlp_interpolation_sliding_windows",
-                    input_size=input_size,
-                    dataset_name=dataset_name,
-                    trials=trials,
-                    trial_epoch=trial_epoch)
-    
-    run_trainings(csv_file,
-                log_dir=f"MLP_regression/tb_logs/mlp_interpolation_sliding_windows/",
-                study_name=f"mlp_interpolation_sliding_windows",
-                input_size=input_size,
-                dataset_name=dataset_name,
-                max_epoch=max_epoch,
-                n_folds=n_folds)
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_07_06_baseline",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+
+    #     run_trainings(csv_file,
+    #                     log_dir="BDA_CV/tb_logs/baseline_fixed/",
+    #                     study_name="mlp_regression_07_06_baseline",
+    #                     input_size=input_size,
+    #                     dataset_name=dataset_name,
+    #                     max_epoch=max_epoch,
+    #                     n_folds=n_folds)
+
+    # for csv_file in csv_sliding_windows_baseline:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_07_06_baseline",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+
+    #     run_trainings(csv_file, 
+    #                   log_dir="BDA_CV/tb_logs/baseline_sliding_windows/",
+    #                   study_name="mlp_regression_07_06_baseline",
+    #                   input_size=input_size,
+    #                   dataset_name=dataset_name,
+    #                   max_epoch=max_epoch,
+    #                   n_folds=n_folds)
+
+    # for csv_file in csv_first_symptoms_baseline:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_07_06_baseline",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+        
+    #     run_trainings(csv_file,
+    #                   log_dir="BDA_CV/tb_logs/baseline_first_symptoms/",
+    #                   study_name="mlp_regression_07_06_baseline",
+    #                   input_size=input_size,
+    #                   dataset_name=dataset_name,
+    #                   max_epoch=max_epoch,
+    #                   n_folds=n_folds)
+
+    # for csv_file in csv_fixed:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_07_06_alsfrs",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+
+    #     run_trainings(csv_file,
+    #                     log_dir="BDA_CV/tb_logs/alsfrs_fixed/",
+    #                     study_name="mlp_regression_07_06_alsfrs",
+    #                     input_size=input_size,
+    #                     dataset_name=dataset_name,
+    #                     max_epoch=max_epoch,
+    #                     n_folds=n_folds)
+
+    # for csv_file in csv_sliding_windows:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_07_06_alsfrs",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+
+    #     run_trainings(csv_file, 
+    #                   log_dir="BDA_CV/tb_logs/alsfrs_sliding_windows/",
+    #                   study_name="mlp_regression_07_06_alsfrs",
+    #                   input_size=input_size,
+    #                   dataset_name=dataset_name,
+    #                   max_epoch=max_epoch,
+    #                   n_folds=n_folds)
+
+    # for csv_file in csv_first_symptoms:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_07_06_alsfrs",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+        
+    #     run_trainings(csv_file,
+    #                   log_dir="BDA_CV/tb_logs/alsfrs_first_symptoms/",
+    #                   study_name="mlp_regression_07_06_alsfrs",
+    #                   input_size=input_size,
+    #                   dataset_name=dataset_name,
+    #                   max_epoch=max_epoch,
+    #                   n_folds=n_folds)
+
+    # for csv_file in csv_fixed_all:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_08_06_all_data",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+
+    #     run_trainings(csv_file,
+    #                     log_dir="BDA_CV/tb_logs/alls_data_fixed/",
+    #                     study_name="mlp_regression_08_06_all_data",
+    #                     input_size=input_size,
+    #                     dataset_name=dataset_name,
+    #                     max_epoch=max_epoch,
+    #                     n_folds=n_folds)
+
+    # for csv_file in csv_sliding_windows_all:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_08_06_all_data",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+
+    #     run_trainings(csv_file, 
+    #                   log_dir="BDA_CV/tb_logs/alls_data_sliding_windows/",
+    #                   study_name="mlp_regression_08_06_all_data",
+    #                   input_size=input_size,
+    #                   dataset_name=dataset_name,
+    #                   max_epoch=max_epoch,
+    #                   n_folds=n_folds)
+
+    # for csv_file in csv_first_symptoms_all:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_08_06_all_data",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+        
+    #     run_trainings(csv_file,
+    #                   log_dir="BDA_CV/tb_logs/alls_data_first_symptoms/",
+    #                   study_name="mlp_regression_08_06_all_data",
+    #                   input_size=input_size,
+    #                   dataset_name=dataset_name,
+    #                   max_epoch=max_epoch,
+    #                   n_folds=n_folds)
+
+    for csv_file in csv_fixed_best_perf:
+        print(f"Training on dataset: {csv_file}")
+        input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+        dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+        L.seed_everything(42)
+
+        # run_optimization(csv_file,
+        #                  study_name="mlp_regression_08_06_all_data",
+        #                  input_size=input_size,
+        #                  dataset_name=dataset_name,
+        #                  trials=trials,
+        #                  trial_epoch=trial_epoch)
+
+        run_trainings(csv_file,
+                        log_dir="BDA_CV/tb_logs/best_performing_merge_fixed/",
+                        study_name="mlp_regression_07_06",
+                        input_size=input_size,
+                        dataset_name=dataset_name,
+                        max_epoch=max_epoch,
+                        n_folds=n_folds)
+
+    # for csv_file in csv_sliding_windows_best_perf:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     # run_optimization(csv_file,
+    #     #                  study_name="mlp_regression_08_06_all_data",
+    #     #                  input_size=input_size,
+    #     #                  dataset_name=dataset_name,
+    #     #                  trials=trials,
+    #     #                  trial_epoch=trial_epoch)
+
+    #     run_trainings(csv_file, 
+    #                   log_dir="BDA_CV/tb_logs/best_performing_merge_sliding_windows/",
+    #                   study_name="mlp_regression_07_06",
+    #                   input_size=input_size,
+    #                   dataset_name=dataset_name,
+    #                   max_epoch=max_epoch,
+    #                   n_folds=n_folds)
+
+    # for csv_file in csv_first_symptoms_best_perf:
+    #     print(f"Training on dataset: {csv_file}")
+    #     input_size = len(pd.read_csv(csv_file).columns) - 1 # Nombre de colonnes - target
+    #     dataset_name = os.path.splitext(os.path.basename(csv_file))[0]
+
+    #     L.seed_everything(42)
+
+    #     run_optimization(csv_file,
+    #                      study_name="mlp_regression_14_09",
+    #                      input_size=input_size,
+    #                      dataset_name=dataset_name,
+    #                      trials=trials,
+    #                      trial_epoch=trial_epoch)
+        
+    #     run_trainings(csv_file,
+    #                   log_dir="BDA_CV/tb_logs/best_performing_merge_first_symptoms/",
+    #                   study_name="mlp_regression_14_09",
+    #                   input_size=input_size,
+    #                   dataset_name=dataset_name,
+    #                   max_epoch=max_epoch,
+    #                   n_folds=n_folds)

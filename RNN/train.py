@@ -126,6 +126,18 @@ def run_optimization(training_path, optimization_sets, study_name="rnn", archite
         pruner=optuna.pruners.NopPruner(), # Ne prune pas les trials jugés non prometteurs
         direction='minimize') # On cherche à minimiser la sortie de objective donc la perte de la validation
 
+    study.enqueue_trial({"n_layer": 2,
+                         "n_units": 1024,
+                         "learning_rate": 1e-7,
+                         "activation": None,
+                         "criterion": "MSE",
+                         "loss_coef": None,
+                         "batch_size": 256,
+                         "regularizer": "Ridge",
+                         "regularization_parameter": 0.001,
+                         "dropout": 0.35,
+                         "bidirectional": True})
+
     study.optimize(objective, n_trials=trials) # trials
 
     end_time = time.time()
@@ -239,10 +251,10 @@ def run_trainings_set_params(data_path, test_sets, log_dir="RNN/tb_logs/", input
 
 if __name__ == '__main__':
 
-    trials = 1
-    trial_epoch = 1
-    max_epoch = 1
-    n_folds = 1
+    trials = 30
+    trial_epoch = 150
+    max_epoch = 500
+    n_folds = 5
 
     training_file = "datasets/fixed_length_interpolation/sliding_windows.csv"
 
@@ -279,17 +291,17 @@ if __name__ == '__main__':
                 n_folds=n_folds,
                 multitask=False)
 
-    # run_trainings_set_params(data_path=training_file,
-    #                          test_sets=test_sets,
-    #                          log_dir="RNN/tb_logs/interpolation_best_model_papaiz/",
-    #                          input_size=input_size,
-    #                          architecture='GRU',
-    #                          n_layers=2,
-    #                          n_units=1024,
-    #                          learning_rate=1e-7,
-    #                          regularizer='Ridge',
-    #                          regularization_parameter=0.001,
-    #                          dropout=0.35,
-    #                          bidirectional=True,
-    #                          max_epoch=max_epoch,
-    #                          n_folds=n_folds)
+    run_trainings_set_params(data_path=training_file,
+                             test_sets=test_sets,
+                             log_dir="RNN/tb_logs/012_interpolation_best_model_papaiz/",
+                             input_size=input_size,
+                             architecture='GRU',
+                             n_layers=2,
+                             n_units=1024,
+                             learning_rate=1e-7,
+                             regularizer='Ridge',
+                             regularization_parameter=0.001,
+                             dropout=0.35,
+                             bidirectional=True,
+                             max_epoch=max_epoch,
+                             n_folds=n_folds)

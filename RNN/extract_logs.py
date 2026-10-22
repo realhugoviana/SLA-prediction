@@ -93,7 +93,7 @@ def log_to_csv(log_dir, output_dir):
     #Sauvegarde des statistiques agrégées
     summary_stats.to_csv(f'{output_dir}/statistical_summary_by_dataset.csv') 
 
-log_dir = "RNN/tb_logs/lstm_fixed_length_interpolation/"
-output_dir = "RNN/stats_entrainement/011_lstm_fixed_length_interpolation/"
+log_dir = "RNN/tb_logs/013_long_optim/"
+output_dir = "RNN/stats_entrainement/013_long_optim/"
 
 log_to_csv(log_dir, output_dir)
